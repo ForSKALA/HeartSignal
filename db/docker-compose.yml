@@ -1,0 +1,30 @@
+# HeartSignal MariaDB (backend 인증 서버 / RAG 공용)
+# 실행: docker compose -f db/docker-compose.yml up -d
+# 접속: jdbc:mariadb://localhost:53301/sql_db  (root / ${DB_PASSWORD:-SqlDba-1})
+
+services:
+  mariadb:
+    image: mariadb:11.4
+    container_name: heartsignal-mariadb
+    restart: unless-stopped
+    ports:
+      - "53301:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:-SqlDba-1}
+      MARIADB_DATABASE: sql_db
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --lower_case_table_names=1
+    volumes:
+      - heartsignal_mariadb_data:/var/lib/mysql
+      - ./init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  heartsignal_mariadb_data:
