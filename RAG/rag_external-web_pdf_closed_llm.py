@@ -225,7 +225,7 @@ async def upload_pdf(file: UploadFile = File(...)):
         # [Q02] PDF 임베딩과 벡터 저장소 연결
         # [설계 판단] 분할한 PDF 문서(docs)를 OpenAI 임베딩 모델로 벡터화하여 FAISS 검색 저장소로 만드세요.
         # [TODO Q02] 아래 ... 부분을 적절한 코드로 교체하세요.
-        VECTORSTORE_PDF = FASISS.from_documents(docs, OpenAIEmbeddings())
+        VECTORSTORE_PDF = FAISS.from_documents(docs, OpenAIEmbeddings())
 
         # ✅ 디스크에 저장
         os.makedirs("faiss_db/pdf", exist_ok=True)
@@ -345,7 +345,7 @@ async def rag_query(rag_request: RAGRequest = Body(...)):
             # [Q04] 질문과 유사 문서 검색 연결
             # [설계 판단] 사용자 질문을 기준으로 선택된 벡터 저장소에서 상위 top_k개 문서와 거리 점수를 가져오세요.
             # [TODO Q04] 아래 ... 부분을 적절한 코드로 교체하세요.
-            docs_scores = vectorstore.similarity_search_with_socre(rag_request.prompt, k = top_k)
+            docs_scores = vectorstore.similarity_search_with_score(rag_request.prompt, k = top_k)
             print(f"[PDF 검색] 질문={rag_request.prompt!r}, 검색 문서 수={len(docs_scores)}")
             for i, (doc, score) in enumerate(docs_scores, start=1):
                 print(f"[PDF 검색 {i}] 거리={score:.5f}, 내용={doc.page_content[:300]!r}")
