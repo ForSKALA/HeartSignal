@@ -1,7 +1,7 @@
 # AGENTS.md — HeartSignal 공통 작업 규칙
 
-> 사람과 AI 코딩 에이전트(Claude Code, Codex 등) 모두 이 파일을 먼저 읽고 작업합니다.
-> 기획 근거: [`docs/HeartSignal_프로젝트기획서_v2.md`](docs/HeartSignal_프로젝트기획서_v2.md)
+> 모든 작업 전 이 파일을 먼저 읽고 작업합니다.
+> 기획 근거: [`docs/HeartSignal-Plan.md`](docs/HeartSignal-Plan.md)
 
 ## 1. 프로젝트 한 줄
 
@@ -27,26 +27,26 @@
 
 ## 4. 디렉터리 · 파트 소유권
 
-| 경로 | 내용 | 소유 파트 |
-| --- | --- | --- |
-| `안전지침/`, `RAG/scripts/ingest.py`, `RAG/faiss_db/`, `docs/data_sources.md`, `RAG/data/` | 원본 자료, 적재 스크립트, 인덱스, 출처표 | **P1 데이터** |
-| `RAG/rag_external-web_pdf_closed_llm.py`의 검색·프롬프트·답변 로직, `RAG/prompts/`, `RAG/agent/`, `RAG/eval/`, `docs/eval_results.md` | RAG 체인, 프롬프트, 에이전트, 평가 | **P2 RAG·LLM** |
-| `backend/`, `db/`, `RAG/auth.py`, `RAG/middleware.py`, `RAG/alarm/`(규칙 엔진·`thresholds.json`·`/sensor-event`) | 인증, JWT 검증, 오류·로그, 경보 API | **P3 인증·API** |
-| `*.html`(루트), `web/`, 루트 `docker-compose.yml`, `README.md` | 화면, 배포 | **P4 프론트·배포** |
-| `Voice-AI/` | STT·TTS (확장) | 음성 담당 |
+| 경로                                                                                                                                  | 내용                                     | 소유 파트          |
+| ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------ |
+| `안전지침/`, `RAG/scripts/ingest.py`, `RAG/faiss_db/`, `docs/data_sources.md`, `RAG/data/`                                            | 원본 자료, 적재 스크립트, 인덱스, 출처표 | **P1 데이터**      |
+| `RAG/rag_external-web_pdf_closed_llm.py`의 검색·프롬프트·답변 로직, `RAG/prompts/`, `RAG/agent/`, `RAG/eval/`, `docs/eval_results.md` | RAG 체인, 프롬프트, 에이전트, 평가       | **P2 RAG·LLM**     |
+| `backend/`, `db/`, `RAG/auth.py`, `RAG/middleware.py`, `RAG/alarm/`(규칙 엔진·`thresholds.json`·`/sensor-event`)                      | 인증, JWT 검증, 오류·로그, 경보 API      | **P3 인증·API**    |
+| `*.html`(루트), `web/`, 루트 `docker-compose.yml`, `README.md`                                                                        | 화면, 배포                               | **P4 프론트·배포** |
+| `Voice-AI/`                                                                                                                           | STT·TTS (확장)                           | 음성 담당          |
 
 - **다른 파트 소유 파일을 고칠 때는 해당 담당자에게 PR 리뷰를 요청**합니다. AI 에이전트도 같습니다: 작업 지시받은 파트 밖 파일은 수정하지 말고 제안만 남깁니다.
 - `RAG/rag_external-web_pdf_closed_llm.py`는 여러 파트가 만지므로, 새 로직은 **별도 모듈로 만들고 이 파일에서는 import·라우터 연결만** 합니다.
 
 ## 5. 포트 · 서비스 이름
 
-| 서비스 | 포트 | compose 서비스명 |
-| --- | --- | --- |
-| Vue 화면 | 5174 | `web` |
-| Java 인증 서버 | 8080 | `auth` |
-| RAG FastAPI | 8001 | `rag` |
-| Voice-AI | 8008 | `voice` |
-| MariaDB | 53301 → 3306 | `db` |
+| 서비스         | 포트         | compose 서비스명 |
+| -------------- | ------------ | ---------------- |
+| Vue 화면       | 5174         | `web`            |
+| Java 인증 서버 | 8080         | `auth`           |
+| RAG FastAPI    | 8001         | `rag`            |
+| Voice-AI       | 8008         | `voice`          |
+| MariaDB        | 53301 → 3306 | `db`             |
 
 컨테이너 간 호출은 서비스명(`http://rag:8001`)을 쓰고, `localhost`를 하드코딩하지 않습니다 (환경변수로 주입).
 
@@ -77,27 +77,33 @@ LLM_TIMEOUT_S=20
 ### 7.2 오류 응답
 
 ```json
-{ "error": { "code": "UNAUTHORIZED", "message": "토큰이 만료되었습니다.", "request_id": "a1b2c3" } }
+{
+    "error": {
+        "code": "UNAUTHORIZED",
+        "message": "토큰이 만료되었습니다.",
+        "request_id": "a1b2c3"
+    }
+}
 ```
 
-| HTTP | code | 상황 |
-| --- | --- | --- |
-| 401 | `UNAUTHORIZED` | 토큰 없음·만료·서명 오류 |
-| 403 | `FORBIDDEN` | role 불일치 |
-| 422 | `VALIDATION_ERROR` | 입력 스키마 오류 |
-| 503 | `NOT_READY` / `LLM_TIMEOUT` | 인덱스 미준비, LLM 타임아웃 |
-| 500 | `INTERNAL` | 그 외 (메시지에 스택트레이스·비밀값 노출 금지) |
+| HTTP | code                        | 상황                                           |
+| ---- | --------------------------- | ---------------------------------------------- |
+| 401  | `UNAUTHORIZED`              | 토큰 없음·만료·서명 오류                       |
+| 403  | `FORBIDDEN`                 | role 불일치                                    |
+| 422  | `VALIDATION_ERROR`          | 입력 스키마 오류                               |
+| 503  | `NOT_READY` / `LLM_TIMEOUT` | 인덱스 미준비, LLM 타임아웃                    |
+| 500  | `INTERNAL`                  | 그 외 (메시지에 스택트레이스·비밀값 노출 금지) |
 
 ### 7.3 청크 메타데이터 (P1 → P2)
 
-| 필드 | 필수 | 예시 |
-| --- | --- | --- |
-| `source` | ✅ | `KOSHA GUIDE G-78-2021`, `안전지침/염소.pdf` |
-| `section` | ✅ | `10.2(13)`, `응급조치>흡입`, `제618조` |
-| `doc_type` | ✅ | `emergency` / `guide` / `law` |
-| `substance` | 물질 문서만 | `chlorine` |
-| `cas` | 물질 문서만 | `7782-50-5` |
-| `published` | 가능하면 | `2021-12` |
+| 필드        | 필수        | 예시                                         |
+| ----------- | ----------- | -------------------------------------------- |
+| `source`    | ✅          | `KOSHA GUIDE G-78-2021`, `안전지침/염소.pdf` |
+| `section`   | ✅          | `10.2(13)`, `응급조치>흡입`, `제618조`       |
+| `doc_type`  | ✅          | `emergency` / `guide` / `law`                |
+| `substance` | 물질 문서만 | `chlorine`                                   |
+| `cas`       | 물질 문서만 | `7782-50-5`                                  |
+| `published` | 가능하면    | `2021-12`                                    |
 
 - 물질 키는 **영문 snake_case** (`hydrogen_sulfide`, `propane`)로 `thresholds.json`·메타데이터·센서 이벤트에서 동일하게 씁니다.
 - `"자료없음"` 항목은 청크로 만들지 않습니다.
@@ -121,12 +127,12 @@ LLM_TIMEOUT_S=20
 
 ## 9. 테스트 · 완료 기준
 
-| 파트 | 커밋 전 최소 확인 |
-| --- | --- |
-| P1 | 적재 스크립트 재실행 시 같은 청크 수, 출처표 갱신, "자료없음" 청크 0건 |
-| P2 | `RAG/eval/` 평가 스크립트 실행 결과를 `docs/eval_results.md`에 기록 (변경 1개당 1회) |
-| P3 | 무토큰 401 · role 불일치 403 · 스키마 오류 422 · 기준표 경계값 테스트 통과 |
-| P4 | `docker compose up` 후 로그인 → 질의 → S1 시나리오 수동 확인 |
+| 파트 | 커밋 전 최소 확인                                                                    |
+| ---- | ------------------------------------------------------------------------------------ |
+| P1   | 적재 스크립트 재실행 시 같은 청크 수, 출처표 갱신, "자료없음" 청크 0건               |
+| P2   | `RAG/eval/` 평가 스크립트 실행 결과를 `docs/eval_results.md`에 기록 (변경 1개당 1회) |
+| P3   | 무토큰 401 · role 불일치 403 · 스키마 오류 422 · 기준표 경계값 테스트 통과           |
+| P4   | `docker compose up` 후 로그인 → 질의 → S1 시나리오 수동 확인                         |
 
 - "된다"고 말하기 전에 **실제로 실행한 명령과 결과**를 PR에 붙입니다.
 - 실패한 테스트는 숨기지 않고 PR 본문에 적습니다.
