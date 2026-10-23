@@ -50,6 +50,12 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 if not OPENAI_API_KEY:
     raise RuntimeError("OPENAI_API_KEY가 설정되지 않았습니다.")
 
+# [P3] 인증·오류·로그 (로직은 auth.py / middleware.py, 여기서는 연결만)
+from fastapi import Depends
+import middleware
+from middleware import current_request_id, elapsed_ms, log_extra
+from auth import get_current_user, require_role
+
 # ✅ DB 연결 정보
 ASYNC_DB_URL = os.getenv("ASYNC_DB_URL", "mysql+aiomysql://root:password@127.0.0.1:53301/sql_db?charset=utf8mb4")
 engine = create_async_engine(ASYNC_DB_URL)
@@ -60,14 +66,12 @@ app = FastAPI(
     description="외부 정보 기반 벡터화 + LLM 질의 응답",
     version="1.0.0"
 )
+middleware.install(app)
 
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5174",
-                   "http://127.0.0.1:5174",
-                   "http://[::1]:5174",         # IPv6도 허용
-                   "http://localhost:8001","*"],
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "http://localhost:5174").split(",") if o.strip()],
     allow_methods=["*"], allow_headers=["*"], allow_credentials=True,
 )
 
@@ -109,7 +113,7 @@ def load_paper(file_path: str) -> str:
     return "\n".join(text for page in reader.pages if (text := page.extract_text()))
 
 # ✅ 웹 검색 → 외부 정보 벡터화
-@app.post("/upload-topic", summary="웹 검색 → 외부 정보 벡터화", tags=["외부 정보"])
+@app.post("/upload-topic", summary="웹 검색 → 외부 정보 벡터화", tags=["외부 정보"], dependencies=[Depends(require_role("admin"))])
 async def upload_topic(topic: str = Query(..., description="검색할 주제")):
     try:
         import os, re, aiohttp
@@ -199,7 +203,7 @@ async def upload_topic(topic: str = Query(..., description="검색할 주제")):
         raise HTTPException(status_code=500, detail=str(e))
 
 # ✅ PDF 업로드 및 벡터화
-@app.post("/upload-paper", summary="PDF 업로드 및 벡터화", tags=["PDF 처리"]) 
+@app.post("/upload-paper", summary="PDF 업로드 및 벡터화", tags=["PDF 처리"], dependencies=[Depends(require_role("admin"))])
 async def upload_pdf(file: UploadFile = File(...)):
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="PDF 파일만 허용됩니다.")
@@ -244,17 +248,24 @@ async def upload_pdf(file: UploadFile = File(...)):
 # 질의 요청/응답 모델 정의
 # ✅ 질의 요청 모델
 class RAGRequest(BaseModel):
-    prompt: str = Field(default=..., description="질문 프롬프트")
+    prompt: str = Field(default=..., min_length=1, description="질문 프롬프트")
     source: str = Field(default=..., description="web | pdf")
     top_k: int = Field(default=5, ge=1, description="검색할 결과 수 (기본값 5)")
 
     class Config:
         validate_by_name = True
+        str_strip_whitespace = True  # [P3] 공백만 있는 질문도 빈 질문(422)으로 처리
 
 # ✅ 응답 모델 (설명만 필요하면 Field 생략 가능)
 class AnswerResponse(BaseModel):
     prompt: str
     response: str
+    # [P3] 필드 추가. sources·needs_review·handoff 값은 P2 RAG 로직이 채운다
+    sources: List[Dict[str, str]] = Field(default_factory=list, description='[{"source": ..., "section": ...}]')
+    needs_review: bool = False
+    handoff: bool = False
+    request_id: str = Field(default_factory=current_request_id)
+    latency_ms: int = Field(default_factory=elapsed_ms)
 
 # ✅ RAG 기반 질의 응답 처리
 from fastapi import Body
@@ -303,8 +314,9 @@ def fallback_extract_from_context(context: str, question: str) -> str | None:
     return m_any.group(1).strip() if m_any else None
 
 # ✅ 질의 응답 라우터
-@app.post("/rag-query", response_model=AnswerResponse, summary="Closed Source LLM + 벡터 DB 질의", tags=["질의 응답"])
+@app.post("/rag-query", response_model=AnswerResponse, summary="Closed Source LLM + 벡터 DB 질의", tags=["질의 응답"], dependencies=[Depends(get_current_user)])
 async def rag_query(rag_request: RAGRequest = Body(...)):
+    log_extra(prompt_len=len(rag_request.prompt), source=rag_request.source)
     # 1. 벡터스토어 및 LLM 결정
     if rag_request.source == "web":
         if VECTORSTORE_WEB is None:
