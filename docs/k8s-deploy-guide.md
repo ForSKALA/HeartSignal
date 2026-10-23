@@ -227,7 +227,7 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
   sh -c 'mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" -e "SELECT username, role FROM sql_db.users"'
 ```
 
-> 2026-10-23 기준 클러스터에 실제로 기동해 본 적은 없습니다. PR #2 시점에 `kubectl apply --dry-run=server`로 매니페스트만 검증했습니다(8장).
+> 2026-10-23 `class-4`에 실제로 배포해 초기화 SQL 실행, `role` 컬럼, auth 연결까지 확인했습니다(8.1).
 
 ## 7. 협업 규칙
 
@@ -250,7 +250,43 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
 | auth 로컬 실행 | `/login` 200 |
 | voice 로컬 실행 | `/` 401(JWT 필요) → readinessProbe를 tcpSocket으로 변경 |
 
-아직 확인하지 않은 것: Harbor push, 클러스터 실제 배포, DB 연결, OpenAI 호출, ingress 접속.
+아직 확인하지 않은 것: Harbor push, 클러스터 실제 배포, DB 연결, OpenAI 호출, ingress 접속. → DB·auth는 8.1에서 확인
+
+### 8.1 클러스터 실제 배포: DB·auth (2026-10-23, P3)
+
+기준 커밋 `main` `fc26d40` (#14 회원가입 JSON·환경변수화, #27 공통 Secret 포함). Secret·ConfigMap은 P4가 6장 "0. 공통"으로 생성했습니다.
+
+| 단계 | 명령 | 결과 |
+| --- | --- | --- |
+| auth 이미지 빌드 | `backend/docker-build.sh 1.0.0` | linux/amd64, 113MB |
+| 이미지 로컬 확인 | amd64 에뮬레이션으로 실행 | `/login` 200, 회원가입 `{"ok":true}`, 로그인 `{"redirect":"/#/home"}` |
+| Harbor push | `backend/docker-push.sh 1.0.0` | `class-4/heartsignal-auth:1.0.0`, digest `sha256:a5efce67…` |
+| Secret·ConfigMap 확인 | 키 존재만 확인 (값 미출력) | `DB_PASSWORD`·`JWT_SECRET`·`OPENAI_API_KEY` 값 있음, `heartsignal-config` 4개 키 |
+| DB 초기화 ConfigMap | `db/k8s/create-init-configmap.sh` | `heartsignal-db-init` (`01_users.sql`, `02_users_role.sql`) |
+| 서버 dry-run | `kubectl apply --dry-run=server -f db/k8s/ -f backend/k8s/` | 통과 |
+| DB 배포 | `kubectl apply -f db/k8s/` | `heartsignal-db-0` Running 1/1, PVC `data-heartsignal-db-0` Bound(gp3 1Gi) |
+| auth 배포 | `kubectl apply -f backend/k8s/` | `heartsignal-auth` Running 1/1 |
+
+**DB 확인** (`kubectl logs`, `kubectl exec`)
+- 첫 기동 로그에 `running /docker-entrypoint-initdb.d/01_users.sql`, `02_users_role.sql`
+- `users` 테이블에 `role varchar(20) NOT NULL DEFAULT 'worker'`
+- `character_set_server=utf8mb4`, `lower_case_table_names=1`, 시간대 KST
+
+**auth 확인** (Ingress 배포 전이라 `kubectl port-forward -n class-4 svc/heartsignal-auth 18081:8080`)
+
+| 요청 | 결과 |
+| --- | --- |
+| `GET /login` | 200 |
+| 회원가입 / 같은 계정 재가입 | 200 `{"ok":true}` / 409 |
+| 틀린 비밀번호 / 정상 로그인 | 401 / 200 `{"ok":true,"redirect":"/#/home"}` |
+| `GET /api/auth/check` (로그인 쿠키) | `{"ok":true,"via":"session",...,"role":"worker"}` |
+| preflight `Origin: https://heartsignal.class-4.skala-us.com` | `Access-Control-Allow-Origin` 반환 → ConfigMap `CORS_ORIGINS` 적용 |
+| JWT payload | `iss=simple-auth-server`, `role=worker` |
+| DB 저장값 | `$2a$12$` bcrypt 해시, `role=worker` |
+
+시험 계정은 확인 후 삭제했습니다(`users` 0건).
+
+아직 확인하지 않은 것: rag·voice·web 배포, Ingress 접속(TLS), 시연 계정 시드(6.1), 로그인 → 질의 → S1 화면 흐름.
 
 ## 9. 남은 문제
 
@@ -260,4 +296,4 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
 - [ ] **P4**: `Voice-AI/app/static/index.html`이 `http://localhost:8080/api/auth/check` 호출
 - [ ] **P4**: AGENTS.md 5·6장에 k8s용 Service 이름·환경변수 값 추가
 - [ ] **전원**: Ingress 호스트 이름(안: `heartsignal.class-4.skala-us.com`), 이미지 태그 규칙, ArgoCD 사용 여부 확정
-- [ ] **P4·P3**: 클러스터 실제 배포 후 시연 계정 시드 실행 (6.1). 2026-10-23 기준 `class-4`에 HeartSignal 리소스 없음
+- [ ] **P4·P3**: Ingress 배포 후 시연 계정 시드 실행 (6.1). 2026-10-23 DB·auth 배포 완료(8.1), rag·web·Ingress 배포 대기
