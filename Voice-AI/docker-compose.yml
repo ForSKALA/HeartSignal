@@ -16,6 +16,8 @@ services:
       - .:/app # Mount the local project directory to the container's '/app'
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_ISSUER=${JWT_ISSUER:-simple-auth-server}
 
 volumes:
   dockervenv:

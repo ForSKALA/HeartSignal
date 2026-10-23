@@ -2,23 +2,7 @@
 When the backend is started in FastAPI, informational static files such as HTML web pages are served from the directory specified by app.mount
 When a relative path (/stt-tts/) is used inside an HTML file, the browser calls the corresponding API based on the port and domain of the server (base URL) that served the current document
 -->
-<script>
-(async () => {
-  try {
-    const res = await fetch("http://localhost:8080/api/auth/check", {
-      method: "GET",
-      credentials: "include",
-    });
 
-    if (!res.ok) {
-      window.location.href = "http://localhost:8080/login";
-      return;
-    }
-  } catch (e) {
-      window.location.href = "http://localhost:8080/login";
-  }
-})();
-</script>
 
 <!DOCTYPE html>
 <html lang="ko">
@@ -26,6 +10,30 @@ When a relative path (/stt-tts/) is used inside an HTML file, the browser calls 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Voice Demo Hub</title>
+  <script src="/auth-config.js"></script>
+  <script>
+  window.addEventListener("DOMContentLoaded", async () => {
+    const status = document.getElementById("auth-status");
+    const config = window.HEARTSIGNAL_AUTH;
+    if (!config) {
+      status.textContent = "인증 설정을 불러오지 못했습니다. 새로고침해 주세요.";
+      return;
+    }
+    try {
+      const res = await fetch(config.auth_base_url + "/api/auth/check", {
+        method: "GET",
+        credentials: "include",
+      });
+      if (res.status === 401) {
+        window.location.replace(config.login_url);
+      } else if (!res.ok) {
+        status.textContent = "인증 상태 확인에 실패했습니다. 잠시 후 다시 시도해 주세요.";
+      }
+    } catch (e) {
+      status.textContent = "인증 서버에 연결할 수 없습니다. 네트워크와 인증 서버 설정을 확인해 주세요.";
+    }
+  });
+  </script>
   <style>
     :root {
       --bg: #f3f4f6;
@@ -266,6 +274,7 @@ When a relative path (/stt-tts/) is used inside an HTML file, the browser calls 
   </style>
 </head>
 <body>
+  <div id="auth-status" role="status"></div>
   <div class="page">
     <div class="shell">
       <header>

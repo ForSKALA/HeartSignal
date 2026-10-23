@@ -22,8 +22,8 @@ python -m pip install -r requirements.txt
 ## 이미지 빌드 및 배포
 
 ```bash
-./docker-build.sh 1.0.1
-./docker-push.sh 1.0.1
+./docker-build.sh 1.0.2
+./docker-push.sh 1.0.2
 kubectl --context skala-admin-sa@class-4 -n class-4 apply -f k8s/
 kubectl --context skala-admin-sa@class-4 -n class-4 rollout status deployment/heartsignal-voice --timeout=180s
 ```
@@ -44,3 +44,15 @@ Harbor 인증 환경변수와 배포 대상은 팀 배포 가이드를 따릅니
 | 1.0.1 | Whisper small 포함, torch/CUDA 제외 | 2.56GB |
 
 약 77% 감소했습니다. `--network none` 컨테이너에서 한국어 STT와 API 기동, `pip check`를 검증했습니다. Docker 저장소·크기 표시 방식에 따라 실제 표시값은 달라질 수 있습니다.
+
+## Voice 화면 로그인
+
+- 로컬·배포 인증 주소는 `app/auth.py`에서 관리하며, 홈 화면은 `/auth-config.js`를 사용합니다.
+- 배포 인증 주소는 `https://heartsignal.class-4.skala-us.com`입니다. API 키나 JWT는 공개 설정에 포함하지 않습니다.
+- 인증되지 않은 HTML 탐색은 로그인으로 이동하며 `/stt/`, `/tts/`, `/stt-tts/`의 미인증 요청은 401을 유지합니다.
+- 활성 음성 API와 화면은 `app/auth.py`의 JWT 검증을 공유합니다. `.env`는 라우터 import 전에 로드합니다.
+- 로그인 서버가 `return_to`를 지원하기 전에는 로그인 후 기본 메인 화면으로 이동합니다. 쿠키 공유·CORS가 적용된 뒤 Voice에 다시 접근할 수 있습니다.
+- 별도 Voice 호스트 로그인 완료에는 P3의 쿠키·CORS·복귀 URL 처리가 필요합니다. 요청안은 `docs/p3-auth-request.md`를 참고하세요.
+- 인증 테스트: `python -m unittest discover -s tests -v` (모델·외부 API 모의 처리).
+
+홈 스크립트 테스트: `node tests/test_login_script.cjs` (Node.js 사용 가능한 개발 환경).

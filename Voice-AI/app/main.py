@@ -3,9 +3,11 @@
 
 from fastapi import FastAPI, Depends, HTTPException, status, Cookie, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, Response, RedirectResponse
+from fastapi.exception_handlers import http_exception_handler
 from starlette.staticfiles import StaticFiles
-from jose import jwt, JWTError
+from app.auth import auth_config, get_current_user
+import json
 
 from app.routers.stt_router import router as stt_router
 from app.routers.tts_router import router as tts_router
@@ -47,49 +49,25 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI()
 
-# Configuration that must match the Java server
-SECRET_KEY = os.getenv("JWT_SECRET")
-ALGORITHM = "HS256"
-ISSUER = os.getenv("JWT_ISSUER", "simple-auth-server")
+# 미인증 HTML 탐색은 로그인으로 안내하되 API의 401 응답은 유지한다.
+HTML_PATHS = {"/", "/index.html", "/stt.html", "/tts.html", "/stt-tts.html"}
 
-if not SECRET_KEY:
-    raise RuntimeError("JWT_SECRET 환경변수가 설정되지 않았습니다.")      # Must be identical to Java JwtUtil.ISSUER
 
-# 3) JWT decoding dependency
+@app.exception_handler(HTTPException)
+async def handle_auth_error(request: Request, exc: HTTPException):
+    if exc.status_code == 401 and request.method == "GET" and request.url.path in HTML_PATHS:
+        return RedirectResponse(auth_config(request, request.url.path)["login_url"], status_code=302)
+    return await http_exception_handler(request, exc)
 
-def get_current_user(
-    access_token: str | None = Cookie(default=None, alias="ACCESS_TOKEN")
-):
-    """
-    Reads the ACCESS_TOKEN(JWT) cookie issued by the 8080 server
-    and returns the current logged-in user information as a dependency.
-    """
-    if access_token is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated (no ACCESS_TOKEN cookie)",
-        )
 
-    try:
-        # [Q01] Java 인증 서버와의 JWT 신뢰 연결
-        # 힌트: 쿠키의 토큰을 Java 서버와 동일한 비밀키, 알고리즘, 발급자로 검증하세요.
-        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM], issuer=ISSUER)
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-        )
+@app.get("/auth-config.js", include_in_schema=False)
+async def public_auth_config(request: Request):
+    return Response(
+        "window.HEARTSIGNAL_AUTH = " + json.dumps(auth_config(request)) + ";",
+        media_type="application/javascript",
+        headers={"Cache-Control": "no-store"},
+    )
 
-    user_id = payload.get("sub")
-    username = payload.get("username")
-
-    if user_id is None or username is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token payload",
-        )
-
-    return {"id": user_id, "username": username}
 
 # 4) (Key) HTML is served only as a "route" + protected with Depends
 #    - Direct access to /index.html is also blocked (= JWT required to open)
@@ -197,7 +175,7 @@ if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8008, reload=True)
     
 # 1. Direct access blocking without authentication is applied: Both of the following must be blocked to function correctly
-# http://localhost:8008/index.html  → 401
+# http://localhost:8008/index.html  → 로그인으로 302
 # http://localhost:8008/static/index.html → 404 (blocked by middleware)
     
 # With virtual environment activated
