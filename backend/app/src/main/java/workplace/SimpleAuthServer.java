@@ -98,6 +98,8 @@ Modification history:
   9) [HeartSignal P3] /api/signup 도 /api/login 처럼 302 대신 JSON 응답
      - 성공 200 {"ok":true}, 입력 누락 400, 중복 409, 서버 오류 500 ({"ok":false,"error":...})
      - fetch 로 호출하는 web 화면이 302 → HTML 을 JSON 으로 읽다 실패하던 문제 수정
+  10) [HeartSignal P3] 로그인 쿠키도 cookie() 헬퍼로 발급 (로그아웃 삭제와 속성 일치)
+     - COOKIE_SECURE=true 이면 Secure 속성 추가 (https 배포)
  */
 
 public class SimpleAuthServer {
@@ -267,7 +269,7 @@ public class SimpleAuthServer {
                 //  서버 측 세션 상태를 어떤 키로 보관해야 이후 쿠키를 통해 찾을 수 있는가?
                 SESSION_STORE.put(sessionId, user);exchange.getResponseHeaders().add(
                         "Set-Cookie",
-                        SESSION_COOKIE_NAME + "=" + sessionId + "; Path=/; HttpOnly; SameSite=Lax"
+                        cookie(SESSION_COOKIE_NAME, sessionId, true, -1)
                 );
 
                 // 2) JWT Cookie
@@ -275,13 +277,13 @@ public class SimpleAuthServer {
                 String jwt = JwtUtil.createToken(user);
                 exchange.getResponseHeaders().add(
                         "Set-Cookie",
-                        JWT_COOKIE_NAME + "=" + jwt + "; Path=/; HttpOnly; SameSite=Lax"
+                        cookie(JWT_COOKIE_NAME, jwt, true, -1)
                 );
 
                 // 3) Cookie for frontend login status check (readable by JS)
                 exchange.getResponseHeaders().add(
                         "Set-Cookie",
-                        APP_AUTH_COOKIE_NAME + "=1; Path=/; SameSite=Lax"
+                        cookie(APP_AUTH_COOKIE_NAME, "1", false, -1)
                 );
 
                 // 4) (Most important) Do not redirect here — end with 200 JSON response
