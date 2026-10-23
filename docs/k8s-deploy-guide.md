@@ -127,6 +127,8 @@ curl -I https://heartsignal.class-4.skala-us.com/
 curl -s https://heartsignal.class-4.skala-us.com/openapi.json | head -c 200
 ```
 
+**0. 공통 완료 (2026-10-23):** `class-4`에 Secret `heartsignal-secret`(OPENAI_API_KEY·JWT_SECRET·DB_PASSWORD, NAVER_* 는 빈 값)과 ConfigMap `heartsignal-config`(JWT_ISSUER·LLM_MODEL·LLM_TIMEOUT_S·CORS_ORIGINS)를 적용했습니다. Secret 값은 루트 `.env`와 해시로 일치 확인했습니다. `DB_PASSWORD`는 DB가 처음 뜰 때 root 비밀번호로 고정되므로 이후 바꾸려면 PVC를 지우고 다시 띄워야 합니다. `JWT_SECRET`은 auth·rag·voice 공통 값입니다. 다음 단계는 P3의 DB → auth 배포입니다.
+
 **TLS 확인:** 와일드카드 인증서는 클러스터에 이미 발급되어 있습니다 (2026-10-23 확인: Certificate `wildcard-class-4-skala-us-com` READY=True, Secret `wildcard-class-4-skala-us-com-tls`, ClusterIssuer `letsencrypt-prod`, `CN=*.class-4.skala-us.com`, Let's Encrypt 발급, 만료 2026-12-14 — cert-manager가 자동 갱신). 브라우저·curl이 `Kubernetes Ingress Controller Fake Certificate`를 받으면 인증서 문제가 아니라 **그 호스트의 Ingress가 아직 없다**는 뜻입니다.
 
 ```bash
