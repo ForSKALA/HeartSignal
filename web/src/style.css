@@ -150,18 +150,27 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   box-shadow: 0 24px 64px rgba(23, 32, 51, .28);
   text-align: center;
 }
-.report-dialog-icon {
+.report-timer { position: relative; width: 132px; height: 132px; margin: 0 auto 20px; }
+.report-timer svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.report-timer circle { fill: none; stroke-width: 8; }
+.report-timer-track { stroke: #fff0e8; }
+.report-timer-progress { stroke: #d92d20; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.report-timer-value {
+  position: absolute;
+  inset: 0;
   display: grid;
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 16px;
-  place-items: center;
-  border-radius: 20px;
-  background: #fff0e8;
-  color: #c2410c;
+  place-content: center;
+  grid-auto-flow: column;
+  align-items: baseline;
+  gap: 2px;
+  color: #b42318;
+  font-size: 44px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.04em;
 }
-.report-dialog-icon svg { width: 38px; height: 38px; }
-.report-dialog h2 { margin: 0; color: #b42318; font-size: 24px; letter-spacing: -.04em; }
+.report-timer-value small { font-size: 16px; font-weight: 700; }
+.report-dialog h2 { margin: 0; color: #b42318; font-size: 22px; letter-spacing: -.04em; }
 .report-dialog p { margin: 8px 0 0; color: #58657a; font-size: 15px; }
 .report-dialog-actions { display: flex; gap: 10px; margin-top: 24px; }
 .report-dialog-actions button {
@@ -175,9 +184,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   font-weight: 750;
   cursor: pointer;
 }
-.report-dialog-actions .report-yes { border-color: #d92d20; background: #d92d20; color: #fff; }
-.report-dialog-actions .report-yes:hover { background: #b42318; }
-.report-dialog-actions .report-no:hover { background: #f1f5f9; }
+.report-dialog-actions .report-cancel:hover { background: #f1f5f9; }
 .emergency-notice {
   position: fixed;
   right: 24px;
