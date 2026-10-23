@@ -1,0 +1,37 @@
+# HeartSignal Voice Ingress (P4 관리) — 같은 호스트의 /voice/ → heartsignal-voice:8008
+# - 로그인 쿠키(ACCESS_TOKEN)가 host-only 라서 Voice 도 같은 origin 에 둔다 (PR #35, Voice-AI/docs/p3-auth-request.md).
+# - /voice/tts/ → /tts/ 처럼 앞의 /voice 를 떼고 넘긴다. Voice 는 uvicorn --root-path /voice 로 화면 링크를 맞춘다.
+# - rewrite 는 이 Ingress 에만 둔다. 기존 heartsignal-ingress 에는 rewrite 를 추가하지 않는다.
+# - 주의: ingress-nginx 는 use-regex 를 같은 호스트의 모든 경로에 적용한다.
+#   기존 Prefix 경로(/api, /rag-query, / ...)는 "^/api" 같은 정규식 접두어로 동작하므로 적용 후 회귀 확인한다.
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: heartsignal-voice-ingress
+  namespace: class-4
+  labels:
+    part-of: heartsignal
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    # 음성 파일 업로드 크기 제한 해제, STT·TTS 응답 대기 (heartsignal-ingress 와 같은 값)
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "120"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - heartsignal.class-4.skala-us.com
+      secretName: wildcard-class-4-skala-us-com-tls
+  rules:
+    - host: heartsignal.class-4.skala-us.com
+      http:
+        paths:
+          # /voice, /voice/, /voice/tts/ ... → $2 = "", "", "tts/"
+          - path: /voice(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: heartsignal-voice
+                port:
+                  number: 8008

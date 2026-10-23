@@ -1,7 +1,8 @@
 # HeartSignal Ingress (P4 단독 관리 — 경로 추가는 P4에게 PR로 요청)
 # - 호스트 하나에서 path로 서비스를 나눈다. 화면은 location.origin을 API 주소로 쓰므로 코드 수정이 필요 없다.
 # - TLS는 class-4에 이미 있는 와일드카드 인증서를 쓴다 (14.ingress/04.cert-manager 참고).
-# - voice는 /, /index.html 경로가 web과 겹치므로 별도 호스트로 연결한다.
+# - voice는 같은 호스트의 /voice/ 아래로 연결한다 (ingress-voice.yaml, rewrite 는 그 Ingress 에만).
+#   별도 호스트(heartsignal-voice.*)는 host-only 로그인 쿠키(ACCESS_TOKEN)를 받지 못해 제거했다 (PR #35).
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
@@ -19,7 +20,6 @@ spec:
   tls:
     - hosts:
         - heartsignal.class-4.skala-us.com
-        - heartsignal-voice.class-4.skala-us.com
       secretName: wildcard-class-4-skala-us-com-tls
   rules:
     - host: heartsignal.class-4.skala-us.com
@@ -105,13 +105,3 @@ spec:
                 name: heartsignal-web
                 port:
                   number: 80
-    - host: heartsignal-voice.class-4.skala-us.com
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: heartsignal-voice
-                port:
-                  number: 8008
