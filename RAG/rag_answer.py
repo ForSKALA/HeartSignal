@@ -31,17 +31,30 @@ def detect_substance(prompt: str) -> str | None:
     return next((key for alias, key in _ALIASES if alias in lowered), None)
 
 
-def _search_one(store, prompt: str, top_k: int, key: str | None) -> list:
+def _searcher(store, query: str, vector):
+    """질의 1개당 임베딩 1회: 벡터가 있고 저장소가 지원하면 by_vector 로 검색 (두 저장소에 재사용, 평가 8행)."""
+    if vector is not None and hasattr(store, "similarity_search_with_score_by_vector"):
+        return lambda **kw: store.similarity_search_with_score_by_vector(vector, **kw)
+    return lambda **kw: store.similarity_search_with_score(query, **kw)
+
+
+def _search_one(store, query: str, top_k: int, key: str | None, vector=None) -> list:
     """저장소 하나에서 검색. 물질이 있으면 그 물질 청크(top_k) + 물질 표시 없는 일반 문서(top_k),
     다른 물질의 청크는 뺀다 — 염소 질문에 염산·부타디엔의 '응급조치'가 끼는 문제(평가 1·2행).
     물질 필터는 LangChain FAISS 가 fetch_k 개를 먼저 뽑은 뒤 거르므로 fetch_k 를 인덱스 전체로 준다."""
+    search = _searcher(store, query, vector)
     if key is None:
-        return store.similarity_search_with_score(prompt, k=top_k)
+        return search(k=top_k)
     total = getattr(getattr(store, "index", None), "ntotal", None) or 10_000
-    focused = store.similarity_search_with_score(prompt, k=top_k, filter={"substance": key}, fetch_k=total)
-    broad = [(d, s) for d, s in store.similarity_search_with_score(prompt, k=4 * top_k)
+    focused = search(k=top_k, filter={"substance": key}, fetch_k=total)
+    broad = [(d, s) for d, s in search(k=4 * top_k)
              if (d.metadata or {}).get("substance") in (None, "", key)][:top_k]
     return focused + broad
+
+
+def _embed(store, query: str):
+    fn = getattr(store, "embedding_function", None)
+    return fn.embed_query(query) if fn is not None and hasattr(fn, "embed_query") else None
 
 
 def retrieve(vectorstore, prompt: str, top_k: int, extra_stores=(), rewrites=()) -> tuple[list, str | None]:
@@ -49,12 +62,12 @@ def retrieve(vectorstore, prompt: str, top_k: int, extra_stores=(), rewrites=())
     청크가 짧아(중앙값 84자) 질의 수에 비례해 상한을 늘려도 컨텍스트 비용은 작다."""
     key = detect_substance(prompt)
     queries = [prompt, *rewrites]
+    stores = [s for s in (vectorstore, *extra_stores) if s is not None]
     pairs = []
-    for store in (vectorstore, *extra_stores):
-        if store is None:
-            continue
-        for query in queries:
-            pairs += _search_one(store, query, top_k, key)
+    for query in queries:
+        vector = _embed(stores[0], query) if stores else None   # 임베딩 모델은 저장소 공통(OpenAIEmbeddings)
+        for store in stores:
+            pairs += _search_one(store, query, top_k, key, vector)
     seen, merged = set(), []
     for doc, score in sorted(pairs, key=lambda pair: pair[1]):
         if doc.page_content in seen:
@@ -97,7 +110,7 @@ REWRITE_PROMPT = (
 MAX_REWRITES = 2
 
 
-def rewrite_queries(prompt: str, llm) -> list[str]:
+def rewrite_queries(prompt: str, llm) -> list[str]:  # llm: 재작성용(가벼운 모델 권장)
     """재작성 검색어 목록. 실패하면 빈 목록 — 검색은 항상 원문으로는 진행된다."""
     try:
         raw = llm.invoke([HumanMessage(content=REWRITE_PROMPT.format(question=prompt))]).content
@@ -113,10 +126,10 @@ def _handoff(hits: int, top_score, substance):
     return {"response": NO_EVIDENCE, "sources": [], "needs_review": False, "handoff": True}
 
 
-def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=()) -> dict:
+def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=(), rewrite_llm=None) -> dict:
     """응답 필드(response·sources·needs_review·handoff)를 돌려준다. 로그 필드는 log_extra 로 남긴다.
     handoff=True: 검색 0건 또는 LLM 이 근거 없음(N/A)으로 답한 경우. 이때 sources 는 비운다."""
-    rewrites = rewrite_queries(prompt, llm)
+    rewrites = rewrite_queries(prompt, rewrite_llm or llm)
     docs_scores, substance = retrieve(vectorstore, prompt, top_k, extra_stores, rewrites)
     log_extra(rewrites=len(rewrites))
     # top_score 는 FAISS L2 거리 — 낮을수록 유사 (AGENTS.md 7.5 필드 이름 유지)

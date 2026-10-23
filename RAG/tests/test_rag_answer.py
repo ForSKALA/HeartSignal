@@ -219,3 +219,34 @@ def test_prompt_contains_scope_gate_rules():
     from rag_answer import PROMPT
     for must in ("의료적 판단", "실시간 측정값", "N/A", "근거 원문 그대로", "[문서 n]"):
         assert must in PROMPT
+
+
+# ---- 지연 최적화 (평가 8행): 임베딩 1회 재사용, 재작성 LLM 분리 ----
+
+class _VecStore(_Store):
+    class _Emb:
+        calls = 0
+        def embed_query(self, q):
+            type(self).calls += 1
+            return [0.1, 0.2]
+    embedding_function = _Emb()
+    index = type("Idx", (), {"ntotal": 42})()
+
+    def similarity_search_with_score_by_vector(self, vector, k, filter=None, fetch_k=None):
+        self.vec_calls = getattr(self, "vec_calls", 0) + 1
+        return self.similarity_search_with_score(None, k, filter=filter, fetch_k=fetch_k)
+
+
+def test_one_embedding_per_query_reused_across_stores():
+    _VecStore._Emb.calls = 0
+    a, b = _VecStore(ROWS), _VecStore(ROWS)
+    retrieve(a, "경보 꺼지면 재개해도 돼?", 3, extra_stores=(b,), rewrites=("경보 해제 후 재개 조건",))
+    assert _VecStore._Emb.calls == 2            # 질의 2개 → 임베딩 2회 (저장소 2개여도)
+    assert a.vec_calls == 2 and b.vec_calls == 2  # 각 저장소는 벡터로 검색
+
+
+def test_rewrite_uses_separate_llm_when_given():
+    answer_llm = _LLM(text="TWA 10ppm")
+    rewrite_llm = _LLM(rewrite_text="황화수소 노출기준 TWA")
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), answer_llm, 5, rewrite_llm=rewrite_llm)
+    assert out["response"] == "TWA 10ppm"

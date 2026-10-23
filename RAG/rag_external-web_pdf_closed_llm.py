@@ -58,6 +58,7 @@ from middleware import ApiError, current_request_id, elapsed_ms, log_extra
 from rag_answer import answer_with_sources
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o")
 LLM_TIMEOUT_S = float(os.getenv("LLM_TIMEOUT_S", "20"))
+REWRITE_MODEL = os.getenv("REWRITE_MODEL", "gpt-4o-mini")  # 검색어 재작성용 (답변 품질과 무관, 지연 최소화)
 from auth import get_current_user, require_role
 
 # ✅ DB 연결 정보
@@ -359,7 +360,9 @@ async def rag_query(rag_request: RAGRequest = Body(...)):
         # -------------------- PDF: 검색 → 근거 블록 → LLM → 출처 (rag_answer.py) --------------------
         if source == "pdf":
             # [P2] P1 인덱스는 법령(제618조·노출기준 고시)을 web 컬렉션에 두므로 pdf 질의에도 함께 검색한다
-            result = answer_with_sources(rag_request.prompt, vectorstore, llm, top_k, extra_stores=(VECTORSTORE_WEB,))
+            rewrite_llm = ChatOpenAI(model=REWRITE_MODEL, temperature=0, timeout=LLM_TIMEOUT_S)
+            result = answer_with_sources(rag_request.prompt, vectorstore, llm, top_k,
+                                         extra_stores=(VECTORSTORE_WEB,), rewrite_llm=rewrite_llm)
             return AnswerResponse(prompt=rag_request.prompt, **result)
 
         # -------------------- WEB 검색 --------------------
