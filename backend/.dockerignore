@@ -1,0 +1,7 @@
+.gradle/
+.DS_Store
+app/build/
+app/bin/
+k8s/
+docker-build.sh
+docker-push.sh

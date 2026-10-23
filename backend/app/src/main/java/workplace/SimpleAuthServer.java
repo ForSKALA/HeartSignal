@@ -108,7 +108,8 @@ Modification history:
 public class SimpleAuthServer {
 
     // ==== DB CONFIG (modify according to your environment) ==== //
-    private static final String DB_URL = "jdbc:mariadb://localhost:53301/sql_db";
+    // k8s 등에서는 DB_URL 환경변수로 주입 (없으면 로컬 docker compose DB)
+    private static final String DB_URL = System.getenv().getOrDefault("DB_URL", "jdbc:mariadb://localhost:53301/sql_db");
     private static final String DB_USER = "root";
     private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
