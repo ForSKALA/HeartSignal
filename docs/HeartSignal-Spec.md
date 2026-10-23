@@ -112,7 +112,7 @@
 | POST | `/alarm/{id}/headcount` | `foreman` | `{checked: int, total: int}` | 경보 객체. 3단계면 119 후속 보고에 반영 |
 | POST | `/alarm/{id}/hold-report` | `admin` | — | `report.status`를 `held`로. 이미 `sent`면 `409` |
 | POST | `/alarm/{id}/clear` | `admin` | `{note?}` | `status: "cleared"`. 해제 방송과 전광판 해제 문구 실행 |
-| GET | `/board/current` | 없음 (전광판 화면용) | `?zone=` (생략 시 전체) | `{"zone", "lines": [str], "source": {...}, "stage", "updated_at"}`. 경보가 없으면 `lines: []` |
+| GET | `/board/current` | 없음 (전광판 화면용) | `?zone=` (생략 시 전체) | `{"zone", "lines": [str], "source": {...}, "stage", "status", "alarm_id", "updated_at"}`. 진행 중 경보 중 가장 높은 단계. 해제 후 60초는 해제 문구, 경보가 없으면 `lines: []` |
 
 **경보 객체**
 
@@ -126,17 +126,24 @@
   "status": "active",
   "issued_by": "17",
   "issued_at": "2026-10-23T14:02:11+09:00",
+  "cleared_by": null,
+  "cleared_at": null,
   "board": {"lines": ["프로판 누출 — 출하장 접근 금지", "차량 시동을 즉시 끄세요", "바람 반대 방향 B 집결지로 대피"], "source": {"source": "KOSHA GUIDE G-78-2021", "section": "10.2(13)"}},
   "guide_card": {"immediate": [], "ppe": [], "first_aid": [], "report_info": {}, "sources": []},
   "checklist": [{"item": "출하 중단", "source": {"source": "...", "section": "..."}}],
-  "report": {"report_id": "r-0001", "status": "pending", "send_at": "2026-10-23T14:02:41+09:00"},
+  "briefing": null,
+  "report": {"report_id": "r-0001", "status": "pending", "send_at": "2026-10-23T14:02:41.000+09:00",
+             "text": "[모의 119 신고] ...", "sources": [], "headcount": "12/12", "followups": []},
   "headcount": {"checked": 0, "total": 0},
-  "actions": [{"tool": "display_board", "ok": true, "fallback": false, "ts": "..."}]
+  "actions": [{"tool": "display_board", "ok": true, "fallback": false, "ts": "...", "sources": [...]}]
 }
 ```
 
 - **저장소:** 메모리 dict (`alarm_id` → 객체)를 씁니다. 서버를 재시작하면 경보가 사라지며, 시연 범위에서 허용합니다.
-- **119 보류:** `report.status`는 `pending`으로 시작하고, `send_at`(발령 + 30초)이 되면 `sent`로 바뀝니다(모의 발송 = 로그 + 화면 표시). 그 전에 `hold-report`가 오면 `held`가 되고 **다시는 발송되지 않습니다.**
+- **119 보류:** `report.status`는 `pending`으로 시작하고, `send_at`(발령 + 30초)이 되면 `sent`로 바뀝니다(모의 발송 = 로그 + 화면 표시). 그 전에 `hold-report`가 오면 `held`가 되고 **다시는 발송되지 않습니다.** 신고는 3단계에서만 만들어집니다(1·2단계는 `report: null`, 보류 요청 시 `409`).
+- **인원 점검:** `report.headcount`에 반영합니다. 이미 `sent`면 `report.followups`에 후속 보고로 덧붙입니다.
+- **해제:** 아직 발송되지 않은 신고는 `held`로 바꿉니다. 해제 후 60초 동안 전광판에 해제 문구를 표시합니다.
+- **같은 구역 재발령:** 이전 경보를 자동으로 닫지 않습니다. 관리자가 직접 해제합니다("사람만 해제" 원칙). 전광판은 가장 높은 단계를 표시합니다.
 - **경계:** 에이전트 코드는 `/alarm`, `/alarm/{id}/clear`, `stage`를 바꾸는 함수를 호출하지 않습니다(AGENTS.md 절대 규칙 1).
 
 ---
@@ -150,7 +157,28 @@ def answer_with_sources(prompt: str, source: str = "pdf", top_k: int = 5) -> dic
 async def run_agent(alarm: dict) -> list[dict]                                     # 실행한 도구 기록(actions)
 ```
 
-P3 라우터는 `POST /alarm`에서 경보 객체를 만든 뒤 `run_agent(alarm)`을 백그라운드로 호출합니다. 결과로 `board`, `guide_card`, `checklist`, `report`, `actions`를 채웁니다.
+P3 라우터는 `POST /alarm`에서 경보 객체를 만든 뒤 `run_agent(alarm)`을 백그라운드로 호출합니다. 해제(`POST /alarm/{id}/clear`) 뒤에도 같은 함수를 `alarm["status"] == "cleared"`인 경보로 한 번 더 호출합니다(해제 방송·재개 체크리스트).
+
+- `alarm`은 **사본**입니다. 에이전트가 고쳐도 저장소에는 반영되지 않습니다.
+- 반환하는 실행 기록 한 건의 형태:
+
+```python
+{"tool": "display_board", "ok": True, "fallback": False, "ts": "...",
+ "sources": [{"source": "...", "section": "..."}],
+ "output": ...}  # 도구별 아래 형태
+```
+
+| 도구 | `output` → 경보 객체 필드 |
+| --- | --- |
+| `display_board` | `{"lines": [str, ...(3~4줄)], "source": {"source", "section"} \| None}` → `board` (4줄 초과는 자름) |
+| `notify_manager` | `{"immediate": [str], "ppe": [str], "first_aid": [str], "report_info": {...}, "sources": [...]}` → `guide_card` |
+| `notify_foreman` | `{"checklist": [{"item": str, "source": {...} \| None}]}` → `checklist` |
+| `report_119` | `{"text": str, "sources": [...]}` → `report.text`, `report.sources` (발송 여부는 바꾸지 않음) |
+| `build_briefing` | `{"summary": [str], "first_aid": [str], "sources": [...]}` → `briefing` |
+
+- `output` 본문은 각 필드에 들어가고, `actions`에는 `output`을 뺀 기록만 남습니다.
+- **형태 검사:** `output` 형태가 위와 다르면 반영하지 않고 고정 문구를 유지하며, 그 기록을 `ok: false, fallback: true, reason: "bad_output"`으로 남깁니다. `stage`·`status`·`report.status`는 어떤 출력으로도 바뀌지 않습니다.
+- **에이전트를 쓸 수 없을 때** `actions`의 `reason`: `agent_not_installed`(`RAG/agent/` 없음), `agent_import_failed`(패키지 안 import 오류, 서버 로그에 원인), `timeout`(`LLM_TIMEOUT_S × 3` 초과), 예외 이름(실행 중 오류).
 
 ## 5.2 단계별 실행 순서 (기획서 3.2)
 

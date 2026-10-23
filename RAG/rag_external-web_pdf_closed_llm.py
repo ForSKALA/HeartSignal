@@ -68,6 +68,10 @@ app = FastAPI(
 )
 middleware.install(app)
 
+# [P3] 경보 API (/alarm/*, /board/current) — 로직은 alarm/ 패키지
+from alarm.router import router as alarm_router
+app.include_router(alarm_router)
+
 from fastapi.middleware.cors import CORSMiddleware
 app.add_middleware(
     CORSMiddleware,
