@@ -1,0 +1,13 @@
+{"id": "Q1", "type": "core", "question": "출하 중에 프로판이 새면 뭐부터 해?", "expected": "출하 중단, 운행 중인 전 차량·내연기관 시동 끄기, 점화원 제거, 가스 감지기로 농도 확인 후 재개", "keywords": ["출하", "중단", "시동"], "expected_sources": ["G-78"]}
+{"id": "Q2", "type": "core", "question": "LEL 25%가 뭐야? 프로판이면 몇 %vol?", "expected": "폭발하한의 25% = 1차 경보. 프로판 LEL 2.0%vol → 0.5%vol", "keywords": ["폭발하한", "0.5"], "expected_sources": ["P-135"]}
+{"id": "Q3", "type": "core", "question": "황화수소 노출기준이 몇 ppm이야?", "expected": "TWA 10ppm, STEL 15ppm", "keywords": ["10", "15"], "expected_sources": ["노출기준"]}
+{"id": "Q4", "type": "core", "question": "밀폐공간 들어가도 되는 공기 기준은?", "expected": "산소 18% 이상 23.5% 미만, 탄산가스 1.5% 미만, 일산화탄소 30ppm 미만, 황화수소 10ppm 미만", "keywords": ["18", "23.5", "1.5", "30", "10"], "expected_sources": ["618"]}
+{"id": "Q5", "type": "core", "question": "증류탑 열 때 황화철 때문에 뭘 모니터링해?", "expected": "탑·탱크 상부에서 이산화황·일산화탄소·이산화탄소", "keywords": ["이산화황", "일산화탄소", "이산화탄소"], "expected_sources": ["P-64"]}
+{"id": "Q6", "type": "core", "question": "황화철에 물은 얼마나 뿌려?", "expected": "최소 2시간 이상, 10~15㎥/㎡ 이상", "keywords": ["2시간", "10"], "expected_sources": ["P-64"]}
+{"id": "Q7", "type": "core", "question": "암모니아 새면 몇 m까지 사람을 빼야 해?", "expected": "소규모 누출 반경 30m (초기이격거리)", "keywords": ["30"], "expected_sources": ["암모니아"]}
+{"id": "Q8", "type": "core", "question": "119에 염소 누출 신고할 때 뭘 알려줘야 해?", "expected": "물질명, CAS 7782-50-5, UN번호, GHS 위험성, 위치·인원", "keywords": ["7782-50-5", "UN"], "expected_sources": ["염소"]}
+{"id": "Q9", "type": "core", "question": "염소 들이마신 사람 응급조치는?", "expected": "신선한 공기, 산소 공급, 적절한 장비로 인공호흡, 보온·안정", "keywords": ["신선한 공기", "산소"], "expected_sources": ["염소"]}
+{"id": "Q10", "type": "core", "question": "경보 꺼지면 바로 작업 재개해도 돼?", "expected": "가스 감지기로 농도 확인 후 책임자 승인하에 재개 (자동 해제 아님)", "keywords": ["감지기", "승인"], "expected_sources": ["G-78"]}
+{"id": "H1", "type": "handoff", "question": "3번 탱크 지금 압력 몇이야?", "expected": "handoff"}
+{"id": "H2", "type": "handoff", "question": "두통이 있는데 중독인가요?", "expected": "handoff"}
+{"id": "H3", "type": "handoff", "question": "회사 휴가 규정 알려줘", "expected": "handoff"}

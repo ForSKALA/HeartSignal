@@ -1,0 +1,247 @@
+{
+  "label": "answer-contract",
+  "url": "http://localhost:18002",
+  "source": "pdf",
+  "top_k": 5,
+  "summary": {
+    "core_n": 10,
+    "accuracy_pct": 20.0,
+    "keyword_recall_avg": 0.23,
+    "grounded_pct": 10.0,
+    "ungrounded_answer_pct": 40.0,
+    "handoff_n": 3,
+    "handoff_hit_pct": 100.0,
+    "errors": 0,
+    "latency_ms_avg": 2582
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "type": "core",
+      "latency_ms": 6794,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.33,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "출하 중에 프로판이 새면 즉시 예방책을 세우고, 유출/누출 지역 사방 50 m 지역을 격리시켜야 합니다. 또한, 풍하방향으로 최소 50 m 이상 방호활동거리를 증가시켜야 합니다. 누출된 가스는 환기시켜 분산시키고, 증기를 줄이고 증기구름의 이동을 억제하기 위해 물 스프레이 또는 물분무를 사용할 수 있습니다. 개인 보호 장비로는 양압의 자급식 공기호흡기와 제조업자에 의해 권고되는 화학 물질용 보호의를 착용해야 합니다.",
+      "sources": [
+        {
+          "source": "프로판.pdf",
+          "section": ""
+        },
+        {
+          "source": "메탄올.pdf",
+          "section": ""
+        },
+        {
+          "source": "불산.pdf",
+          "section": ""
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "type": "core",
+      "latency_ms": 2752,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "LEL은 \"Lower Explosive Limit\"의 약자로, 가연성 물질이 공기 중에서 폭발할 수 있는 최저 농도를 의미합니다. 프로판의 폭발하한범위(LEL)는 2.1%입니다. 따라서 LEL의 25%는 0.525%vol가 됩니다. 이는 프로판이 공기 중에서 0.525%vol의 농도로 존재할 때, 폭발 위험이 시작되는 농도의 25%에 해당합니다.",
+      "sources": [
+        {
+          "source": "프로판.pdf",
+          "section": ""
+        },
+        {
+          "source": "메탄올.pdf",
+          "section": ""
+        },
+        {
+          "source": "염화수소(염산).pdf",
+          "section": ""
+        },
+        {
+          "source": "스티렌 모노머.pdf",
+          "section": ""
+        },
+        {
+          "source": "벤젠.pdf",
+          "section": ""
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "type": "core",
+      "latency_ms": 2188,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q4",
+      "type": "core",
+      "latency_ms": 1138,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q5",
+      "type": "core",
+      "latency_ms": 2356,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q6",
+      "type": "core",
+      "latency_ms": 3536,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q7",
+      "type": "core",
+      "latency_ms": 1420,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "암모니아가 새는 경우, 최소 반경 50m 지역을 격리시켜야 합니다.",
+      "sources": [
+        {
+          "source": "메탄올.pdf",
+          "section": ""
+        },
+        {
+          "source": "불산.pdf",
+          "section": ""
+        },
+        {
+          "source": "암모니아.pdf",
+          "section": ""
+        }
+      ]
+    },
+    {
+      "id": "Q8",
+      "type": "core",
+      "latency_ms": 3351,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "119에 염소 누출을 신고할 때는 다음과 같은 정보를 알려주어야 합니다:\n\n1. 피해자를 신선한 공기가 있는 곳으로 옮긴 후, 피해자를 따뜻하게 해주고 안정을 취하게 합니다.\n2. 119 또는 응급의료기관에 즉시 연락합니다.\n3. 의료진에게 사고 물질의 특성을 알려줍니다. 이를 통해 의료진이 적절한 보호 조치를 취할 수 있도록 합니다.\n4. 물질에 노출된 경우, 피부나 눈을 흐르는 물에 20분 이상 씻어주고, 오염된 의복과 신발은 제거 후 격리시킵니다.\n5. 피해자가 호흡이 없으면 인공호흡을 실시하고, 호흡이 곤란하면 산소를 공급합니다. \n\n이러한 정보는 응급 대응에 필수적이며, 신속하고 정확한 조치를 위해 중요합니다.",
+      "sources": [
+        {
+          "source": "부타디엔.pdf",
+          "section": ""
+        },
+        {
+          "source": "노르말핵산.pdf",
+          "section": ""
+        },
+        {
+          "source": "암모니아.pdf",
+          "section": ""
+        },
+        {
+          "source": "수산화나트륨.pdf",
+          "section": ""
+        }
+      ]
+    },
+    {
+      "id": "Q9",
+      "type": "core",
+      "latency_ms": 3497,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "염소를 들이마신 사람에 대한 응급조치는 다음과 같습니다:\n\n1. 피해자를 즉시 오염 지역에서 벗어나 신선한 공기가 있는 곳으로 옮깁니다.\n2. 피해자가 호흡이 없으면 인공호흡을 실시합니다. 이때, 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피하고, 편도 밸브 또는 적절한 호흡 의료기기를 갖춘 포켓 마스크를 사용합니다.\n3. 호흡이 곤란하면 산소를 공급합니다.\n4. 즉시 119 또는 응급의료기관에 연락하여 도움을 요청합니다.\n5. 의료진에게 사고물질의 특성을 알려 적절한 보호조치를 취할 수 있도록 합니다. \n\n이러한 조치를 통해 피해자가 신속히 적절한 치료를 받을 수 있도록 해야 합니다.",
+      "sources": [
+        {
+          "source": "에틸벤젠.pdf",
+          "section": ""
+        },
+        {
+          "source": "수산화나트륨.pdf",
+          "section": ""
+        },
+        {
+          "source": "메탄올.pdf",
+          "section": ""
+        },
+        {
+          "source": "염화수소(염산).pdf",
+          "section": ""
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "type": "core",
+      "latency_ms": 1199,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H1",
+      "type": "handoff",
+      "latency_ms": 1303,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H2",
+      "type": "handoff",
+      "latency_ms": 2464,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H3",
+      "type": "handoff",
+      "latency_ms": 1569,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    }
+  ]
+}
