@@ -5,10 +5,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `username` varchar(100) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` varchar(20) NOT NULL DEFAULT 'worker',  -- worker|foreman|admin|device (AGENTS.md 7.1)
+  `role` varchar(20) NOT NULL DEFAULT 'worker',  -- worker|foreman|admin (AGENTS.md 7.1)
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   UNIQUE KEY `uk_users_username` (`username`),
-  CONSTRAINT `ck_users_role` CHECK (`role` IN ('worker','foreman','admin','device'))
+  CONSTRAINT `ck_users_role` CHECK (`role` IN ('worker','foreman','admin'))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

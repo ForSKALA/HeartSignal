@@ -43,6 +43,6 @@ public class JwtUtil {
     // role 클레임이 없거나 모르는 값이면 worker 로 간주한다 (AGENTS.md 7.1)
     public static String roleOf(DecodedJWT decoded) {
         String role = decoded.getClaim("role").asString();
-        return User.ROLES.contains(role) ? role : User.DEFAULT_ROLE;
+        return role != null && User.ROLES.contains(role) ? role : User.DEFAULT_ROLE;
     }
 }
