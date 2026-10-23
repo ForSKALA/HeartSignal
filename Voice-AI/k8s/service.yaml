@@ -1,0 +1,16 @@
+# HeartSignal Voice-AI Service — 클러스터 내부에서는 http://heartsignal-voice:8008
+apiVersion: v1
+kind: Service
+metadata:
+  name: heartsignal-voice
+  namespace: class-4
+  labels:
+    part-of: heartsignal
+spec:
+  type: ClusterIP
+  selector:
+    app: heartsignal-voice
+  ports:
+    - name: http
+      port: 8008
+      targetPort: 8008
