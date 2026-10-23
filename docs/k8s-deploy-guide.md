@@ -290,6 +290,9 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
 
 ### 8.2 클러스터 실제 배포: rag (2026-10-23 15:20, P2)
 
+> **8.2-b (2026-10-23 18:05, P2) rag 1.2.0 재배포** — 지침 카드 상세 섹션 7개(PR #41). `docker-build.sh 1.2.0` → `docker tag`+`docker push`(스크립트의 `docker login`은 비대화형에서 실패, 이미 로그인된 세션에서 수동 push, digest `sha256:dbb7fdae…`) → `kubectl apply -f RAG/k8s/deployment.yaml` → 첫 파드가 push 전에 뜨며 `ImagePullBackOff` → 파드 삭제 후 재생성 → `Running 1/1`. Ingress로 `POST /alarm`(암모니아 3단계) → 15초 뒤 `guide_card.sections` 7개 전부 출처 있음(handoff 0) → `clear` 200. 재시작으로 메모리 경보는 초기화됨(이전 `al-…-0012` 소멸).
+
+
 기준 커밋 `main` `5249268` + 이 PR(`.dockerignore`·initContainer 시드 기준). 이미지 `class-4/heartsignal-rag:1.1.0`.
 
 | 단계 | 명령 | 결과 |
