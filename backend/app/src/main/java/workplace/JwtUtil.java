@@ -17,7 +17,8 @@ import java.util.Date;
 public class JwtUtil {
     private static final String SECRET = System.getenv("JWT_SECRET");
     private static final Algorithm ALG = Algorithm.HMAC256(SECRET);
-    private static final String ISSUER = "simple-auth-server";
+    // Python 서비스(RAG·Voice)와 같은 JWT_ISSUER 를 쓴다
+    private static final String ISSUER = System.getenv().getOrDefault("JWT_ISSUER", "simple-auth-server");
 
     public static String createToken(User user) {
         Instant now = Instant.now();
