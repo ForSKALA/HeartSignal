@@ -1,6 +1,6 @@
 # HeartSignal 쿠버네티스 배포 순서
 
-> 팀 공유 가이드: https://claude.ai/artifact/W1dLUXnTtA4reRMuppJwLc
+> 상세 가이드: [`docs/k8s-deploy-guide.md`](../../docs/k8s-deploy-guide.md) · 팀 공유 문서: https://claude.ai/artifact/W1dLUXnTtA4reRMuppJwLc
 > 네임스페이스 `class-4`, 이미지 `skala-registry.skala-us.com/class-4/heartsignal-<서비스>:<VERSION>`
 
 ## 0. 공통 (P4, 1회)
