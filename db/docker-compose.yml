@@ -1,6 +1,8 @@
 # HeartSignal MariaDB (backend 인증 서버 / RAG 공용)
 # 실행: docker compose -f db/docker-compose.yml up -d
-# 접속: jdbc:mariadb://localhost:53301/sql_db  (root / ${DB_PASSWORD:-SqlDba-1})
+# 접속: jdbc:mariadb://localhost:53301/sql_db  (root / DB_PASSWORD)
+# DB_PASSWORD 는 db/.env 또는 셸 환경변수로 반드시 지정한다 (기본 비밀번호 없음, db/.env-example 참고)
+# 이미 만들어진 볼륨은 처음 기동할 때의 비밀번호를 계속 쓴다. 기존 사용자는 그 값을 그대로 넣는다.
 
 services:
   mariadb:
@@ -10,7 +12,7 @@ services:
     ports:
       - "53301:3306"
     environment:
-      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:-SqlDba-1}
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 를 db/.env 또는 환경변수로 설정하세요}
       MARIADB_DATABASE: sql_db
       TZ: Asia/Seoul
     command:

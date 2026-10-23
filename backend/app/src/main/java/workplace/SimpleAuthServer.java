@@ -93,6 +93,9 @@ Modification history:
      - User / UserRepository / JdbcUserRepository / AuthService / JwtUtil / HttpUtil / TextUtil
      - 이 파일에는 설정값·세션 저장소·라우팅(main)만 남김
   7) [HeartSignal P3] users.role 컬럼 + JWT role 클레임 추가, /api/auth/check 응답에 role 포함
+  8) [HeartSignal P3] localhost:8008 하드코딩 제거
+     - 로그인 후 이동 주소: LOGIN_REDIRECT_URL (기본 /#/home, web 과 같은 origin)
+     - CORS 허용 origin: CORS_ORIGINS (HttpUtil), JWT 발급자: JWT_ISSUER (JwtUtil)
  */
 
 public class SimpleAuthServer {
@@ -112,6 +115,10 @@ public class SimpleAuthServer {
 
     // ==== (Optional) Cookie name for login status check in Vue ==== //
     private static final String APP_AUTH_COOKIE_NAME = "APP_AUTH";
+
+    // ==== 로그인 성공 후 이동 주소 (web 화면) ==== //
+    // 상대경로면 Ingress·Vite 프록시처럼 web 과 같은 origin 에서 그대로 동작한다
+    private static final String LOGIN_REDIRECT_URL = System.getenv().getOrDefault("LOGIN_REDIRECT_URL", "/#/home");
 
     // ==== DEBUG ==== //
     static final boolean DEBUG = true;
@@ -278,7 +285,7 @@ public class SimpleAuthServer {
                 // 4) (Most important) Do not redirect here — end with 200 JSON response
                 //    → In fetch/XHR environments, 302 redirects easily cause HTTP 0/cancellation
                 //  fetch 호출에서는 서버 302 대신 성공 JSON으로 이동 경로를 알립니다.
-                writeJson(exchange, 200, "{\"ok\":true,\"redirect\":\"http://localhost:8008/index.html\"}");System.out.println("[LOGIN] SUCCESS -> 200 JSON (no redirect)");
+                writeJson(exchange, 200, "{\"ok\":true,\"redirect\":\"" + escapeJson(LOGIN_REDIRECT_URL) + "\"}");System.out.println("[LOGIN] SUCCESS -> 200 JSON (no redirect)");
                 return;
 
             } catch (Exception e) {

@@ -7,29 +7,38 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 // ========= CORS / Resource / Response / Cookie Helper =========
 // (SimpleAuthServer 의 private static 메서드에서 분리)
 
 public final class HttpUtil {
 
-    // ==== CORS (dev) ==== //
-    // In case frontend (8008) calls Java API (8080)
-    private static final String DEV_FRONTEND_ORIGIN = "http://localhost:8008";
+    // ==== CORS ==== //
+    // 허용 origin 목록 (쉼표 구분, RAG 와 같은 CORS_ORIGINS). 같은 origin 호출(Ingress·Vite 프록시)에는 필요 없다
+    private static final Set<String> CORS_ORIGINS = Arrays.stream(
+                    System.getenv().getOrDefault("CORS_ORIGINS", "http://localhost:5174").split(","))
+            .map(String::trim)
+            .filter(s -> !s.isEmpty())
+            .collect(Collectors.toUnmodifiableSet());
 
     private HttpUtil() {}
 
     // ========= CORS =========
 
     static void addCorsHeaders(HttpExchange exchange) {
-        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", DEV_FRONTEND_ORIGIN);
+        exchange.getResponseHeaders().set("Vary", "Origin");
+        String origin = exchange.getRequestHeaders().getFirst("Origin");
+        if (origin == null || !CORS_ORIGINS.contains(origin)) return;
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", origin);
         exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");
         exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
         exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
-        exchange.getResponseHeaders().set("Vary", "Origin");
     }
 
     // ========= Resource/Reponse Helper =========
