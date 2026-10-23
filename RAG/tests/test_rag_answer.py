@@ -160,3 +160,10 @@ def test_substance_is_logged(client, rag_module, monkeypatch, access_log):
     client.cookies.set("ACCESS_TOKEN", make_token())
     assert client.post("/rag-query", json={"prompt": "황화수소 노출기준?", "source": "pdf"}).status_code == 200
     assert json.loads(access_log[-1])["substance"] == "hydrogen_sulfide"
+
+
+def test_extra_store_results_are_merged_by_distance():
+    law = _Store([(_sdoc("제618조 적정공기 산소 18% 이상", "산업안전보건기준에 관한 규칙", "제618조(정의)", None), 0.15)])
+    merged, _ = retrieve(_Store(ROWS), "밀폐공간 들어가도 되는 공기 기준은?", 5, extra_stores=(law, None))
+    assert merged[0][0].metadata["source"] == "산업안전보건기준에 관한 규칙"
+    assert len(merged) == 1 + 4   # 법령 1 + ROWS 4 (빈 본문 제외는 답변 단계에서), None 저장소는 무시

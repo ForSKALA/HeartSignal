@@ -358,7 +358,8 @@ async def rag_query(rag_request: RAGRequest = Body(...)):
 
         # -------------------- PDF: 검색 → 근거 블록 → LLM → 출처 (rag_answer.py) --------------------
         if source == "pdf":
-            result = answer_with_sources(rag_request.prompt, vectorstore, llm, top_k)
+            # [P2] P1 인덱스는 법령(제618조·노출기준 고시)을 web 컬렉션에 두므로 pdf 질의에도 함께 검색한다
+            result = answer_with_sources(rag_request.prompt, vectorstore, llm, top_k, extra_stores=(VECTORSTORE_WEB,))
             return AnswerResponse(prompt=rag_request.prompt, **result)
 
         # -------------------- WEB 검색 --------------------

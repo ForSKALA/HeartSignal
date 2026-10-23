@@ -30,19 +30,28 @@ def detect_substance(prompt: str) -> str | None:
     return next((key for alias, key in _ALIASES if alias in lowered), None)
 
 
-def retrieve(vectorstore, prompt: str, top_k: int) -> tuple[list, str | None]:
-    """질문에 물질이 있으면 그 물질 청크(top_k) + 물질 표시 없는 일반 문서(top_k)를 거리순으로 합친다.
+def _search_one(store, prompt: str, top_k: int, key: str | None) -> list:
+    """저장소 하나에서 검색. 물질이 있으면 그 물질 청크(top_k) + 물질 표시 없는 일반 문서(top_k),
     다른 물질의 청크는 뺀다 — 염소 질문에 염산·부타디엔의 '응급조치'가 끼는 문제(평가 1·2행).
     물질 필터는 LangChain FAISS 가 fetch_k 개를 먼저 뽑은 뒤 거르므로 fetch_k 를 인덱스 전체로 준다."""
-    key = detect_substance(prompt)
     if key is None:
-        return vectorstore.similarity_search_with_score(prompt, k=top_k), None
-    total = getattr(getattr(vectorstore, "index", None), "ntotal", None) or 10_000
-    focused = vectorstore.similarity_search_with_score(prompt, k=top_k, filter={"substance": key}, fetch_k=total)
-    broad = [(d, s) for d, s in vectorstore.similarity_search_with_score(prompt, k=4 * top_k)
+        return store.similarity_search_with_score(prompt, k=top_k)
+    total = getattr(getattr(store, "index", None), "ntotal", None) or 10_000
+    focused = store.similarity_search_with_score(prompt, k=top_k, filter={"substance": key}, fetch_k=total)
+    broad = [(d, s) for d, s in store.similarity_search_with_score(prompt, k=4 * top_k)
              if (d.metadata or {}).get("substance") in (None, "", key)][:top_k]
+    return focused + broad
+
+
+def retrieve(vectorstore, prompt: str, top_k: int, extra_stores=()) -> tuple[list, str | None]:
+    """주 저장소 + 보조 저장소(P1 법령 web 인덱스 등)를 모두 검색해 거리순으로 합친다 (중복 제거)."""
+    key = detect_substance(prompt)
+    pairs = []
+    for store in (vectorstore, *extra_stores):
+        if store is not None:
+            pairs += _search_one(store, prompt, top_k, key)
     seen, merged = set(), []
-    for doc, score in sorted(focused + broad, key=lambda pair: pair[1]):
+    for doc, score in sorted(pairs, key=lambda pair: pair[1]):
         if doc.page_content in seen:
             continue
         seen.add(doc.page_content)
@@ -70,10 +79,10 @@ def _handoff(hits: int, top_score, substance):
     return {"response": NO_EVIDENCE, "sources": [], "needs_review": False, "handoff": True}
 
 
-def answer_with_sources(prompt: str, vectorstore, llm, top_k: int) -> dict:
+def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=()) -> dict:
     """응답 필드(response·sources·needs_review·handoff)를 돌려준다. 로그 필드는 log_extra 로 남긴다.
     handoff=True: 검색 0건 또는 LLM 이 근거 없음(N/A)으로 답한 경우. 이때 sources 는 비운다."""
-    docs_scores, substance = retrieve(vectorstore, prompt, top_k)
+    docs_scores, substance = retrieve(vectorstore, prompt, top_k, extra_stores)
     # top_score 는 FAISS L2 거리 — 낮을수록 유사 (AGENTS.md 7.5 필드 이름 유지)
     top_score = round(float(docs_scores[0][1]), 4) if docs_scores else None
     if not docs_scores:
