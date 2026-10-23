@@ -314,6 +314,31 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
 
 아직 확인하지 않은 것: Ingress 경유 `/rag-query`(쿠키 포함) → web 화면 E2E, 시연 계정 시드(6.1)를 클러스터 DB에 적용, 확장 화면용 Ingress 경로 `/alarm`·`/board`(아직 없음), voice 배포.
 
+### 8.3 시연 계정 시드 (2026-10-23 15:51, P3)
+
+6.1 절차대로 Ingress 주소로 실행했습니다. 비밀번호는 `db/.env`(커밋 금지)에만 있고, 스크립트 실행 전 키 존재만 확인했습니다(값 미출력).
+
+| 확인 | 결과 |
+| --- | --- |
+| Ingress TLS | `subject=CN=*.class-4.skala-us.com`, `issuer=Let's Encrypt` — 와일드카드 인증서 적용 |
+| `GET https://heartsignal.class-4.skala-us.com/login` | 200 |
+| `AUTH_URL=https://heartsignal.class-4.skala-us.com db/seed-demo-users.sh k8s` | exit 0 (출력 아래) |
+
+```
+인증 서버: https://heartsignal.class-4.skala-us.com (모드: k8s)
+[admin1] 가입 완료
+[admin1] 로그인 확인 — JWT role=admin
+[foreman1] 가입 완료
+[foreman1] 로그인 확인 — JWT role=foreman
+[worker1] 가입 완료
+[worker1] 로그인 확인 — JWT role=worker
+시연 계정 3개 준비 완료
+```
+
+- DB 확인: `admin1`=admin, `foreman1`=foreman, `worker1`=worker. 가입 화면으로 만든 다른 계정은 모두 `worker`입니다(이름이 `admin`이어도 권한 없음).
+- 시연은 `admin1`(경보 발령·보류·해제), `foreman1`(인원 점검), `worker1`(질의)로 로그인합니다. 비밀번호는 채팅·커밋에 올리지 않고 직접 전달합니다.
+- role을 바꾼 뒤에는 **다시 로그인해야** 새 role이 JWT에 반영됩니다.
+
 ## 9. 남은 문제
 
 - [x] **P3**: 로그인 성공 시 `http://localhost:8008/index.html`로 이동 → `LOGIN_REDIRECT_URL`(기본 `/#/home`)로 변경 ([#14](https://github.com/ForSKALA/HeartSignal/pull/14))
@@ -323,4 +348,4 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
 - [ ] **P4**: AGENTS.md 5·6장에 k8s용 Service 이름·환경변수 값 추가 (6장 RAG 변수는 #23에서 반영)
 - [ ] **P4**: 확장 화면(관리자·전광판·반장)용 Ingress 경로 `/alarm`, `/board` 추가 (rag 서비스)
 - [ ] **전원**: Ingress 호스트 이름(안: `heartsignal.class-4.skala-us.com`), 이미지 태그 규칙, ArgoCD 사용 여부 확정
-- [ ] **P4·P3**: Ingress 배포 후 시연 계정 시드 실행 (6.1). 2026-10-23 DB·auth 배포 완료(8.1), rag·web·Ingress 배포 대기
+- [x] **P4·P3**: Ingress 배포 후 시연 계정 시드 실행 (6.1) → 2026-10-23 완료 (8.3)
