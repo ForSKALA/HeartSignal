@@ -5,13 +5,19 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "eval"))
 from run_eval import load_questions, score, summarize  # noqa: E402
 
-CORE = {"id": "Q3", "type": "core", "keywords": ["10", "15"], "expected_sources": ["노출기준"]}
+CORE = {"id": "Q3", "type": "core", "keywords": ["10", "15"], "expected_sources": ["노출기준"], "expected_sections": ["728 황화수소"]}
 HANDOFF = {"id": "H1", "type": "handoff"}
 
 
 def test_correct_and_grounded():
     body = {"response": "TWA 10ppm, STEL 15ppm입니다.", "sources": [{"source": "노출기준 고시 별표1", "section": "황화수소"}]}
-    assert score(CORE, body) == {"correct": True, "keyword_recall": 1.0, "grounded": True, "ungrounded_answer": False}
+    assert score(CORE, body) == {"correct": True, "keyword_recall": 1.0, "grounded": True, "section_match": False, "ungrounded_answer": False, "needs_review": False}
+
+
+def test_section_match_requires_expected_section():
+    body = {"response": "10 15", "sources": [{"source": "고용노동부고시 제2020-48호 별표1", "section": "별표1>728 황화수소"}]}
+    s = score(CORE, body)
+    assert s["grounded"] is False and s["section_match"] is True   # 문서 이름은 다르지만 절은 일치
 
 
 def test_answer_without_sources_is_ungrounded():
@@ -44,4 +50,4 @@ def test_summary_skips_errors():
 def test_questions_file_is_valid():
     qs = load_questions(Path(__file__).resolve().parents[1] / "eval" / "questions.jsonl")
     assert sum(q["type"] == "core" for q in qs) == 10 and sum(q["type"] == "handoff" for q in qs) == 3
-    assert all(q["keywords"] and q["expected_sources"] for q in qs if q["type"] == "core")
+    assert all(q["keywords"] and q["expected_sources"] and q["expected_sections"] for q in qs if q["type"] == "core")

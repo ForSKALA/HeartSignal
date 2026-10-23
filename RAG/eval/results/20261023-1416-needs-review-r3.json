@@ -1,0 +1,288 @@
+{
+  "label": "needs-review-r3",
+  "url": "http://localhost:18016",
+  "source": "pdf",
+  "top_k": 5,
+  "summary": {
+    "core_n": 10,
+    "accuracy_pct": 80.0,
+    "keyword_recall_avg": 0.8,
+    "grounded_pct": 90.0,
+    "section_match_pct": 80.0,
+    "ungrounded_answer_pct": 0.0,
+    "review_flag_on_wrong_pct": 0.0,
+    "review_flag_on_right_pct": 12.5,
+    "handoff_n": 3,
+    "handoff_hit_pct": 100.0,
+    "errors": 0,
+    "latency_ms_avg": 3390.3,
+    "repeat": 3,
+    "per_run": {
+      "accuracy_pct": [
+        80.0,
+        80.0,
+        80.0
+      ],
+      "grounded_pct": [
+        90.0,
+        90.0,
+        90.0
+      ],
+      "section_match_pct": [
+        80.0,
+        80.0,
+        80.0
+      ],
+      "handoff_hit_pct": [
+        100.0,
+        100.0,
+        100.0
+      ],
+      "review_flag_on_wrong_pct": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "review_flag_on_right_pct": [
+        12.5,
+        12.5,
+        12.5
+      ]
+    }
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "type": "core",
+      "latency_ms": 3753,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "출하 중에 프로판과 같은 인화성 물질이 누출되었을 경우에는 출하를 중단하고 운행 중인 전 차량 및 내연기관의 시동을 끄고 점화원을 제거해야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.2(13)"
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "type": "core",
+      "latency_ms": 2852,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": true,
+      "response": "LEL은 폭발하한계(LEL, Lower Explosive Limit)를 의미하며, 프로판의 경우 폭발하한범위는 2.1%입니다. 따라서 LEL 25%는 프로판의 경우 2.1%의 25%에 해당하므로, 0.525%vol입니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "물리화학적 특성>폭발하한범위"
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "type": "core",
+      "latency_ms": 3201,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "황화수소의 노출기준은 TWA 10 ppm, STEL 15 ppm입니다,.",
+      "sources": [
+        {
+          "source": "안전보건공단 MSDS 황화수소",
+          "section": "8. 노출방지 및 개인보호구>가. 화학물질의 노출기준, 생물학적 노출기준 등"
+        },
+        {
+          "source": "고용노동부고시 제2020-48호 별표1",
+          "section": "별표1>728 황화수소"
+        }
+      ]
+    },
+    {
+      "id": "Q4",
+      "type": "core",
+      "latency_ms": 3356,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "밀폐공간에 들어가도 되는 공기의 기준은 다음과 같습니다. 산소 농도는 18% 이상 23.5% 미만, 이산화탄소 농도는 1.5% 미만, 일산화탄소 농도는 30ppm 미만, 황화수소 농도는 10ppm 미만이어야 합니다.,, 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "<별표 2>>2"
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제618조(정의)"
+        },
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "8.5"
+        }
+      ]
+    },
+    {
+      "id": "Q5",
+      "type": "core",
+      "latency_ms": 3805,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "이산화황, 일산화탄소 그리고 이산화탄소 농도를 탑 및 탱크 상부에서 모니터링해야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(6)"
+        }
+      ]
+    },
+    {
+      "id": "Q6",
+      "type": "core",
+      "latency_ms": 3025,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "황화철에는 최소 2시간 이상 물을 뿌려야 하며, 이때 물의 양은 10 ∼ 15 ㎥/㎡ 이상이어야 합니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.2.1(2)"
+        }
+      ]
+    },
+    {
+      "id": "Q7",
+      "type": "core",
+      "latency_ms": 2459,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "암모니아 누출 시 초기이격거리는 소규모일 경우 반경 30m, 대규모일 경우 반경 150m입니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        }
+      ]
+    },
+    {
+      "id": "Q8",
+      "type": "core",
+      "latency_ms": 5479,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "염소 누출을 신고할 때는 다음과 같은 정보를 제공해야 합니다. \n\n1. 누출의 규모: 소규모인지 대규모인지에 따라 초기 이격거리가 다르므로, 소규모일 경우 반경 60 m, 대규모일 경우 반경 500 m로 구분하여 알려야 합니다.\n\n2. 누출 방지 및 개인보호구: 대기 중 누출 시 증기 발생 억제를 위해 물 스프레이 또는 물분무, 증기 억제 폼을 사용하고, 보호 장비로는 양압의 자급식 공기호흡기와 내화학성 보호복을 착용해야 한다는 점을 알립니다.\n\n그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>누출 방지 및 개인보호구"
+        }
+      ]
+    },
+    {
+      "id": "Q9",
+      "type": "core",
+      "latency_ms": 3694,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡을 실시하고, 보온을 유지하며 신속히 병원으로 이송해야 합니다.",
+      "sources": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>흡입"
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "type": "core",
+      "latency_ms": 3587,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "needs_review": false,
+      "response": "경보가 꺼진 후에는 즉시 작업을 재개해서는 안 됩니다. 작업 중 감전·폭발 등의 재해발생 우려가 있을 때는 즉시 작업을 중단하고 용접·용단장치의 가스 차단 또는 전기용접기 전원을 차단한 후 대피하여야 하며, 책임자의 확인 없이는 작업을 재개하여서는 안 됩니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE A-G-14-2026",
+          "section": "7.1(20)"
+        }
+      ]
+    },
+    {
+      "id": "H1",
+      "type": "handoff",
+      "latency_ms": 3277,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H2",
+      "type": "handoff",
+      "latency_ms": 3520,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H3",
+      "type": "handoff",
+      "latency_ms": 3007,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    }
+  ]
+}

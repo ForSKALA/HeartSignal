@@ -82,7 +82,7 @@ def test_rag_query_extended_fields_and_log(client, rag_module, monkeypatch, acce
     # 기존 필드 유지 + 추가 필드
     assert body["prompt"] == prompt and body["response"] == "TWA 10ppm 입니다."
     assert body["sources"] == [{"source": "x.pdf", "section": ""}]  # [P2] 검색 청크 metadata 로 채움
-    assert body["needs_review"] is False and body["handoff"] is False
+    assert body["needs_review"] is True and body["handoff"] is False   # [P2] 인용 표기 없는 답변은 확인 권장(needs_review)
     assert body["request_id"] == res.headers["X-Request-ID"]
     assert isinstance(body["latency_ms"], int) and body["latency_ms"] >= 0
 

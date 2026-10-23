@@ -1,0 +1,249 @@
+{
+  "label": "bm25-hybrid-r3",
+  "url": "http://localhost:18011",
+  "source": "pdf",
+  "top_k": 5,
+  "summary": {
+    "core_n": 10,
+    "accuracy_pct": 50.0,
+    "keyword_recall_avg": 0.5,
+    "grounded_pct": 50.0,
+    "section_match_pct": 50.0,
+    "ungrounded_answer_pct": 13.3,
+    "handoff_n": 3,
+    "handoff_hit_pct": 100.0,
+    "errors": 0,
+    "latency_ms_avg": 3401.7,
+    "repeat": 3,
+    "per_run": {
+      "accuracy_pct": [
+        50.0,
+        50.0,
+        50.0
+      ],
+      "grounded_pct": [
+        50.0,
+        50.0,
+        50.0
+      ],
+      "section_match_pct": [
+        50.0,
+        50.0,
+        50.0
+      ],
+      "handoff_hit_pct": [
+        100.0,
+        100.0,
+        100.0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "type": "core",
+      "latency_ms": 2984,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "response": "프로판이 누출된 경우, 모든 점화원을 제거해야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "GHS정보>예방조치문구"
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "type": "core",
+      "latency_ms": 3310,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "LEL은 폭발하한계(Lower Explosive Limit)를 의미하며, 프로판의 폭발하한계는 2.1%입니다. 따라서 LEL 25%는 프로판의 경우 2.1%의 25%에 해당하므로, 0.525%vol입니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "물리화학적 특성>폭발하한범위"
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "type": "core",
+      "latency_ms": 3434,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": false,
+      "section_match": true,
+      "ungrounded_answer": true,
+      "response": "황화수소의 노출기준은 TWA 10 ppm, STEL 15 ppm입니다.",
+      "sources": [
+        {
+          "source": "고용노동부고시 제2020-48호 별표1",
+          "section": "별표1>728 황화수소"
+        }
+      ]
+    },
+    {
+      "id": "Q4",
+      "type": "core",
+      "latency_ms": 3306,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "밀폐공간에 들어가도 되는 공기의 기준은 산소농도가 18퍼센트 이상 23.5퍼센트 미만, 이산화탄소의 농도가 1.5퍼센트 미만, 일산화탄소의 농도가 30피피엠 미만, 황화수소의 농도가 10피피엠 미만인 수준입니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제618조(정의)"
+        }
+      ]
+    },
+    {
+      "id": "Q5",
+      "type": "core",
+      "latency_ms": 4097,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "response": "증류탑을 열 때는 온도를 모니터링해야 하며, 출입 전 탑의 온도가 반드시 40 ℃ 이하가 되도록 냉각해야 합니다. 이를 위해 찬 물로 물 뿌리기를 하여야 하며, 계속해서 온도 게이지를 통해 모니터링을 해야 합니다. 만일 온도가 그 이상일 경우에는 국부적인 화재가 발생할 수 있습니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(2)"
+        }
+      ]
+    },
+    {
+      "id": "Q6",
+      "type": "core",
+      "latency_ms": 3505,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "황화철에는 최소 2시간 이상 물을 뿌려야 하며, 이때 물의 양은 10 ∼ 15 ㎥/㎡ 이상이어야 합니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.2.1(2)"
+        }
+      ]
+    },
+    {
+      "id": "Q7",
+      "type": "core",
+      "latency_ms": 3584,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "암모니아가 누출될 경우, 소규모 누출 시에는 반경 30m, 대규모 누출 시에는 반경 150m까지 사람을 대피시켜야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        }
+      ]
+    },
+    {
+      "id": "Q8",
+      "type": "core",
+      "latency_ms": 3366,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "response": "염소 누출 신고 시에는 관할 소방관서 비상연락처 및 응급조치 요령을 포함하여, 밀폐공간 내 유해가스의 종류와 유해·위험성, 산소 및 유해가스의 농도 측정에 관한 사항, 환기설비 가동 등 안전한 작업방법에 관한 사항을 알려야 합니다. 또한, 구조요청을 할 수 있는 119 등 관할 소방관서 비상연락처 및 응급조치 요령을 포함해야 합니다,. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "12(1)"
+        },
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "4.1(5)"
+        }
+      ]
+    },
+    {
+      "id": "Q9",
+      "type": "core",
+      "latency_ms": 2723,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q10",
+      "type": "core",
+      "latency_ms": 3228,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "section_match": false,
+      "ungrounded_answer": true,
+      "response": "경보가 꺼진 후 작업을 재개하기 위해서는 책임자의 확인이 필요합니다. 경보가 꺼졌다고 해서 즉시 작업을 재개해서는 안 됩니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE A-G-14-2026",
+          "section": "7.1(20)"
+        }
+      ]
+    },
+    {
+      "id": "H1",
+      "type": "handoff",
+      "latency_ms": 2954,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H2",
+      "type": "handoff",
+      "latency_ms": 4133,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H3",
+      "type": "handoff",
+      "latency_ms": 2836,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    }
+  ]
+}

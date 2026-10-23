@@ -43,3 +43,6 @@ langchain-text-splitters>=1.1.0
 langchain-openai==1.1.7
 openai==1.109.1
 tiktoken>=0.7,<1.0
+
+# [P2] 키워드(BM25) 보조 검색 — 벡터가 놓치는 표현 차이 보완 (순수 파이썬, 소형)
+rank_bm25>=0.2,<0.3
