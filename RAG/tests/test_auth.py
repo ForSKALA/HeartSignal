@@ -98,7 +98,7 @@ def test_auth_checked_before_validation(client):
     _assert_error(client.post("/rag-query", json={"prompt": ""}), 401, "UNAUTHORIZED")
 
 
-def test_index_not_loaded_message_kept(client):
-    # 인덱스 미로딩은 기존 로직(400) 유지 — 503 NOT_READY 전환은 P2 와 협의
+def test_index_not_loaded_is_not_ready(client):
+    # [P2] 인덱스 미로딩은 기획서 기준 503 NOT_READY
     client.cookies.set("ACCESS_TOKEN", make_token())
-    _assert_error(client.post("/rag-query", json=QUERY), 400, "BAD_REQUEST")
+    _assert_error(client.post("/rag-query", json=QUERY), 503, "NOT_READY")
