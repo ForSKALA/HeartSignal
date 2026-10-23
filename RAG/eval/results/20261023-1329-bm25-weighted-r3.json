@@ -1,0 +1,266 @@
+{
+  "label": "bm25-weighted-r3",
+  "url": "http://localhost:18012",
+  "source": "pdf",
+  "top_k": 5,
+  "summary": {
+    "core_n": 10,
+    "accuracy_pct": 70.0,
+    "keyword_recall_avg": 0.8,
+    "grounded_pct": 70.0,
+    "section_match_pct": 70.0,
+    "ungrounded_answer_pct": 10.0,
+    "handoff_n": 3,
+    "handoff_hit_pct": 100.0,
+    "errors": 0,
+    "latency_ms_avg": 3550.0,
+    "repeat": 3,
+    "per_run": {
+      "accuracy_pct": [
+        70.0,
+        70.0,
+        70.0
+      ],
+      "grounded_pct": [
+        70.0,
+        70.0,
+        70.0
+      ],
+      "section_match_pct": [
+        70.0,
+        70.0,
+        70.0
+      ],
+      "handoff_hit_pct": [
+        100.0,
+        100.0,
+        100.0
+      ]
+    }
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "type": "core",
+      "latency_ms": 3021,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "response": "프로판이 누출된 경우, 모든 점화원을 제거해야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "GHS정보>예방조치문구"
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "type": "core",
+      "latency_ms": 3917,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "LEL은 폭발하한계(LEL, Lower Explosive Limit)를 의미하며, 프로판의 경우 폭발하한계는 2.1%입니다. 따라서 LEL 25%는 프로판의 경우 2.1%의 25%에 해당하므로, 0.525%vol입니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "물리화학적 특성>폭발하한범위"
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "type": "core",
+      "latency_ms": 3690,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": false,
+      "section_match": true,
+      "ungrounded_answer": true,
+      "response": "황화수소의 노출기준은 TWA 10 ppm, STEL 15 ppm입니다.",
+      "sources": [
+        {
+          "source": "고용노동부고시 제2020-48호 별표1",
+          "section": "별표1>728 황화수소"
+        }
+      ]
+    },
+    {
+      "id": "Q4",
+      "type": "core",
+      "latency_ms": 3498,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "밀폐공간에 들어가도 되는 공기의 기준은 산소 농도가 18.0% 이상 23.5% 미만, 이산화탄소 농도가 1.5% 미만, 황화수소 농도가 10ppm 미만, 일산화탄소 농도가 30ppm 미만이어야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제618조(정의)"
+        },
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "8.5"
+        }
+      ]
+    },
+    {
+      "id": "Q5",
+      "type": "core",
+      "latency_ms": 3366,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "증류탑을 열 때는 이산화황, 일산화탄소 그리고 이산화탄소 농도를 모니터링해야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(6)"
+        }
+      ]
+    },
+    {
+      "id": "Q6",
+      "type": "core",
+      "latency_ms": 2931,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "황화철에는 최소 2시간 이상 물을 뿌려야 하며, 이때 물의 양은 10 ∼ 15 ㎥/㎡ 이상이어야 합니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.2.1(2)"
+        }
+      ]
+    },
+    {
+      "id": "Q7",
+      "type": "core",
+      "latency_ms": 4134,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "암모니아가 누출되었을 때 초기 이격거리는 소규모의 경우 반경 30m, 대규모의 경우 반경 150m입니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        }
+      ]
+    },
+    {
+      "id": "Q8",
+      "type": "core",
+      "latency_ms": 5116,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "response": "염소 누출 신고 시에는 다음과 같은 정보를 제공해야 합니다:\n\n1. 누출의 규모에 따라 초기 이격거리를 설정해야 합니다. 소규모 누출의 경우 반경 60 m, 대규모 누출의 경우 반경 500 m로 설정합니다.\n2. 누출 방지를 위해 대기 중 누출 시 물 스프레이 또는 물분무, 증기억제 폼을 사용하고, 수중 누출 시 활성탄으로 흡수하며, 토양 누출 시 도랑을 파거나 제방을 쌓아 가두고 시멘트분말, 톱밥으로 덮은 후 겔화제로 누출액을 고정합니다.\n3. 주변 지역의 사람이 대피하도록 경고해야 합니다 [문서 27, 문서 29].\n4. 염소는 독성 가스/흄(염화수소)을 연소생성물로 발생시킬 수 있으므로 주의가 필요합니다.\n5. 염소는 기체 상태이며, 자극적인 표백제 냄새가 납니다.\n\n그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>누출 방지 및 개인보호구"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "폭발 및 화재위험성>연소생성물"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        },
+        {
+          "source": "화학물질안전원 사고대비물질 키인포가이드 (2024 개정판)",
+          "section": "염소                                                                                                         Chlorine>기본정보·물리화학적 특성·위험성"
+        }
+      ]
+    },
+    {
+      "id": "Q9",
+      "type": "core",
+      "latency_ms": 3589,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "section_match": true,
+      "ungrounded_answer": false,
+      "response": "신선한 공기를 공급하고, 산소를 공급하며, 적절한 장비를 이용한 인공호흡을 실시하고, 보온을 유지하며 신속히 병원으로 이송해야 합니다.",
+      "sources": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>흡입"
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "type": "core",
+      "latency_ms": 3784,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.5,
+      "grounded": false,
+      "section_match": false,
+      "ungrounded_answer": false,
+      "response": "경보가 꺼진 후에는 감지기의 설정을 초기값으로 조정해야 합니다. 그 외는 확인된 자료가 없습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "[부록 4]>8(5)"
+        }
+      ]
+    },
+    {
+      "id": "H1",
+      "type": "handoff",
+      "latency_ms": 3008,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H2",
+      "type": "handoff",
+      "latency_ms": 2923,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H3",
+      "type": "handoff",
+      "latency_ms": 2773,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    }
+  ]
+}

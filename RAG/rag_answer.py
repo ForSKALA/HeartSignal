@@ -11,6 +11,7 @@ from pathlib import Path
 
 from langchain_core.messages import HumanMessage
 from openai import APITimeoutError
+from rank_bm25 import BM25Okapi
 
 from middleware import ApiError, log_extra
 
@@ -52,6 +53,63 @@ def _search_one(store, query: str, top_k: int, key: str | None, vector=None) -> 
     return focused + broad
 
 
+# ---- 키워드(BM25) 보조 검색 (평가 11행) ----
+# 벡터 검색은 "프로판이 새면" ↔ "인화성 물질이 누출" 같은 표현 차이를 못 잇는다. 본문 글자 2-gram BM25 로 보완하고
+# 벡터 순위와 RRF(reciprocal rank fusion)로 합친다. 청크 제목 접두사("… 기술지침 | 10.2")는 모든 청크에 있어 제외.
+_BM25_CACHE: dict = {}
+RRF_K = 60
+LEXICAL_K = 10
+LEXICAL_WEIGHT = 0.5   # 벡터 순위를 주로, 키워드는 보조 (동점이면 벡터 우선)
+
+
+def _body(text: str) -> str:
+    head, _, rest = text.partition("\n")
+    return rest if ("|" in head and rest) else text
+
+
+def tokenize(text: str) -> list[str]:
+    out = []
+    for word in re.sub(r"[^0-9A-Za-z가-힣]+", " ", text).split():
+        if re.fullmatch(r"[가-힣]+", word) and len(word) >= 2:
+            out += [word[i:i + 2] for i in range(len(word) - 1)]
+        else:
+            out.append(word.lower())
+    return out
+
+
+def _bm25_for(store):
+    """저장소의 docstore 전체로 BM25 를 1회 만들어 캐시한다. docstore 가 없는(가짜) 저장소는 None."""
+    docstore = getattr(store, "docstore", None)
+    docs = list(getattr(docstore, "_dict", {}).values()) if docstore is not None else []
+    if not docs:
+        return None
+    cached = _BM25_CACHE.get(id(store))
+    if cached is None or cached[0] is not store or cached[1] != len(docs):  # id 재사용·재적재 대비
+        cached = (store, len(docs), docs, BM25Okapi([tokenize(_body(d.page_content or "")) for d in docs]))
+        _BM25_CACHE[id(store)] = cached
+    return cached
+
+
+def _lexical(store, query: str, key: str | None, k: int = LEXICAL_K) -> list:
+    entry = _bm25_for(store)
+    if entry is None:
+        return []
+    _, _, docs, bm25 = entry
+    scores = bm25.get_scores(tokenize(query))
+    order = sorted(range(len(docs)), key=lambda i: -scores[i])
+    picked = []
+    for i in order:
+        if scores[i] <= 0:
+            break
+        doc = docs[i]
+        if key and (doc.metadata or {}).get("substance") not in (None, "", key):
+            continue  # 다른 물질 청크 제외 (벡터 갈래와 같은 규칙)
+        picked.append(doc)
+        if len(picked) >= k:
+            break
+    return picked
+
+
 def _embed(store, query: str):
     fn = getattr(store, "embedding_function", None)
     return fn.embed_query(query) if fn is not None and hasattr(fn, "embed_query") else None
@@ -63,17 +121,35 @@ def retrieve(vectorstore, prompt: str, top_k: int, extra_stores=(), rewrites=())
     key = detect_substance(prompt)
     queries = [prompt, *rewrites]
     stores = [s for s in (vectorstore, *extra_stores) if s is not None]
-    pairs = []
+    dense_pairs, lexical_lists = [], []
     for query in queries:
         vector = _embed(stores[0], query) if stores else None   # 임베딩 모델은 저장소 공통(OpenAIEmbeddings)
         for store in stores:
-            pairs += _search_one(store, query, top_k, key, vector)
-    seen, merged = set(), []
-    for doc, score in sorted(pairs, key=lambda pair: pair[1]):
-        if doc.page_content in seen:
-            continue
-        seen.add(doc.page_content)
-        merged.append((doc, score))
+            dense_pairs += _search_one(store, query, top_k, key, vector)
+            lexical_lists.append(_lexical(store, query, key))
+    # RRF: 벡터(거리 오름차순) 순위 + 질의·저장소별 BM25 순위
+    fused: dict[str, float] = {}
+    by_text: dict[str, tuple] = {}
+    dense_best: dict[str, tuple] = {}
+    for doc, score in dense_pairs:  # 같은 청크가 두 갈래(물질·일반)에 겹치면 한 번만, 가장 가까운 거리로
+        if doc.page_content not in dense_best or score < dense_best[doc.page_content][1]:
+            dense_best[doc.page_content] = (doc, score)
+    for rank, (doc, score) in enumerate(sorted(dense_best.values(), key=lambda pair: pair[1])):
+        text = doc.page_content
+        by_text.setdefault(text, (doc, score))
+        fused[text] = fused.get(text, 0.0) + 1.0 / (RRF_K + rank + 1)
+    # BM25 는 질의·저장소마다 목록이 생기므로 문서별 최고 순위로 하나의 목록으로 합친 뒤 벡터와 1:1 로 융합한다
+    # (목록마다 더하면 키워드 쪽이 질의 수만큼 과대 가중됨 — 평가 11행 회귀 원인)
+    best_lex: dict[str, int] = {}
+    for docs in lexical_lists:
+        for rank, doc in enumerate(docs):
+            text = doc.page_content
+            by_text.setdefault(text, (doc, None))
+            if text not in best_lex or rank < best_lex[text]:
+                best_lex[text] = rank
+    for rank, (text, _) in enumerate(sorted(best_lex.items(), key=lambda item: item[1])):
+        fused[text] = fused.get(text, 0.0) + LEXICAL_WEIGHT / (RRF_K + rank + 1)
+    merged = [by_text[text] for text, _ in sorted(fused.items(), key=lambda item: -item[1])]
     return merged[: 2 * top_k * len(queries)], key
 
 # 답변 프롬프트 (평가 6행). 베이스 문구에 세 가지를 더했다:
@@ -134,7 +210,8 @@ def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=
     docs_scores, substance = retrieve(vectorstore, prompt, top_k, extra_stores, rewrites)
     log_extra(rewrites=len(rewrites))
     # top_score 는 FAISS L2 거리 — 낮을수록 유사 (AGENTS.md 7.5 필드 이름 유지)
-    top_score = round(float(docs_scores[0][1]), 4) if docs_scores else None
+    distances = [s for _, s in docs_scores if s is not None]
+    top_score = round(float(min(distances)), 4) if distances else None
     if not docs_scores:
         return _handoff(0, top_score, substance)
 
@@ -174,5 +251,5 @@ def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=
 
     log_extra(hits=len(docs_scores), top_score=top_score, substance=substance, handoff=handoff, needs_review=False,
               tokens_in=usage.get("input_tokens"), tokens_out=usage.get("output_tokens"))
-    logger.debug("rag sources=%s distances=%s", sources, [round(float(s), 4) for _, s in docs_scores])
+    logger.debug("rag sources=%s distances=%s", sources, [None if s is None else round(float(s), 4) for _, s in docs_scores])
     return {"response": final, "sources": sources, "needs_review": False, "handoff": handoff}

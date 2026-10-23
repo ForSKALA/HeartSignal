@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from openai import APITimeoutError
 
 from middleware import ApiError
-from rag_answer import NO_EVIDENCE, answer_with_sources, detect_substance, retrieve, rewrite_queries
+from rag_answer import NO_EVIDENCE, answer_with_sources, detect_substance, retrieve, rewrite_queries, tokenize
 from conftest import make_token
 
 
@@ -250,3 +250,48 @@ def test_rewrite_uses_separate_llm_when_given():
     rewrite_llm = _LLM(rewrite_text="황화수소 노출기준 TWA")
     out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), answer_llm, 5, rewrite_llm=rewrite_llm)
     assert out["response"] == "TWA 10ppm"
+
+
+# ---- BM25 하이브리드 (평가 11행) ----
+
+def test_tokenize_korean_bigrams_and_ascii():
+    assert tokenize("출하장에서 LEL 25%") == ["출하", "하장", "장에", "에서", "lel", "25"]
+
+
+class _DocStore:
+    def __init__(self, docs):
+        self._dict = {str(i): d for i, d in enumerate(docs)}
+
+
+class _HybridStore(_Store):
+    """docstore 가 있어 BM25 가 만들어지는 가짜 저장소. 벡터 검색은 rows 를 그대로 돌려준다."""
+    def __init__(self, rows, corpus):
+        super().__init__(rows)
+        self.docstore = _DocStore(corpus)
+
+
+def test_lexical_hit_outside_dense_topk_is_added_by_rrf():
+    g78 = _sdoc("KOSHA GUIDE G-78 | 10.2(13)\n출하장에서 인화성 물질이 누출되었을 경우에는 출하를 중단하고 점화원을 제거한다.",
+                "KOSHA GUIDE G-78-2021", "10.2(13)", None)
+    other = _sdoc("안전지침 | GHS\n프로판 예방조치문구 P381 점화원 제거", "안전지침/프로판.pdf", "GHS정보", "propane")
+    hcl = _sdoc("안전지침 | 누출\n염산 출하 중 누출 시 조치", "안전지침/염화수소(염산).pdf", "누출", "hydrogen_chloride")
+    store = _HybridStore([(other, 0.30)], corpus=[g78, other, hcl])   # 벡터는 프로판 청크만 돌려줌
+    merged, key = retrieve(store, "출하 중에 프로판이 새면 뭐부터 해?", 5)
+    texts = [d.metadata["source"] for d, _ in merged]
+    assert key == "propane"
+    assert "KOSHA GUIDE G-78-2021" in texts            # BM25('출하','누출'…)로 들어옴
+    assert "안전지침/염화수소(염산).pdf" not in texts  # 다른 물질은 BM25 에서도 제외
+    assert merged[0][1] is None or isinstance(merged[0][1], float)
+
+
+def test_bm25_only_chunk_does_not_break_top_score(client, rag_module, monkeypatch, access_log):
+    corpus = [_sdoc("X | 1\n황화철 물 공급 2시간", "P-64", "5.2.1(2)", None),
+              _sdoc("Y | 2\n밀폐공간 산소 농도 측정", "E-G-18", "9.1", None),      # BM25 IDF 가 양수가 되도록 무관 문서
+              _sdoc("Z | 3\n용접 작업 화재 예방", "A-G-14", "7.1", None)]
+    store = _HybridStore([], corpus=corpus)          # 벡터 0건, BM25 1건
+    monkeypatch.setattr(rag_module, "VECTORSTORE_PDF", store)
+    monkeypatch.setattr(rag_module, "ChatOpenAI", lambda *a, **kw: _LLM(text="2시간 [문서 1]"))
+    client.cookies.set("ACCESS_TOKEN", make_token())
+    res = client.post("/rag-query", json={"prompt": "황화철에 물은 얼마나 뿌려?", "source": "pdf"})
+    assert res.status_code == 200 and res.json()["sources"] == [{"source": "P-64", "section": "5.2.1(2)"}]
+    assert json.loads(access_log[-1])["top_score"] is None
