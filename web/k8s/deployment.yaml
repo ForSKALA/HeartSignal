@@ -22,7 +22,7 @@ spec:
         - name: harbor-registry-secret
       containers:
         - name: web
-          image: skala-registry.skala-us.com/class-4/heartsignal-web:1.0.1
+          image: skala-registry.skala-us.com/class-4/heartsignal-web:1.0.3
           imagePullPolicy: Always
           ports:
             - containerPort: 80

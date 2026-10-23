@@ -1,10 +1,10 @@
 #!/bin/bash
 # HeartSignal heartsignal-web 이미지 빌드
-# 사용: ./docker-build.sh [VERSION]   (기본 1.0.1)
+# 사용: ./docker-build.sh [VERSION]   (기본 1.0.3)
 # - 클러스터 노드가 amd64이므로 linux/amd64로 빌드한다.
 
 IMAGE_NAME="heartsignal-web"
-VERSION=${1:-1.0.1}
+VERSION=${1:-1.0.3}
 #IS_CACHE="--no-cache"
 
 cd "$(dirname "$0")" || exit 1

@@ -150,18 +150,27 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   box-shadow: 0 24px 64px rgba(23, 32, 51, .28);
   text-align: center;
 }
-.report-dialog-icon {
+.report-timer { position: relative; width: 132px; height: 132px; margin: 0 auto 20px; }
+.report-timer svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.report-timer circle { fill: none; stroke-width: 8; }
+.report-timer-track { stroke: #fff0e8; }
+.report-timer-progress { stroke: #d92d20; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.report-timer-value {
+  position: absolute;
+  inset: 0;
   display: grid;
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 16px;
-  place-items: center;
-  border-radius: 20px;
-  background: #fff0e8;
-  color: #c2410c;
+  place-content: center;
+  grid-auto-flow: column;
+  align-items: baseline;
+  gap: 2px;
+  color: #b42318;
+  font-size: 44px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -.04em;
 }
-.report-dialog-icon svg { width: 38px; height: 38px; }
-.report-dialog h2 { margin: 0; color: #b42318; font-size: 24px; letter-spacing: -.04em; }
+.report-timer-value small { font-size: 16px; font-weight: 700; }
+.report-dialog h2 { margin: 0; color: #b42318; font-size: 22px; letter-spacing: -.04em; }
 .report-dialog p { margin: 8px 0 0; color: #58657a; font-size: 15px; }
 .report-dialog-actions { display: flex; gap: 10px; margin-top: 24px; }
 .report-dialog-actions button {
@@ -175,9 +184,100 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   font-weight: 750;
   cursor: pointer;
 }
-.report-dialog-actions .report-yes { border-color: #d92d20; background: #d92d20; color: #fff; }
-.report-dialog-actions .report-yes:hover { background: #b42318; }
-.report-dialog-actions .report-no:hover { background: #f1f5f9; }
+.report-dialog-actions .report-cancel:hover { background: #f1f5f9; }
+.report-dialog-actions .report-confirm { border-color: #d92d20; background: #d92d20; color: #fff; }
+.report-dialog-actions .report-confirm:hover { background: #b42318; }
+.report-dialog-actions button:disabled { opacity: .6; cursor: default; }
+
+/* 1단계 주의 */
+.is-caution .level-badge { border-color: #fedf89; background: #fffaeb; color: #93370d; }
+.is-caution .level-dot { background: #f79009; }
+.is-caution .status-icon { background: #fffaeb; color: #b54708; }
+.is-caution .status-card h1 { color: #b54708; }
+.is-caution .status-note { background: #fffaeb; color: #93370d; }
+
+.user-chip { color: #58657a; font-size: 13px; font-weight: 600; }
+.voice-toggle {
+  min-height: 42px;
+  padding: 0 15px;
+  border: 1px solid #cbd8ea;
+  border-radius: 999px;
+  background: #fff;
+  color: #2457a7;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.voice-toggle.is-off { color: #66738a; }
+.voice-toggle.is-blocked { border-color: #d92d20; background: #fef3f2; color: #b42318; }
+.status-subtitle { margin: 12px 0 0; color: #46546a; font-size: 17px; font-weight: 700; }
+.board-lines { display: grid; gap: 8px; margin: 20px auto 0; padding: 0; max-width: 560px; list-style: none; }
+.board-lines li { padding: 12px 16px; border-radius: 12px; background: #f1f5f9; color: #172033; font-size: clamp(16px, 3vw, 19px); font-weight: 700; }
+.is-exposure-risk .board-lines li { background: #fff0e8; color: #9a3412; }
+.is-caution .board-lines li { background: #fffaeb; color: #93370d; }
+
+/* 진행 중 경보 목록 */
+.alarm-list { display: grid; gap: 16px; max-width: 1200px; margin: 24px auto 120px; }
+.alarm-item {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 2fr;
+  gap: 8px 32px;
+  padding: 22px 26px;
+  border: 1px solid #e4eaf2;
+  border-left: 6px solid #f79009;
+  border-radius: 20px;
+  background: #fff;
+}
+.alarm-item:not(:has(.alarm-checklist)) { grid-template-columns: 1fr; } /* 작업자: 체크리스트 없음 */
+.alarm-item .alarm-checklist .alarm-section-title { margin-top: 0; }
+.alarm-item .alarm-checklist { padding-left: 32px; border-left: 1px solid #e4eaf2; }
+@media (max-width: 760px) {
+  .alarm-item { grid-template-columns: 1fr; }
+  .alarm-item .alarm-checklist { padding-left: 0; border-left: 0; }
+  .alarm-item .alarm-checklist .alarm-section-title { margin-top: 16px; }
+}
+.alarm-item.stage-2 { border-left-color: #e85d25; }
+.alarm-item.stage-3 { border-left-color: #d92d20; }
+.alarm-item-head h2 { margin: 6px 0 2px; font-size: 20px; letter-spacing: -.03em; }
+.alarm-stage { color: #b42318; font-size: 13px; font-weight: 800; }
+.alarm-time, .alarm-headcount, .alarm-note { color: #66738a; font-size: 13px; }
+.alarm-note { margin: 8px 0 0; }
+.alarm-headcount { margin: 8px 0 0; }
+.alarm-report { margin: 12px 0 0; padding: 10px 12px; border-radius: 10px; background: #fff0e8; color: #9a3412; font-size: 14px; font-weight: 700; }
+.alarm-report.is-held { background: #f1f5f9; color: #46546a; }
+.alarm-report.is-sent { background: #fef3f2; color: #b42318; }
+.alarm-section-title { margin: 16px 0 6px; color: #46546a; font-size: 13px; font-weight: 800; }
+.alarm-checklist ul { margin: 0; padding-left: 20px; color: #172033; font-size: 14px; line-height: 1.7; }
+.alarm-source { color: #66738a; font-size: 12px; }
+.headcount-form { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; margin-top: 14px; }
+.headcount-form label { display: grid; gap: 4px; color: #58657a; font-size: 12px; font-weight: 700; }
+.headcount-form input { width: 90px; min-height: 40px; padding: 0 10px; border: 1px solid #cbd8ea; border-radius: 10px; }
+.alarm-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.headcount-form button, .alarm-actions button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid #cbd8ea;
+  border-radius: 10px;
+  background: #fff;
+  color: #2457a7;
+  font-size: 14px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.alarm-actions .btn-hold { border-color: #d92d20; background: #d92d20; color: #fff; }
+.alarm-actions .btn-clear { color: #176b39; border-color: #b9e6ca; }
+.headcount-form button:disabled, .alarm-actions button:disabled { opacity: .6; cursor: default; }
+
+/* 경보 발령 창 */
+.issue-dialog { display: grid; gap: 14px; text-align: left; }
+.issue-dialog h2 { text-align: center; }
+.issue-dialog label { display: grid; gap: 6px; color: #46546a; font-size: 14px; font-weight: 700; }
+.issue-dialog select, .issue-dialog textarea { width: 100%; min-height: 44px; padding: 8px 12px; border: 1px solid #cbd8ea; border-radius: 12px; background: #fff; font: inherit; }
+.stage-picker { display: flex; gap: 8px; margin: 0; padding: 0; border: 0; }
+.stage-picker legend { margin-bottom: 6px; color: #46546a; font-size: 14px; font-weight: 700; }
+.stage-picker label { flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; border: 1px solid #cbd8ea; border-radius: 12px; cursor: pointer; font-size: 14px; }
+.stage-picker label:has(input:checked) { border-color: #d92d20; background: #fef3f2; color: #b42318; }
+.issue-dialog .issue-hint { margin: 0; color: #b42318; font-size: 13px; }
 .emergency-notice {
   position: fixed;
   right: 24px;
@@ -191,6 +291,7 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   color: #93370d;
   font-size: 14px;
   box-shadow: 0 8px 24px rgba(37, 63, 99, .12);
+  cursor: pointer;
 }
 
 .chat-page { padding: 0 24px; }
