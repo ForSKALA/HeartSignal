@@ -229,6 +229,18 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   background: #fff;
 }
 .alarm-item:not(:has(.alarm-checklist)) { grid-template-columns: 1fr; } /* 작업자: 체크리스트 없음 */
+
+/* 관리자 대응 지침 (카드 아래 전체 너비) */
+.alarm-guide { grid-column: 1 / -1; margin-top: 12px; padding-top: 16px; border-top: 1px solid #e4eaf2; }
+.alarm-guide .alarm-section-title { margin-top: 0; }
+.guide-sections { display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.guide-section { padding: 14px 16px; border: 1px solid #e4eaf2; border-radius: 14px; background: #f8fafc; }
+.guide-section h3 { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 8px; color: #172033; font-size: 15px; }
+.guide-section.is-handoff { background: #f1f5f9; }
+.guide-section.is-handoff .guide-answer { color: #66738a; }
+.guide-review { padding: 2px 8px; border-radius: 999px; background: #fffaeb; color: #b54708; font-size: 12px; font-weight: 800; }
+.guide-answer { margin: 0; color: #172033; font-size: 14px; line-height: 1.65; white-space: pre-line; }
+.guide-sources { margin: 10px 0 0; padding: 0; list-style: none; color: #66738a; font-size: 12px; line-height: 1.6; }
 .alarm-item .alarm-checklist .alarm-section-title { margin-top: 0; }
 .alarm-item .alarm-checklist { padding-left: 32px; border-left: 1px solid #e4eaf2; }
 @media (max-width: 760px) {
