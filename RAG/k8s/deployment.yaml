@@ -29,7 +29,7 @@ spec:
       # 이미지에는 P1 정식 인덱스(faiss_db/p1-complete)만 들어 있다 (.dockerignore).
       initContainers:
         - name: seed-faiss
-          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.1.0
+          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.2.0
           imagePullPolicy: Always
           # 서버 기본 인덱스는 faiss_db/p1-complete (RAG_INDEX_DIR). 이 파일이 있으면 이미 시드된 것 → 덮어쓰지 않는다
           command: ["sh", "-c", "[ -f /data/p1-complete/pdf/index.faiss ] || cp -r /app/faiss_db_seed/. /data/"]
@@ -38,7 +38,7 @@ spec:
               mountPath: /data
       containers:
         - name: rag
-          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.1.0
+          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.2.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8001

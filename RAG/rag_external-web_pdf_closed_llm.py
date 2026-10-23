@@ -132,6 +132,10 @@ else:
 import agent as heartsignal_agent
 heartsignal_agent.configure(VECTORSTORE_PDF, VECTORSTORE_WEB)
 print("✅ 에이전트 근거 조회 준비" if heartsignal_agent.is_configured() else "❌ 에이전트 근거 없음 (템플릿만 동작)")
+if LLM_AVAILABLE:  # [P2] 지침 카드 상세 섹션(7개 질문)용. 키가 없으면 섹션만 비고 경보는 템플릿으로 동작
+    heartsignal_agent.configure_llm(ChatOpenAI(model=LLM_MODEL, temperature=0, timeout=LLM_TIMEOUT_S),
+                                    (VECTORSTORE_PDF, VECTORSTORE_WEB),
+                                    rewrite_llm=ChatOpenAI(model=REWRITE_MODEL, temperature=0, timeout=LLM_TIMEOUT_S))
 
 # ✅ PDF 텍스트 추출
 def load_paper(file_path: str) -> str:
