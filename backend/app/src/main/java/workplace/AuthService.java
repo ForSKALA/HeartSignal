@@ -27,7 +27,7 @@ public class AuthService {
         }
 
         // [⑤-A 비밀번호 저장] 평문 대신 cost 12의 BCrypt salt 포함 해시를 저장하세요.
-        String hashed = /* TODO ⑤-A: bcrypt 해시 생성(cost=12) */ BCrypt.hashpw(rawPassword, BCrypt.gensalt(12));
+        String hashed = BCrypt.hashpw(rawPassword, BCrypt.gensalt(12));
 
         User u = new User();
         u.setUsername(username);
@@ -52,7 +52,7 @@ public class AuthService {
         }
 
         // [⑤-B 비밀번호 검증] 입력 평문과 저장된 BCrypt 해시를 검증하세요. ⑤-A와 한 묶음입니다.
-        boolean ok = /* TODO ⑤-B: 입력 비밀번호와 저장된 해시 검증 */ checkPassword(rawPassword, u.getPassword());
+        boolean ok = checkPassword(rawPassword, u.getPassword());
         if (DEBUG) System.out.println("[AUTH] bcrypt matches=" + ok);
 
         if (!ok) return null;

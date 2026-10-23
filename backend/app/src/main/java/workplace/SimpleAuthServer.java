@@ -247,7 +247,7 @@ public class SimpleAuthServer {
                 }
 
                 // [① 로그인 연결] 서비스의 로그인 결과를 받아 실패 시 401, 성공 시 쿠키 발급으로 이어지게 하세요.
-                User user = /* TODO ①: 로그인 검증 */ authService.login(username, password);
+                User user = authService.login(username, password);
                 if (user == null) {
                     writeJson(exchange, 401, "{\"ok\":false,\"error\":\"invalid credentials\"}");
                     return;
@@ -311,7 +311,7 @@ public class SimpleAuthServer {
             User sessionUser = null;
             if (!isBlank(sessionId)) {
                 // [② 세션 검증] 쿠키의 세션 ID는 사용자 자체가 아닙니다. 서버 저장소에서 해당 사용자를 조회하세요.
-                sessionUser = /* TODO ②: 서버 저장소 조회 */ SESSION_STORE.get(sessionId);
+                sessionUser = SESSION_STORE.get(sessionId);
             }
 
             // (B) JWT validation
@@ -324,7 +324,7 @@ public class SimpleAuthServer {
             if (!isBlank(token)) {
                 try {
                     // [③ JWT 검증] 토큰 내용을 단순 디코딩하지 말고 서명·만료·발급자 검증 함수를 사용하세요.
-                    DecodedJWT decoded = /* TODO ③: 토큰 검증 */ JwtUtil.verifyToken(token);
+                    DecodedJWT decoded = JwtUtil.verifyToken(token);
                     jwtOk = true;
                     jwtUsername = decoded.getClaim("username").asString();
                     jwtSubject = decoded.getSubject();
@@ -338,7 +338,7 @@ public class SimpleAuthServer {
 
             // Policy: pass if either session OR JWT is valid
             // [④ 인증 정책] Session OR JWT: 두 방식 모두 실패한 경우에만 거부하도록 조건을 작성하세요.
-            if (/* TODO ④: 두 인증 수단이 모두 실패했는가? */ sessionUser == null && !jwtOk) {
+            if (sessionUser == null && !jwtOk) {
                 writeJson(exchange, 401, "{\"ok\":false,\"reason\":\"UNAUTHORIZED\"}");
                 return;
             }
