@@ -1,8 +1,10 @@
 <script setup>
 import { nextTick, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
+import { useBoard } from "../useBoard";
 
 const router = useRouter();
+const { isActive, stageLabel } = useBoard();   // 비상 배너 (경보 발령 시 모든 화면 상단)
 
 const RAG_API_URL = import.meta.env.VITE_RAG_API_URL || "/rag-query";
 const prompt = ref("");
@@ -72,6 +74,9 @@ function onInputKeydown(event) {
 
 <template>
   <div class="chat-page">
+    <RouterLink v-if="isActive" class="emergency-banner" to="/home" role="alert">
+      🚨 비상상황 ({{ stageLabel }}) — 홈 화면에서 대피 안내를 확인하세요
+    </RouterLink>
     <header class="chat-topbar">
       <RouterLink class="site-brand" to="/home">
         <span class="brand-heart" aria-hidden="true">♡</span>

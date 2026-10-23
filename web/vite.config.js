@@ -9,6 +9,8 @@ export default defineConfig({
     proxy: {
       "/api": "http://localhost:8080",
       "/rag-query": "http://localhost:8001",
+      "/board": "http://localhost:8001",   // 비상 화면 (/board/current)
+      "/alarm": "http://localhost:8001",   // Swagger 시연용 경보 API
     },
   },
 });

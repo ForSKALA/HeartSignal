@@ -90,6 +90,21 @@ spec:
                 name: heartsignal-rag
                 port:
                   number: 8001
+          # 비상 화면이 읽는 전광판 API, Swagger 시연용 경보 API (P2 경보 에이전트, 2026-10-23)
+          - path: /board
+            pathType: Prefix
+            backend:
+              service:
+                name: heartsignal-rag
+                port:
+                  number: 8001
+          - path: /alarm
+            pathType: Prefix
+            backend:
+              service:
+                name: heartsignal-rag
+                port:
+                  number: 8001
           - path: /openapi.json
             pathType: Exact
             backend:
