@@ -199,3 +199,23 @@ def test_rewrite_count_is_logged(client, rag_module, monkeypatch, access_log):
     client.cookies.set("ACCESS_TOKEN", make_token())
     assert client.post("/rag-query", json={"prompt": "황화수소 노출기준?", "source": "pdf"}).status_code == 200
     assert json.loads(access_log[-1])["rewrites"] == 1
+
+
+# ---- 프롬프트 게이트·인용 (평가 6행) ----
+
+def test_citations_narrow_sources_and_are_stripped_from_text():
+    llm = _LLM(text="TWA 10ppm [문서 1], STEL 15ppm입니다. [문서 2]")
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), llm, top_k=5)
+    assert out["response"] == "TWA 10ppm, STEL 15ppm입니다."
+    assert out["sources"] == [{"source": "노출기준 고시 별표1", "section": "황화수소"}]   # 문서 4(응급조치)는 인용 안 됨
+
+
+def test_without_citations_all_retrieved_sources_are_kept():
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), _LLM(text="TWA 10ppm"), top_k=5)
+    assert len(out["sources"]) == 2
+
+
+def test_prompt_contains_scope_gate_rules():
+    from rag_answer import PROMPT
+    for must in ("의료적 판단", "실시간 측정값", "N/A", "근거 원문 그대로", "[문서 n]"):
+        assert must in PROMPT

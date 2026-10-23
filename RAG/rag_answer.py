@@ -6,6 +6,7 @@
 import json
 import logging
 import os
+import re
 from pathlib import Path
 
 from langchain_core.messages import HumanMessage
@@ -62,15 +63,23 @@ def retrieve(vectorstore, prompt: str, top_k: int, extra_stores=(), rewrites=())
         merged.append((doc, score))
     return merged[: 2 * top_k * len(queries)], key
 
-# 베이스 프롬프트 그대로 (문구 개선은 평가 1회를 끼워 별도 변경으로 진행)
+# 답변 프롬프트 (평가 6행). 베이스 문구에 세 가지를 더했다:
+#  - 범위 밖 질문(의료 판단·실시간 측정값·안전보건 외)은 근거가 있어도 'N/A' → handoff (기획서 5.3, 평가 5행 H2 회귀)
+#  - 수치·단위는 근거 원문 그대로, 근거 밖 지식 금지
+#  - 문장 끝 [문서 n] 표기 → 응답 sources 를 실제 인용한 청크로 좁힌다 (표기는 응답 본문에서 지움)
 PROMPT = (
-    "아래는 업로드된 PDF에서 검색한 내용입니다. PDF 내용에 근거해 한국어로 답변하세요. "
-    "질문이 한 단어 또는 주제명이라면 그 주제를 PDF에 근거해 설명하세요. "
-    "PDF에 없는 사실을 만들어 내지 마세요. 근거가 정말 없다면 'N/A'라고 답하세요.\n\n"
-    "PDF 검색 내용:\n{context}\n\n"
+    "아래는 안전보건 문서(KOSHA 기술지침·법령·물질안전지침)에서 검색한 근거 블록입니다. 근거 블록 내용에만 근거해 한국어로 답하세요.\n"
+    "규칙:\n"
+    "1. 근거에 없는 사실·수치는 쓰지 마세요. 수치와 단위는 근거 원문 그대로 옮기세요.\n"
+    "2. 사용한 근거 블록 번호를 문장 끝에 [문서 n] 형식으로 붙이세요.\n"
+    "3. 다음 질문에는 근거가 있어도 답하지 말고 'N/A'만 출력하세요: 증상·질병·중독 여부 등 의료적 판단을 구하는 질문, "
+    "현재 농도·압력·설비 상태 등 실시간 측정값을 묻는 질문, 산업안전보건과 무관한 질문.\n"
+    "4. 근거가 질문에 직접 답하지 못하면 'N/A'만 출력하세요.\n\n"
+    "근거 블록:\n{context}\n\n"
     "질문: {question}\n\n"
     "답변:"
 )
+_CITATION = re.compile(r"\s*\[문서\s*(\d+)\]")
 
 
 def source_of(doc) -> dict:
@@ -115,7 +124,7 @@ def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=
     if not docs_scores:
         return _handoff(0, top_score, substance)
 
-    blocks, sources, total = [], [], 0
+    blocks, sources, by_number, total = [], [], {}, 0
     for i, (doc, _) in enumerate(docs_scores, start=1):
         content = (doc.page_content or "").strip()
         if not content:
@@ -127,6 +136,7 @@ def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=
         blocks.append(f"[문서 {i}]\n{excerpt}")
         total += len(excerpt)
         src = source_of(doc)
+        by_number[i] = src
         if src not in sources:
             sources.append(src)
     if not blocks:
@@ -138,11 +148,15 @@ def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=
         raise ApiError(503, "LLM_TIMEOUT", "LLM 응답이 지연되고 있습니다.")
 
     raw = msg.content
-    final = (raw if isinstance(raw, str) else str(raw)).strip()
+    text = (raw if isinstance(raw, str) else str(raw)).strip()
     usage = getattr(msg, "usage_metadata", None) or {}
+    cited = [by_number[int(n)] for n in _CITATION.findall(text) if int(n) in by_number]
+    final = _CITATION.sub("", text).strip()
     handoff = not final or final.upper() == "N/A"
     if handoff:
         final, sources = NO_EVIDENCE, []
+    elif cited:  # 인용 표기가 있으면 실제로 쓴 청크의 출처만 (없으면 검색 청크 전체 유지)
+        sources = [src for src in sources if src in cited]
 
     log_extra(hits=len(docs_scores), top_score=top_score, substance=substance, handoff=handoff, needs_review=False,
               tokens_in=usage.get("input_tokens"), tokens_out=usage.get("output_tokens"))
