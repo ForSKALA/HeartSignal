@@ -47,8 +47,13 @@ load_dotenv(BASE_DIR / ".env")
 
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
-if not OPENAI_API_KEY:
-    raise RuntimeError("OPENAI_API_KEY가 설정되지 않았습니다.")
+# [P2] LLM 키가 없어도 기동한다 (AGENTS.md 2장 4번: LLM 장애에도 경보·방송·신고는 동작).
+#  - /rag-query·업로드는 503 NOT_READY, 경보 에이전트는 인덱스 docstore 의 문서 근거·템플릿으로 그대로 동작
+#  - 인덱스 로드(FAISS.load_local)는 임베딩 객체만 필요하고 API 를 부르지 않으므로 자리표시 키로 읽는다
+LLM_AVAILABLE = bool(OPENAI_API_KEY)
+if not LLM_AVAILABLE:
+    print("⚠️ OPENAI_API_KEY 없음: /rag-query·업로드는 503, 경보 에이전트는 문서 근거·템플릿으로 동작합니다.")
+    os.environ["OPENAI_API_KEY"] = "missing-llm-key-placeholder"
 
 # [P3] 인증·오류·로그 (로직은 auth.py / middleware.py, 여기서는 연결만)
 from fastapi import Depends
@@ -56,6 +61,11 @@ import middleware
 from middleware import ApiError, current_request_id, elapsed_ms, log_extra
 # [P2] 답변 조립 로직은 rag_answer.py (검색 → 근거 블록 → LLM → 출처)
 from rag_answer import answer_with_sources
+
+
+def _require_llm() -> None:
+    if not LLM_AVAILABLE:
+        raise ApiError(503, "NOT_READY", "LLM(OPENAI_API_KEY)이 설정되지 않아 질의·적재를 할 수 없습니다. 경보 기능은 동작합니다.")
 LLM_MODEL = os.getenv("LLM_MODEL", "gpt-4o")
 LLM_TIMEOUT_S = float(os.getenv("LLM_TIMEOUT_S", "20"))
 REWRITE_MODEL = os.getenv("REWRITE_MODEL", "gpt-4o-mini")  # 검색어 재작성용 (답변 품질과 무관, 지연 최소화)
@@ -118,6 +128,11 @@ if os.path.exists(f"{pdf_path}/index.faiss") and os.path.exists(f"{pdf_path}/ind
 else:
     print("❌ VECTORSTORE_PDF 벡터화된 파일이 없습니다.")
 
+# [P2] 경보 에이전트(확장)에 근거 조회용 저장소 연결 — 로직은 agent/ 패키지, 여기서는 연결만
+import agent as heartsignal_agent
+heartsignal_agent.configure(VECTORSTORE_PDF, VECTORSTORE_WEB)
+print("✅ 에이전트 근거 조회 준비" if heartsignal_agent.is_configured() else "❌ 에이전트 근거 없음 (템플릿만 동작)")
+
 # ✅ PDF 텍스트 추출
 def load_paper(file_path: str) -> str:
     reader = PdfReader(file_path)
@@ -126,6 +141,7 @@ def load_paper(file_path: str) -> str:
 # ✅ 웹 검색 → 외부 정보 벡터화
 @app.post("/upload-topic", summary="웹 검색 → 외부 정보 벡터화", tags=["외부 정보"], dependencies=[Depends(require_role("admin"))])
 async def upload_topic(topic: str = Query(..., description="검색할 주제")):
+    _require_llm()
     try:
         import os, re, aiohttp
         from langchain_text_splitters import RecursiveCharacterTextSplitter
@@ -216,6 +232,7 @@ async def upload_topic(topic: str = Query(..., description="검색할 주제")):
 # ✅ PDF 업로드 및 벡터화
 @app.post("/upload-paper", summary="PDF 업로드 및 벡터화", tags=["PDF 처리"], dependencies=[Depends(require_role("admin"))])
 async def upload_pdf(file: UploadFile = File(...)):
+    _require_llm()
     if not file.filename.endswith(".pdf"):
         raise HTTPException(status_code=400, detail="PDF 파일만 허용됩니다.")
 
@@ -328,6 +345,7 @@ def fallback_extract_from_context(context: str, question: str) -> str | None:
 @app.post("/rag-query", response_model=AnswerResponse, summary="Closed Source LLM + 벡터 DB 질의", tags=["질의 응답"], dependencies=[Depends(get_current_user)])
 async def rag_query(rag_request: RAGRequest = Body(...)):
     log_extra(prompt_len=len(rag_request.prompt), source=rag_request.source)
+    _require_llm()
     # 1. 벡터스토어 및 LLM 결정
     if rag_request.source == "web":
         if VECTORSTORE_WEB is None:
