@@ -61,6 +61,9 @@ ASYNC_DB_URL=mysql+aiomysql://root:${DB_PASSWORD}@db:3306/sql_db?charset=utf8mb4
 CORS_ORIGINS=http://localhost:5174   # 쉼표 구분. RAG·Java 인증 서버 공통
 DB_URL=jdbc:mariadb://db:3306/sql_db  # Java 인증 서버 (로컬 기본: localhost:53301)
 LOGIN_REDIRECT_URL=/#/home           # Java 로그인 성공 후 이동 주소 (web 과 같은 origin 기준)
+SEED_ADMIN_PASSWORD=                 # 시연 계정 비밀번호 (db/seed-demo-users.sh, admin1·foreman1·worker1)
+SEED_FOREMAN_PASSWORD=
+SEED_WORKER_PASSWORD=
 LLM_MODEL=gpt-4o
 LLM_TIMEOUT_S=20
 ```

@@ -80,6 +80,7 @@ db/k8s/    statefulset.yaml, service.yaml, create-init-configmap.sh
 
 - rag: `ASYNC_DB_URL=mysql+aiomysql://root:$(DB_PASSWORD)@heartsignal-db:3306/sql_db?charset=utf8mb4`
 - auth: `DB_URL=jdbc:mariadb://heartsignal-db:3306/sql_db` (`SimpleAuthServer`가 환경변수로 읽고, 없으면 로컬 기본값)
+- auth: `CORS_ORIGINS`·`JWT_ISSUER`는 `heartsignal-config`(envFrom)에서 받습니다. `LOGIN_REDIRECT_URL`은 기본값 `/#/home`(같은 호스트의 web)으로 충분해서 설정하지 않습니다 ([#14](https://github.com/ForSKALA/HeartSignal/pull/14))
 
 ## 5. 이미지 빌드와 Harbor push
 
@@ -126,6 +127,45 @@ curl -I https://heartsignal.class-4.skala-us.com/
 curl -s https://heartsignal.class-4.skala-us.com/openapi.json | head -c 200
 ```
 
+**TLS 확인:** 와일드카드 인증서는 클러스터에 이미 발급되어 있습니다 (2026-10-23 확인: Certificate `wildcard-class-4-skala-us-com` READY=True, Secret `wildcard-class-4-skala-us-com-tls`, ClusterIssuer `letsencrypt-prod`, `CN=*.class-4.skala-us.com`, Let's Encrypt 발급, 만료 2026-12-14 — cert-manager가 자동 갱신). 브라우저·curl이 `Kubernetes Ingress Controller Fake Certificate`를 받으면 인증서 문제가 아니라 **그 호스트의 Ingress가 아직 없다**는 뜻입니다.
+
+```bash
+kubectl get certificate -n class-4 wildcard-class-4-skala-us-com
+echo | openssl s_client -connect heartsignal.class-4.skala-us.com:443 \
+  -servername heartsignal.class-4.skala-us.com 2>/dev/null | openssl x509 -noout -subject -issuer
+# 정상: subject=CN=*.class-4.skala-us.com, issuer=Let's Encrypt
+```
+
+### 6.1 시연 계정 시드 (P3, 배포 후 1회)
+
+가입 화면은 항상 `worker`만 만들므로(AGENTS.md 7.1), 시연용 `admin1`·`foreman1`·`worker1`은 `db/seed-demo-users.sh`로 만듭니다. `/api/signup`으로 가입하고 DB에서 role을 부여한 뒤, 실제 로그인해 JWT `role`까지 확인합니다. 여러 번 실행해도 결과가 같습니다.
+
+**선행 조건**
+1. auth 이미지에 [#14](https://github.com/ForSKALA/HeartSignal/pull/14)(회원가입 JSON 응답)가 포함되어 있어야 합니다. 이전 이미지는 회원가입에 302를 돌려줘 스크립트가 `가입 실패 (HTTP 302)`로 멈춥니다.
+2. DB(`heartsignal-db-0`)·auth·Ingress가 떠 있고, `https://heartsignal.class-4.skala-us.com/login`이 200이어야 합니다 (위 TLS 확인 참고).
+3. `kubectl exec` 권한 (`class-4` 네임스페이스).
+
+**실행**
+
+```bash
+# 비밀번호는 env 파일에만 둡니다 (기본 db/.env, 커밋 금지). 키 이름은 db/.env-example 참고
+#   SEED_ADMIN_PASSWORD / SEED_FOREMAN_PASSWORD / SEED_WORKER_PASSWORD
+AUTH_URL=https://heartsignal.class-4.skala-us.com db/seed-demo-users.sh k8s
+```
+
+정상 출력:
+
+```
+인증 서버: https://heartsignal.class-4.skala-us.com (모드: k8s)
+[admin1] 가입 완료
+[admin1] 로그인 확인 — JWT role=admin
+...
+시연 계정 3개 준비 완료
+```
+
+- 이미 있는 계정은 가입을 건너뛰고 role만 다시 맞춥니다. `로그인 실패 (HTTP 401)`이 나오면 그 계정이 env 파일과 다른 비밀번호로 이미 있다는 뜻입니다.
+- 공개 저장소이므로 시연 비밀번호를 채팅·커밋으로 공유하지 않습니다. 발표가 끝나면 계정을 지우거나 비밀번호를 바꿉니다.
+
 최종 확인은 AGENTS.md 9장 기준으로 ingress 주소에서 로그인 → 질의 → S1 시나리오입니다. 실행한 명령과 결과는 PR 본문에 붙입니다.
 
 ## 7. 협업 규칙
@@ -153,9 +193,10 @@ curl -s https://heartsignal.class-4.skala-us.com/openapi.json | head -c 200
 
 ## 9. 남은 문제
 
-- [ ] **P3**: 로그인 성공 시 `http://localhost:8008/index.html`로 이동 (`SimpleAuthServer.java:287`, `login.html:58`)
-- [ ] **음성**: `Voice-AI/app/main.py`의 `SECRET_KEY = "RANDOM_SECRET_KEY"` 하드코딩 → `JWT_SECRET`과 달라 토큰 검증 실패
+- [x] **P3**: 로그인 성공 시 `http://localhost:8008/index.html`로 이동 → `LOGIN_REDIRECT_URL`(기본 `/#/home`)로 변경 ([#14](https://github.com/ForSKALA/HeartSignal/pull/14))
+- [x] **음성**: `Voice-AI/app/main.py`의 `SECRET_KEY = "RANDOM_SECRET_KEY"` 하드코딩 → `JWT_SECRET` 환경변수로 변경 ([#8](https://github.com/ForSKALA/HeartSignal/pull/8))
 - [ ] **음성**: torch CUDA 버전 설치로 이미지 3.49GB → CPU 전용 torch 권장
 - [ ] **P4**: `Voice-AI/app/static/index.html`이 `http://localhost:8080/api/auth/check` 호출
 - [ ] **P4**: AGENTS.md 5·6장에 k8s용 Service 이름·환경변수 값 추가
 - [ ] **전원**: Ingress 호스트 이름(안: `heartsignal.class-4.skala-us.com`), 이미지 태그 규칙, ArgoCD 사용 여부 확정
+- [ ] **P4·P3**: 클러스터 실제 배포 후 시연 계정 시드 실행 (6.1). 2026-10-23 기준 `class-4`에 HeartSignal 리소스 없음
