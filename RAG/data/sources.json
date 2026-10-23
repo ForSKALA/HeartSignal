@@ -1,0 +1,552 @@
+{
+  "documents": [
+    {
+      "path": "안전지침/노르말핵산.pdf",
+      "source": "안전지침/노르말핵산.pdf",
+      "doc_type": "emergency",
+      "substance": "n_hexane",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/메탄올.pdf",
+      "source": "안전지침/메탄올.pdf",
+      "doc_type": "emergency",
+      "substance": "methanol",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/메테인.pdf",
+      "source": "안전지침/메테인.pdf",
+      "doc_type": "emergency",
+      "substance": "methane",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/벤젠.pdf",
+      "source": "안전지침/벤젠.pdf",
+      "doc_type": "emergency",
+      "substance": "benzene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/부타디엔.pdf",
+      "source": "안전지침/부타디엔.pdf",
+      "doc_type": "emergency",
+      "substance": "butadiene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/불산.pdf",
+      "source": "안전지침/불산.pdf",
+      "doc_type": "emergency",
+      "substance": "hydrogen_fluoride",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/수산화나트륨.pdf",
+      "source": "안전지침/수산화나트륨.pdf",
+      "doc_type": "emergency",
+      "substance": "sodium_hydroxide",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/수소.pdf",
+      "source": "안전지침/수소.pdf",
+      "doc_type": "emergency",
+      "substance": "hydrogen",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/스티렌 모노머.pdf",
+      "source": "안전지침/스티렌 모노머.pdf",
+      "doc_type": "emergency",
+      "substance": "styrene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/아세틸렌.pdf",
+      "source": "안전지침/아세틸렌.pdf",
+      "doc_type": "emergency",
+      "substance": "acetylene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/암모니아.pdf",
+      "source": "안전지침/암모니아.pdf",
+      "doc_type": "emergency",
+      "substance": "ammonia",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/에틸렌.pdf",
+      "source": "안전지침/에틸렌.pdf",
+      "doc_type": "emergency",
+      "substance": "ethylene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/에틸벤젠.pdf",
+      "source": "안전지침/에틸벤젠.pdf",
+      "doc_type": "emergency",
+      "substance": "ethylbenzene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/염소.pdf",
+      "source": "안전지침/염소.pdf",
+      "doc_type": "emergency",
+      "substance": "chlorine",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/염화수소(염산).pdf",
+      "source": "안전지침/염화수소(염산).pdf",
+      "doc_type": "emergency",
+      "substance": "hydrogen_chloride",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/이산화황.pdf",
+      "source": "안전지침/이산화황.pdf",
+      "doc_type": "emergency",
+      "substance": "sulfur_dioxide",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/일산화탄소.pdf",
+      "source": "안전지침/일산화탄소.pdf",
+      "doc_type": "emergency",
+      "substance": "carbon_monoxide",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/자일렌.pdf",
+      "source": "안전지침/자일렌.pdf",
+      "doc_type": "emergency",
+      "substance": "xylene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/톨루엔.pdf",
+      "source": "안전지침/톨루엔.pdf",
+      "doc_type": "emergency",
+      "substance": "toluene",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/프로판.pdf",
+      "source": "안전지침/프로판.pdf",
+      "doc_type": "emergency",
+      "substance": "propane",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/황산.pdf",
+      "source": "안전지침/황산.pdf",
+      "doc_type": "emergency",
+      "substance": "sulfuric_acid",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/황화수소.pdf",
+      "source": "안전지침/황화수소.pdf",
+      "doc_type": "emergency",
+      "substance": "hydrogen_sulfide",
+      "url": "",
+      "published": ""
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_G-78-2021.pdf",
+      "source": "KOSHA GUIDE G-78-2021",
+      "title": "유해·위험물 탱크로리의 검사 및 입·출하 등에 관한 기술지침",
+      "doc_type": "guide",
+      "url": "https://portal.kosha.or.kr/api/portal24/bizA/p/files/downloadAtchFile?atcflNo=FL00015883678&atcflSeq=7&isDirect=N&taskSeCd=",
+      "published": "2021-12",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_P-64-2012.pdf",
+      "source": "KOSHA GUIDE P-64-2012",
+      "title": "정유 및 석유화학 공정에서 황화철 취급에 관한 안전관리 기술지침",
+      "doc_type": "guide",
+      "url": "https://portal.kosha.or.kr/api/portal24/bizA/p/files/downloadAtchFile?atcflNo=FL00015884220&atcflSeq=3&isDirect=N&taskSeCd=",
+      "published": "2012-07-18",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_C-C-87-2026.pdf",
+      "source": "KOSHA GUIDE C-C-87-2026",
+      "title": "가스누출감지경보기 설치 및 유지보수에 관한 기술지원규정",
+      "doc_type": "guide",
+      "url": "https://portal.kosha.or.kr/api/portal24/bizA/p/files/downloadAtchFile?atcflNo=CTC2026012916323595581595&atcflSeq=1&isDirect=N&taskSeCd=",
+      "published": "2026-01-30",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_E-G-18-2026.pdf",
+      "source": "KOSHA GUIDE E-G-18-2026",
+      "title": "밀폐공간 작업 프로그램 수립 및 시행에 관한 기술지원규정",
+      "doc_type": "guide",
+      "url": "https://portal.kosha.or.kr/archive/resources/tech-support/search/health/history?techGdlnNo=E-G-18-2026",
+      "published": "2026-01-30",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_A-G-14-2026.pdf",
+      "source": "KOSHA GUIDE A-G-14-2026",
+      "title": "용접·용단 작업 시 화재예방에 관한 기술지원규정",
+      "doc_type": "guide",
+      "url": "https://portal.kosha.or.kr/api/portal24/bizA/p/files/downloadAtchFile?atcflNo=CTC2026012909355295338479&atcflSeq=1&isDirect=N&taskSeCd=",
+      "published": "2026-01-30",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_P-139-2013.pdf",
+      "source": "KOSHA GUIDE P-139-2013",
+      "title": "가스용기의 비상조치방법에 관한 기술지침",
+      "doc_type": "guide",
+      "url": "https://portal.kosha.or.kr/api/portal24/bizA/p/files/downloadAtchFile?atcflNo=FL00015884138&atcflSeq=3&isDirect=N&taskSeCd=",
+      "published": "2013-11-25",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_H-117-2019.pdf",
+      "source": "KOSHA GUIDE H-117-2019",
+      "title": "황화수소 취급근로자의 중독예방 및 응급대응 지침",
+      "doc_type": "guide",
+      "url": "https://portal.kosha.or.kr/api/portal24/bizA/p/files/downloadAtchFile?atcflNo=FL00015883721&atcflSeq=3&isDirect=N&taskSeCd=",
+      "published": "2019-10-01",
+      "collection": "pdf",
+      "substance": "hydrogen_sulfide",
+      "cas": "7783-06-4"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_acetylene.pdf",
+      "source": "안전보건공단 MSDS 아세틸렌",
+      "title": "아세틸렌 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "acetylene",
+      "cas": "74-86-2",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2025-08-08",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_butadiene.pdf",
+      "source": "안전보건공단 MSDS 부타디엔",
+      "title": "부타디엔 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "butadiene",
+      "cas": "106-99-0",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2025-12-02",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_ethylene.pdf",
+      "source": "안전보건공단 MSDS 에틸렌",
+      "title": "에틸렌 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "ethylene",
+      "cas": "74-85-1",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2026-09-23",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_hydrogen.pdf",
+      "source": "안전보건공단 MSDS 수소",
+      "title": "수소 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "hydrogen",
+      "cas": "1333-74-0",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2025-08-08",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_hydrogen_sulfide.pdf",
+      "source": "안전보건공단 MSDS 황화수소",
+      "title": "황화수소 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "hydrogen_sulfide",
+      "cas": "7783-06-4",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2025-12-02",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_methane.pdf",
+      "source": "안전보건공단 MSDS 메테인",
+      "title": "메테인 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "methane",
+      "cas": "74-82-8",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2025-08-08",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_propane.pdf",
+      "source": "안전보건공단 MSDS 프로판",
+      "title": "프로판 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "propane",
+      "cas": "74-98-6",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2025-08-08",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/KOSHA_MSDS_sulfur_dioxide.pdf",
+      "source": "안전보건공단 MSDS 이산화황",
+      "title": "이산화황 공개 물질안전보건자료",
+      "doc_type": "emergency",
+      "parser": "msds",
+      "substance": "sulfur_dioxide",
+      "cas": "7446-09-5",
+      "url": "https://msds.kosha.or.kr/MSDSInfo/kcic/msdssearchAll.do",
+      "published": "2025-08-08",
+      "license": "공공누리 제2유형: 출처표시·상업적 이용금지",
+      "collection": "pdf"
+    },
+    {
+      "path": "안전지침/supplemental/MOEL_SafetyRules_2026_232_618.pdf",
+      "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+      "title": "안전보건규칙",
+      "doc_type": "law",
+      "url": "https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=273603&efYd=20260302",
+      "published": "2025-09-01",
+      "effective": "2026-03-02",
+      "collection": "web"
+    },
+    {
+      "path": "안전지침/supplemental/MOEL_ExposureLimits_2020-48.pdf",
+      "source": "고용노동부고시 제2020-48호 별표1",
+      "title": "황화수소 노출기준",
+      "doc_type": "law",
+      "substance": "hydrogen_sulfide",
+      "cas": "7783-06-4",
+      "url": "https://www.law.go.kr/LSW/admRulLsInfoP.do?admRulSeq=2100000186058",
+      "published": "2020-01-14",
+      "effective": "2020-01-16",
+      "collection": "web",
+      "notes": "이미지 별표는 PDF 물리 43쪽의 728번 황화수소 행과 표 머리글을 눈으로 대조해 전사. 다른 물질 행은 미적재.",
+      "sections": [
+        {
+          "section": "별표1>728 황화수소",
+          "text": "유해물질의 명칭: 황화수소 (Hydrogen sulfide)\n화학식: H2S\n노출기준 TWA: 10 ppm\n노출기준 STEL: 15 ppm\nCAS 번호: 7783-06-4",
+          "page": 43,
+          "page_end": 43
+        }
+      ]
+    },
+    {
+      "path": "안전지침/supplemental/NICS_KeyInfoGuide_2024.pdf",
+      "source": "화학물질안전원 사고대비물질 키인포가이드 (2024 개정판)",
+      "title": "사고대비물질 키인포가이드",
+      "doc_type": "emergency",
+      "url": "https://www.mcee.go.kr/home/file/readDownloadFile.do?fileId=150261&fileSeq=1",
+      "published": "2024",
+      "collection": "pdf",
+      "notes": "공식 게시일 2025-03-19. 기존 물질과 일치하는 10종의 20쪽만 적재. 인쇄물 원문 보존.",
+      "sections": [
+        {
+          "section": "메틸알코올                                                                                      Methyl alcohol>기본정보·물리화학적 특성·위험성",
+          "text": "       메틸알코올                                                                                      Methyl alcohol\n                  구조              CAS번호                    67-56-1\n                                  국문유사명                    메탄올, 수산화메틸, 모노하이드록시메탄, 카빈올, 메틸알콜\n                                  영문유사명                    Methanol, Methyl hydroxide, Monohydroxymethane, Carbinol\n                                  화학물질군                    알코올류\n                                  유해화학물질관리번호 97-1-80(유독물질)\n                                  UN번호                     1230\n                                  ERG대응지침번호                131: 인화성 액체-독성\n                                                       물리화학적 특성\n      상태: 액체                      옥탄올/물 분배계수(logKow): -0.77\n      색상: 무색                      인화점: 11 ℃                                   발화점: 464 ℃\n      냄새: 알코올 냄새                  폭발한계 (하한/상한): 6% / 36.5%\n                                  용해도\n      분자식·량: CH4O(32.04)          • 물: 가용성\n                                  • 용매: 에탄올, 에테르, 벤젠 등 대부분의 유기용매, 케톤류, 아세톤, 클로로폼에 용해\n      pH: -                                 작업장 허용노출기준                           일반 인구집단 대상 급성노출기준\n      끓는점: 64.5 ℃                                                          • [AIHA]ERPG-1: 200 ppm (260 mg/m3)\n                                  • TWA[노동부, NIOSH, ACGIH, OSHA]           • [AIHA]ERPG-2: 1,000 ppm (1,300 mg/m3)\n      증기압: 127 mmHg @ 25 ℃          : 200 ppm (260 mg/m3), 피부              • [AIHA]ERPG-3: 5,000 ppm (6,500 mg/m3)\n      밀도/비중: 0.7914 g/cm3 @ 20 ℃ • STEL[노동부, NIOSH,3 ACGIH, OHSA]          • [NAC/NRC]AEGL-1: 530 ppm (60분)\n                                    : 250 ppm (325 mg/m ), 피부              • [NAC/NRC]AEGL-2: 2,100 ppm (60분)\n      증기밀도: 1.11 (Air = 1)                                                 • [NAC/NRC]AEGL-3: 7,200 ppm (60분)\n               전기/전자 공학 산업, 연료 산업, 금속 추출, 플라스틱 유연제, 금속 정제, 페인트, 래커, 니스, 종이, 펄프,\n        용도\n               사진 산업, 접착제, 부동액, 세척제와 살균제, 연료 첨가제, 약품 생산의 용매\n      노출경로                                               인체노출 유해성 / 증상\n        흡입     자극, 기침, 두통, 현기증, 졸음, 오심, 구토, 쇠약, 흐린 시야, 호흡부전, 혼수\n        피부     건조, 홍반, 탈지, 흡입증상과 유사\n        안구     자극, 충혈, 통증, 흐린 시야, 시력의 손상 및 상실,\n106     경구     복통, 호흡 곤란, 구토, 경련, 무의식, 흡입증상과 유사",
+          "page": 113,
+          "page_end": 113,
+          "substance": "methanol",
+          "cas": "67-56-1"
+        },
+        {
+          "section": "메틸알코올                                                                                      Methyl alcohol>방제요령·응급조치",
+          "text": "                     사고대비물질,\n 국내규제                 유독물질\n                                       제4류 알코올류           노출, 작업, 관리            가연성\n                     NFPA 704                                     물질분류 및 표시\n              •건강: 1(다소 유해, 호흡보호구 착용)\n              •화재: 3(상온에서 쉽게 발화할 수 있음)\n              •반응: 0(물과 반응하지 않음)\n              •특수: -\n       • 열, 스파크, 화염, 마찰, 충격, 오염에 의해 쉽게 점화하고, 폭발 위험성 존재\n       • 증기는 공기와 결합하여 폭발성 혼합물 형성가능\n위험     • 독성: 흡입, 섭취, 피부 흡수 시 치명적\n       • 혼합ㆍ적재금지: 이수소화베릴륨, 클로로폼, 산화성 물질, 칼륨-터트-부톡시드, 가연성 물질, 금속, 산화제, 염기, 산\n       • 연소/열분해 생성물: 일산화탄소, 이산화탄소, 포름알데히드\n       • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우 즉시 철수                                 화재동반 운송사고\n       • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단                        발생 시 대피거리\n화재     • 소화제                                                                 반경 0.8 km\n진압      - 소형화재: 분말 소화약제, 이산화탄소, 분무주수(Water spray), 수성막포소화약제(AFFF),\n요령              합성계면활성제포소화약제, 알코올형포소화약제                                   유출 시 초기이격거리\n        - 대형화재: 분무주수(Water spray), 미(微)분무주수(Water fog), 수성막포소화약제(AFFF),\n                합성계면활성제포소화약제, 알코올형포소화약제                                      반경 50 m\n       • 열/스파크/점화원 제거, 수로, 하수, 지하 등 밀폐공간으로의 유입 차단                         유출 시 방호활동거리\n       • 증기를 줄이기 위해 증기억제 폼 사용 가능\n누출\n       • 누출물 확산 방지/처리를 위해 도랑을 파거나 제방을 쌓아 가둘 것\n방재\n       • 방재약품: 마른 흙, 마른 모래 또는 비가연성 물질(팽창 질석, 팽창 진주암 등), 활성탄\n요령                                                                        풍하방향으로 50 m 이상\n       • 보호장비: SCBA, 완전 밀폐형 증기 보호의, 내화학성 보호복\n       • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기\n노출경로                                           응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n 흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물과 비누를 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구    눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n       구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 의식이 있을 경우 물로 입을 헹구고\n 경구                                                                                        107\n       구토 및 호흡기계 질환이 없으면 물 공급, 보온 유지 후 병원 이송",
+          "page": 114,
+          "page_end": 114,
+          "substance": "methanol",
+          "cas": "67-56-1"
+        },
+        {
+          "section": "벤젠                                                                                                  Benzene>기본정보·물리화학적 특성·위험성",
+          "text": "      벤젠                                                                                                  Benzene\n                 구조               CAS번호                        71-43-2\n                                  국문유사명                        벤졸, 콜 나프타, 페닐 하이드라이드, 피로벤졸, 벤진\n                                                               Al3-00808, (6)Annulene, Benzol 90, Benzole, Bicarburet of\n                                  영문유사명\n                                                               hydrogen, Coal naphtha, Phenyl hydride, Pyrobenzol, Benzine\n                                  화학물질군                        방향족 탄화수소류\n                                  유해화학물질관리번호                   97-1-99(유독물질)\n                                  UN번호                         1114\n                                  ERG대응지침번호                    130: 인화성 액체(물과 섞이지 않는/유해성)\n                                                   물리화학적 특성\n     상태: 액체                       옥탄올/물 분배계수(logKow): 2.13\n     색상: 연한 노란색                   인화점: -11.1 ℃                                 발화점: 592 ℃\n     냄새: 휘발유 냄새(냄새역치 = 4.68 ppm) 폭발한계 (하한/상한): 1.4% / 8%\n                                  용해도\n                                  • 물: 난용성 (1.79 g/L @ 25 ℃)\n     분자식·량: C6H6(78.11)\n                                  • 용매: 알코올, 클로로폼, 에테르, 이황화탄소, 사염화탄소, 초산, 아세톤, 오일류, 대부분의\n                                        유기용매류와 혼합\n     pH: -                                작업장 허용노출기준                           일반 인구집단 대상 급성 노출기준\n                                  • TWA[노동부, ACGIH]                      • [AIHA]ERPG-1: 50 ppm* (150 mg/m3)\n     끓는점: 80.08 ℃\n                                    : 0.5 ppm (1.6 mg/m3), 피부            • [AIHA]ERPG-2: 150 ppm (470 mg/m3)\n                                  • TWA[NIOSH]: 0.1 ppm (0.3 mg/m3)      • [AIHA]ERPG-3: 1,000 ppm (3,100 mg/m3)\n     증기압: 94.8 mmHg @ 25 ℃\n                                  • TWA[OSHA]: 1 ppm (3.2 mg/m3)           * 냄새로 감지 가능\n     밀도/비중: 0.8765 g/cm3 @ 20 ℃ • STEL[노동부, ACGIH]                       • [NAC/NRC]AEGL-1: 52 ppm (60분)\n                                    : 2.5 ppm (8 mg/m3), 피부              • [NAC/NRC]AEGL-2: 800 ppm (60분)\n     증기밀도: 2.8 (Air = 1)          • STEL[NIOSH]: 1 ppm (3.2 mg/m3)       • [NAC/NRC]AEGL-3: 4,000* ppm (60분)\n                                  • STEL[OSHA]: 5 ppm (16 mg/m3)           * ≥10% LEL (Lower Explosive Limit)\n              폴리머, 세제, 살충제, 염료, 플라스틱, 수지와 같은 산업용 화학물질 제조\n       용도\n              왁스, 수지, 오일, 천연 고무 등의 용제, 약, 염료, 살충제와 플라스틱 합성의 주원료\n     노출경로                                           인체노출 유해성 / 증상\n       흡입     호흡기 자극, 폐 자극, 호흡 부전, 골수 손상, 중추신경계 기능저하\n       피부     자극, 홍반, 부어오름, 수포, 피부염\n       안구     자극, 통증, 염증, 각막손상, 결막염, 시력의 손상 또는 상실\n32     경구     두통, 메스꺼움, 구토, 어지러움, 졸림, 간/신장 손상, 화학적 폐렴, 무의식, 혼수, 호흡 부전",
+          "page": 39,
+          "page_end": 39,
+          "substance": "benzene",
+          "cas": "71-43-2"
+        },
+        {
+          "section": "벤젠                                                                                                  Benzene>방제요령·응급조치",
+          "text": "                 사고대비물질,                         노출, 작업, 관리,\n 국내규제\n                                제4류 제1석유류\n                                                                    가연성, 독성\n                  유독물질              (비수용성)       제조, 허용, 특별\n                  NFPA 704                                물질분류 및 표시\n          •건강: 2(유해, 전면형 자급식 공기호흡기, 눈 보호구 착용)\n          •화재: 3(상온에서 쉽게 발화할 수 있음)\n          •반응: 0(물과 반응하지 않음)\n          •특수: -\n       • 열/스파크/화염에 의해 쉽게 점화, 증기는 공기와 결합하여 폭발성 혼합물을 형성가능\n       • 용기가 열에 노출되면 파열 또는 폭발할 수 있음\n위험     • 혼합ㆍ적재금지: 황산, 망간산화물, 산, 할로겐, 산화제, 분말크롬산무수물, 플루오르화물, 과염소산염 등의\n                  산화성 물질\n       • 연소/열분해 생성물: 일산화탄소, 이산화탄소, 자극적/독성 흄과 가스\n       • 분무/무상주수, 합성계면활성제포소화약제 사용, 직사주수 금지                         화재동반 운송사고\n       • 유해증기의 흡입을 피하고 바람을 등지고 있을 것, 다량의 물로 노출용기 냉각                발생 시 대피거리\n       • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우 즉시 철수\n화재                                                                   반경 0.8 km\n       • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단\n진압\n       • 소화제                                                      유출 시 초기이격거리\n요령\n        - 소형화재: 분말 소화약제, 이산화탄소, 분무주수(Water spray), 합성계면활성제포소화약제\n        - 대형화재: 분무주수(Water spray), 미(微)분무주수(Water fog), 합성계면활성제\n                                                                      반경 50 m\n                포소화약제\n                                                                  유출 시 방호활동거리\n       • 증기를 줄이기 위해 분무주수나 증기억제 폼 사용 가능\n누출     • 흡수된 물질은 스파크가 발생하지 않는 도구를 이용하여 수거\n방재     • 방재약품: 마른 흙, 마른 모래, 비가연성 물질(팽창 질석, 팽창 진주암 등)                대규모 유출 시\n요령     • 보호장비: SCBA, 내화학성 보호복                                     풍하방향으로 300 m 이상\n       • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기\n노출경로                                     응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n피부     다량의 물과 비누를 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n안구     눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n       구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 의식이 있을 경우 물로 입을\n경구                                                                                  33\n       헹구고 구토 및 호흡기계 질환이 없으면 물 공급, 보온 유지 후 병원 이송",
+          "page": 40,
+          "page_end": 40,
+          "substance": "benzene",
+          "cas": "71-43-2"
+        },
+        {
+          "section": "플루오르화수소                                                                                Hydrogen fluoride>기본정보·물리화학적 특성·위험성",
+          "text": "      플루오르화수소                                                                                Hydrogen fluoride\n                  구조                 CAS번호                     7664-39-3\n                                     국문유사명                     불산, 불화수소산, 불산무수물, 플루오르화수소산 무수물, 안티살 2B\n                                     영문유사명      Hydrofluoric acid, Etching acid, Antisal 2B\n                                     화학물질군      강산성류\n                                     유해화학물질관리번호 97-1-382(유독물질)\n                                     UN번호                      기체: 1052, 액체: 1790\n                                                               기체 125: 가스-독성 및/또는 부식성\n                                     ERG대응지침번호\n                                                               액체 157: 물질-독성 그리고/또는 부식성(가연성/수분에 민감)\n                                                        물리화학적 특성\n     상태: 기체, 액체(<19.5 ℃)             옥탄올/물 분배계수(logKow): -1.4\n     색상: 무색                          인화점: -                                      발화점: -\n     냄새: 자극적 냄새                      폭발한계 (하한/상한): - / -\n                                     용해도\n     분자식·량: HF(20.01)                • 물: 가용성\n                                     • 용매: 알코올 등 유기용매에 용해\n     pH: 0.95(40% 불산)                          작업장 허용노출기준                           일반 인구집단 대상 급성노출기준\n     끓는점: 20 ℃                       • TWA[노동부, ACGIH]                         • [AIHA]ERPG-1: 2 ppm* (1.6 mg/m3)\n                                       : 0.5 ppm (0.40 mg/m3), 피부              • [AIHA]ERPG-2: 20 ppm (16 mg/m3)\n     증기압: 917 mmHg @ 25 ℃            • TWA[NIOSH, OSHA]: 3 ppm (2.4 mg/m3)     • [AIHA]ERPG-3: 50 ppm (40 mg/m3)\n                                     • STEL[OSHA]: 6 ppm (5 mg/m3)               * 냄새로 감지 가능\n     밀도/비중: 1.002 g/cm3 @ 0 ℃ (액체) • Ceiling[노동부]: 3 ppm (2.4 mg/m3), 피부       • [NAC/NRC]AEGL-1: 1 ppm (60분)\n                                     • Ceiling[NIOSH]: 6 ppm (5 mg/m3)         • [NAC/NRC]AEGL-2: 24 ppm (60분)\n     증기밀도: 0.7 (Air = 1)             • Ceiling[ACGIH]: 2 ppm (1.6 mg/m3), 피부   • [NAC/NRC]AEGL-3: 44 ppm (60분)\n              알킬화/이성질화/응축/탈수소화/중성자화 반응의 촉매, 액화 로켓 추진체의 첨가물, 우라늄 정제,\n       용도\n              빙결/마모제(유리/에나멜), 알루미늄 광택제, 티타늄 제작, 금속 및 주조물의 세정, 불소수지\n     노출경로                                                인체노출 유해성 / 증상\n       흡입     호흡기 자극, 화상, 기침, 숨 막힘, 현기증, 두통, 오심, 무기력증, 호흡곤란, 기관지경련, 폐렴, 폐부종\n       피부     화상, 동상, 홍반, 물집, 궤양, 청회색 변색 및 괴사\n       안구     자극, 통증, 눈물, 부어오름, 충혈, 빛에 민감, 화상, 각막 혼탁, 시력상실\n94     경구     구강/위장관 화상, 오심, 구토, 설사, 복통 토혈, 저혈압, 쇼크, 심혈관 허탈, 혼수, 마비",
+          "page": 101,
+          "page_end": 101,
+          "substance": "hydrogen_fluoride",
+          "cas": "7664-39-3"
+        },
+        {
+          "section": "플루오르화수소                                                                                Hydrogen fluoride>방제요령·응급조치",
+          "text": "                  사고대비물질,\n 국내규제              유독물질\n                                       -          노출, 작업, 관리           독성\n                   NFPA 704                               물질분류 및 표시\n              •건강: 4(치명적. 짧은 노출에도 사망 또는\n                     치명적 손상을 일으킬 수 있음)\n              •화재: 0(연소성이 없는 물질)\n              •반응: 1(온도상승 및 가압 시 불안정)\n              •특수: -\n       • 독성: 흡입, 섭취, 피부 흡수 시 치명적일 수 있음. 증기는 자극성과 부식성이 매우 강함\n       • 비가연성 물질이나 가열 시 분해하여 부식성/ 독성 흄 생성 가능\n       • 물에 잘 녹고 격렬하게 반응하여 독성, 부식성, 인화성, 폭발성 가스를 발생\n       • 혼합ㆍ적재금지: 아세트산무수물, 2-아미노에탄올, 암모니아, 삼산화비소, 염화황산, 에틸렌디아민, 에틸렌\n위험                  이민, 불소, 산화수은, 발연황산, 삼산화인, 산화프로필렌, 나트륨, 황산, 아세트산비닐, 산,\n                    염기, 아민, 금속, 물, 산화제, 유리, 콘크리트, 요업제품\n       • 연소/열분해 생성물: 알켄류와 중합반응, 불화수소, 부식성/독성 흄(인화성 수소 가스)\n       • 물과 반응 시 생성물: 불산\n                                                        화재동반 운송사고\n                                                        발생 시 대피거리\n       • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우 즉시 철수          • 기체: 반경 1.6 km\n화재\n       • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단 • 액체: 반경 0.8 km\n진압\n       • 용기내부로 물이 들어가지 않도록 조치 / 증기 억제 폼 사용             유출 시 초기이격거리\n요령     • 소화제: 합성계면활성제포소화약제, 알코올형포소화약제               • 기체: 소규모 반경 30 m,\n                                                      대규모 반경 500 m 이내\n                                                    • 액체: 반경 50 m\n       • 증기 제거 및 증기구름 이동 억제를 위해 분무주수                      유출 시 방호활동거리\n       • 환기 강화, 가스 축적 가능성이 있는 밀폐공간에는 들어가지 말 것\n누출     • 누출물 확산방지 및 우천 시 물 접촉 방지를 위해 플라스틱 시트로 덮음\n       • 수거하는 용기 및 처리수에는 물이 들어가지 않도록 주의                • 기체: 풍하방향\n방재                                                       소규모 낮 0.1 km, 밤 0.5 km\n       • 방재약품: 중탄산나트륨 등의 중화제, 분무주수, 마른 흙, 마른 모래 또는 비가연성 대규모 낮 3.4 km, 밤 6.4 km 이내\n요령             물질(팽창 질석, 팽창 진주암 등)                       ※ 풍속·운반용기에 따름\n       • 보호장비: SCBA, 완전 밀폐형 증기 보호의, 내화학성 보호복           • 액체: 풍하방향 50 m 이상\n       • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기\n노출경로                                       응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n 흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물과 비누를 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구    눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n 경구    의식이 있을 경우 물로 입을 헹구고 구토 및 호흡기계 질환이 없으면 물 또는 우유 공급, 보온 유지 후 병원 이송              95",
+          "page": 102,
+          "page_end": 102,
+          "substance": "hydrogen_fluoride",
+          "cas": "7664-39-3"
+        },
+        {
+          "section": "암모니아                                                                                                       Ammonia>기본정보·물리화학적 특성·위험성",
+          "text": "      암모니아                                                                                                       Ammonia\n                     구조                      CAS번호                            7664-41-7\n                                             국문유사명                            암모니아 무수물, 암모니아 가스, 니트로-실\n                                                                              Am-Fol, Ammonia anhydrous, Ammonia gas, Nitro-sil,\n                                             영문유사명\n                                                                              refrigerant R717, Spirit of hartshorn\n                                             화학물질군                            염기류\n                                             유해화학물질관리번호                       97-1-184(유독물질)\n                                                            1005 ※ 10%~35% 용액: 2672, 35%~50%\n                                             UN번호\n                                                            용액: 2073, 50% 이상 용액: 3318\n                                                            125: 가스-독성 및/또는 부식성\n                                             ERG대응지침번호\n                                                            ※ 10%~35% 용액: 154, 35% 이상 용액: 125\n                                                     물리화학적 특성\n     상태: 기체                                  옥탄올/물 분배계수(logKow): -1.14\n     색상: 무색                                  인화점: -                                       발화점: 651 ℃\n     냄새: 심한 악취, 역겨운 숨 막히는\n                          폭발한계 (하한/상한): 16% / 25%\n         생선 냄새\n                                             용해도\n     분자식·량: NH3(17.03)                       • 물: 가용성 (4.82×102 g/L @ 24 ℃)\n                                             • 용매: 에탄올, 메탄올, 클로로폼, 에테르에 용해\n     pH: 11.6 (1.0 N 용액), 11.1 (0.1 N 용액),\n                                                     작업장 허용노출기준                            일반 인구집단 대상 급성노출기준\n         10.6 (0.01 N 용액)\n     끓는점: -33.33 ℃                                                                    • [AIHA]ERPG-1: 25 ppm* (17 mg/m3)\n                                             • TWA[노동부, ACGIH, NIOSH]                 • [AIHA]ERPG-2: 150 ppm (100 mg/m3)\n     증기압: 7.5x103 mmHg @ 25 ℃                  : 25 ppm (18 mg/m3)                    • [AIHA]ERPG-3: 1500 ppm (1,000 mg/m3)\n                                             • TWA[OSHA]: 50 ppm (35 mg/m3)             * 냄새로 감지 가능\n     밀도/비중: 0.7329 g/cm3 @ -77.7 ℃ (액체) • STEL[노동부, NIOSH, ACGIH, OSHA]               • [NAC/NRC]AEGL-1: 30 ppm (60분)\n                                              : 35 ppm (27 mg/m3)                     • [NAC/NRC]AEGL-2: 160 ppm (60분)\n     증기밀도 : 0.5967 (Air = 1)                                                          • [NAC/NRC]AEGL-3: 1100 ppm (60분)\n        용도       질산, 폭발물, 합성 섬유, 비료, 염료, 의약품, 살충제, 냉매제와 화학 산업에 사용\n      노출경로                                                   인체노출 유해성 / 증상\n        흡입       호흡기 자극, 화상, 흉부자극, 흉통, 기침, 숨막힘, 호흡곤란, 인후염, 청색증, 폐부종, 호흡정지\n        피부       자극, 화상, 괴사, 통증, 접촉 시 동상, 상처를 통해 혈류로 유입 시 전신에 위험한 손상을 일으킬 수 있음\n        안구       자극, 화상, 눈물, 통증, 동상, 결막염, 각막자극, 시력상실\n26      경구       오심, 구토, 구강/식도 화상, 기침, 호흡곤란",
+          "page": 33,
+          "page_end": 33,
+          "substance": "ammonia",
+          "cas": "7664-41-7"
+        },
+        {
+          "section": "암모니아                                                                                                       Ammonia>방제요령·응급조치",
+          "text": "                   사고대비물질,\n 국내규제               유독물질\n                                          -          노출, 작업, 관리          가연성, 독성\n               NFPA 704                                  물질분류 및 표시\n          • 건강: 3(매우 유해, 전신보호복 착용)\n          • 화재: 1(가열되어야 발화하는 물질)\n          • 반응: 0(일반적으로 안정함)\n          • 특수: -\n       • 독성: 흡입, 섭취, 피부 흡수 시 치명적일 수 있음. 증기는 자극성과 부식성이 매우 강함\n       • 용기가 열에 노출되면 파열 또는 폭발할 수 있음\n       • 산과 격렬히 반응하고 폭발성/부식성 가스 형성\n       • 물에 용해성이 크며, 물에 녹아 부식성 액체 형성\n위험\n       • 혼합ㆍ적재금지: 수은, 할로겐류, 차아염소산염, 산화염소(Ⅰ), 무수불화수소산, 과산화수소, 산화크롬(Ⅵ),\n                    이산화질소, 염화크로밀(Ⅵ), 염화티오닐, 과염소산마그네슘, 과산화이중황산염, 오산화인,\n                    아세트알데하이드, 산화에틸렌, 아크롤레인, 염화금(Ⅲ), 산화제, 산, 은과 아연 염류\n       • 연소/열분해 생성물: 독성 흄(질소산화물)\n                                                                       화재동반 운송사고\n       • 가스가 분산될 때까지 누출지역 격리, 가능하다면 진압 전 가스 흐름을 멈추게 할 것                 발생 시 대피거리\n       • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우 즉시 철수\n화재     • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단                      반경 1.6 km\n진압     • 용기내부로 물이 들어가지 않도록 차단                                         유출 시 초기이격거리\n요령     • 소화제\n        - 소형화재: 분말 소화약제, 이산화탄소, 분무주수(Water spray)                    • 소규모: 반경 30 m\n        - 대형화재: 분무주수(Water spray), 미(微)분무주수(Water fog), 합성계면활성제포소화약제 • 대규모: 반경 300 m 이내\n       • 유출원 및 누출원에 직사주수 금지, 오염지역 격리 / 위험하지 않다면 누출 차단 유출 시 방호활동거리\n누출     • 증기 억제 및 증기구름 이동 방지를 위해 분무주수 / 폴리머 덮개를 이용한 커버링 • 소규모: 풍하방향\n       • 처리수와 유출물이 접촉하지 않도록 유지                           낮 0.1 km, 밤 0.2 km\n방재     • 방재약품: 황산알루미늄, 분무주수, 구연산                       • 대규모: 풍하방향\n요령     • 보호장비: SCBA, 완전 밀폐형 증기 보호의                       낮 1.6 km 이내, 밤 4.1 km\n       • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기             이내 ※ 풍속·운반용기에 따름\n노출경로                                          응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n 흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물을 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구    눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n       구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 의식이 있을 경우 물로 입을\n 경구                                                                                       27\n       헹구고 구토 및 호흡기계 질환이 없으면 물 공급, 보온 유지 후 병원 이송",
+          "page": 34,
+          "page_end": 34,
+          "substance": "ammonia",
+          "cas": "7664-41-7"
+        },
+        {
+          "section": "염소                                                                                                         Chlorine>기본정보·물리화학적 특성·위험성",
+          "text": "      염소                                                                                                         Chlorine\n                 구조                  CAS번호                        7782-50-5\n                                     국문유사명                        다이클로린, 염소가스, 분자염소\n                                     영문유사명                        Dichlorine, Chlorine gas, Molecular chlorine\n                                     화학물질군                        무기산화제, 할로겐화제\n                                     유해화학물질관리번호                   2022-1-1087(유독물질)\n                                     UN번호                         1017\n                                     ERG대응지침번호                    124: 가스-독성 그리고/또는 부식성-산화성\n                                                         물리화학적 특성\n     상태: 기체                          옥탄올/물 분배계수(logKow): 1.85\n     색상: 녹황색 또는 황색                   인화점: -                                         발화점: -\n     냄새: 자극적인 표백제 냄새                 폭발한계 (하한/상한): - / -\n                                     용해도\n     분자식·량: Cl2(70.91)               • 물: 난용성 (6.3 g/L @ 25 ℃)\n                                     • 용매: 알칼리류에 용해\n     pH: -                                      작업장 허용노출기준                             일반 인구집단 대상 급성노출기준\n     끓는점: -34.04 ℃                                                                • [AIHA]ERPG-1: 1 ppm* (2.8 mg/m3)\n                                     • TWA[노동부, ACGIH, OSHA*]                     • [AIHA]ERPG-2: 3 ppm (8.6 mg/m3)\n     증기압: 5.83x103 mmHg @ 25 ℃         : 0.5 ppm (1.5 mg/m3)                      • [AIHA]ERPG-3: 20 ppm (57 mg/m3)\n                                     • STEL[노동부, ACGIH, OSHA*]: 1 ppm (3 mg/m3)     * 냄새로 감지 가능\n     밀도/비중: 1.565 g/cm3 @ -34 (액체)    * 1989년 폐지되었지만 일부 지역에서 준용하고 있음              • [NAC/NRC]AEGL-1: 0.5 ppm (60분)\n                                     • Ceiling[OHSA]: 1 ppm (3 mg/m3)             • [NAC/NRC]AEGL-2: 2 ppm (60분)\n     증기밀도: 2.49 (Air = 1)                                                         • [NAC/NRC]AEGL-3: 20 ppm (60분)\n       용도      살충제, 부동액, 냉매, 폭연방지 화합물, 플라스틱, 수지, 표백제, 소독제, 살균제, 청정용품 제조\n     노출경로                                                  인체노출 유해성 / 증상\n       흡입      질식, 호흡기자극, 기침, 숨막힘, 두통, 흉통, 구토, 후두부종, 호흡곤란, 경련, 발작, 실신, 청색증, 폐부종, 혼수\n       피부      자극, 화상, 홍반, 통증, 액체 접촉 시 냉동화상/동상 유발, 혈류로 유입 시 전신에 위험한 손상을 일으킬 수 있음\n       안구      자극, 화상, 눈물, 결막염, 빛에 민감, 시력의 손상 및 상실\n48     경구      오심, 구토",
+          "page": 55,
+          "page_end": 55,
+          "substance": "chlorine",
+          "cas": "7782-50-5"
+        },
+        {
+          "section": "염소                                                                                                         Chlorine>방제요령·응급조치",
+          "text": "                   사고대비물질,\n 국내규제               유독물질\n                                          -          노출, 작업, 관리              독성\n              NFPA 704                                 물질분류 및 표시\n         •건강: 4(치명적. 짧은 노출에도 사망 또는\n               치명적 손상을 일으킬 수 있음)\n         •화재: 0(연소성이 없는 물질)\n         •반응: 0(일반적으로 안정함)\n         •특수: OX(산화성 물질)\n       • 독성: 흡입, 섭취, 피부 흡수 시 치명적일 수 있으며, (액화)가스에 노출 시 화상/상해/동상을 입을 수 있음\n       • 불에 타지는 않지만 조연성 물질로 가연성 물질과 접촉 시 폭발을 유발할 수 있음\n       • 물과 반응하여 유독가스인 염화수소 생성\n       • 혼합ㆍ적재금지: 암모니아, 아세틸렌, 알코올류, 알칸류, 벤젠, 부타디엔, 이황화탄소, 다이부틸프탈레이트,\n위험                  에테르, 불소, 글리세롤, 탄화수소류, 수소, 탄화나트륨, 금속아세틸리드류, 탄소화합물,\n                    질소화합물, 비금속류, 비금속 수소화물류, 인화합물, 폴리클로리네이티드비페닐, 규소류,\n                    강철, 황화물, 합성고무, 테레빈유, 가연성 물질, 산화제, 환원제, 금속\n       • 연소/열분해 생성물: 독성 가스/흄(염화수소)\n       • 물과 반응 시 생성물: 염소, 염화 이온, 하이포염소산\n                                                                         화재동반 운송사고\n       • 풍향을 고려하여 화기의 진행방향에 따른 진압위치 선정                                   발생 시 대피거리\n화재\n       • 용기내부로 물이 들어가지 않도록 주의                                              반경 0.8 km\n진압\n       • 소화제: 분말 소화약제, 이산화탄소, 분무주수(Water spray), 미(微)분무주수(Water fog),   유출 시 초기이격거리\n요령            합성계면활성제포소화약제                                            • 소규모: 반경 60 m\n                                                                  • 대규모: 반경 1 km 이내\n       • 가연성 물질 제거, 오염지역 격리, 환기, 유출물 및 누출원에 직사주수 금지                 유출 시 방호활동거리\n누출     • 증기구름 억제하기 위해 분무주수, 처리수가 유출물과 접촉하지 않도록 함                  • 소규모: 풍하방향\n                                                                    낮 0.3 km, 밤 1.5 km\n방재     • 누출물질의 확산 방지/처리를 위해 도랑을 파거나 제방을 쌓아 가둘 것\n                                                                  • 대규모: 풍하방향\n요령     • 보호장비: SCBA, 완전 밀폐형 증기 보호의, 내화학성 보호복\n                                                                    낮 9.6 km 이내, 밤 11 km\n       • 휴대용 측정장비: 검지관, 가스측정기, 라만분광기                                이상 ※ 풍속·운반용기에 따름\n노출경로                                       응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n 흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물과 비누를 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n       눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척(pH가 7~8 범위 수준이 될 때\n 안구\n       까지), 보온 유지 후 병원 이송\n       구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 의식이 있을 경우 물로 입을\n 경구                                                                                        49\n       헹구고 구토 및 호흡기계 질환이 없으면 물 공급, 보온 유지 후 병원 이송",
+          "page": 56,
+          "page_end": 56,
+          "substance": "chlorine",
+          "cas": "7782-50-5"
+        },
+        {
+          "section": "염화수소                                                                                     Hydrogen chloride>기본정보·물리화학적 특성·위험성",
+          "text": "      염화수소                                                                                     Hydrogen chloride\n                   구조                   CAS번호                    7647-01-0\n                                        국문유사명                    염산, 염화수소산\n                                        영문유사명                    Hydrochloric acid, Hydrochloride, Chlorohydric acid\n                                        화학물질군                    강산성류\n                                        유해화학물질관리번호 97-1-203(유독물질)\n                                        UN번호                     기체: 1050, 액체: 1789, 냉장액체: 2186\n                                                                 기체 125: 가스-독성 및/또는 부식성\n                                        ERG대응지침번호\n                                                                 액체 157: 물질-독성 그리고/또는 부식성(가연성/수분에 민감)\n                                                          물리화학적 특성\n     상태: 기체                             옥탄올/물 분배계수(logKow): 0.25\n     색상: 무색                             인화점: -                                     발화점: -\n     냄새: 자극적인 냄새                        폭발한계 (하한/상한): - / -\n                                        용해도\n     분자식·량: HCl(36.46)                  • 물: 가용성 (823 g/L @ 0 ℃)\n                                        • 용매: 메탄올, 에탄올, 에테르에 용해\n     pH: -1.1(염산 38%)                            작업장 허용노출기준                           일반 인구집단 대상 급성노출기준\n     끓는점: -85 ℃                                                                 • [AIHA]ERPG-1: 3 ppm* (4.4 mg/m3)\n                                        • TWA[노동부]: 1 ppm (1.4 mg/m3)           • [AIHA]ERPG-2: 20 ppm (29 mg/m3)\n     증기압: 35,424 mmHg @ 25 ℃                                                    • [AIHA]ERPG-3: 150 ppm (220 mg/m3)\n                                        • STEL[노동부]: 2 ppm (2.9 mg/m3)            * 냄새로 감지 가능\n     밀도/비중: 1.187 g/cm3 @ -114.1 ℃ (액체) • Ceiling[NIOSH, ACGIH, OSHA]           • [NAC/NRC]AEGL-1: 1.8 ppm (60분)\n                                          : 5 ppm (7 mg/m3)                     • [NAC/NRC]AEGL-2: 22 ppm (60분)\n     증기밀도: 1.268 (Air = 1)                                                      • [NAC/NRC]AEGL-3: 100 ppm (60분)\n       용도      금속처리제, 폐수중화, 양조산업, 피혁, 아교 생산, 설탕/오일류/지방류/왁스 정제\n     노출경로                                                     인체노출 유해성 / 증상\n       흡입      자극, 화상, 궤양, 기침, 숨막힘, 코, 인후 및 상기도 염증, 두통, 현기증, 마비, 폐부종, 혼수\n       피부      자극, 발작, 통증 및 심한 피부 화상, 피부 변색, 궤양\n       안구      자극, 화상, 통증, 눈물 분비, 빛에 민감, 시력의 손상 및 상실, 시야 확보 저하\n90     경구      구강, 인후, 식도 및 소화관에 통증과 화상, 오심, 구토, 설사, 저혈압, 혼수상태, 의식착란",
+          "page": 97,
+          "page_end": 97,
+          "substance": "hydrogen_chloride",
+          "cas": "7647-01-0"
+        },
+        {
+          "section": "염화수소                                                                                     Hydrogen chloride>방제요령·응급조치",
+          "text": "                  사고대비물질,\n  국내규제             유독물질\n                                        -           노출, 작업, 관리            독성\n                  NFPA 704                                 물질분류 및 표시\n            •건강: 3(매우 유해, 전신보호복 착용)\n            •화재: 0(연소성이 없는 물질)\n            •반응: 1(온도상승 및 가압 시 불안정)\n            •특수: -\n      • 독성: 흡입, 섭취, 피부 흡수 시 치명적. 증기는 자극성과 부식성이 매우 강함\n      • 비가연성 물질로 타지는 않지만, 열에 의해 분해되어 부식성/ 독성 증기 발생 가능\n      • 물과 격렬하게 반응하여 열과 독성/ 부식성 흄을 생성\n      • 혼합ㆍ적재금지: 아세트산 무수물, 알루미늄, 2-아미노에탄올, 암모니아, 염화황산, 에틸렌디아민, 불소, 금속\n 위험                아세틸리드류 및 탄소화물, 발연황산, 과염소산, 과망간산칼륨, 나트륨, 황산, 인화칼슘,\n                   수산화물, 산화제, 염기, 아민(금속 접촉 시 인화성 수소 가스 방출)\n      • 연소/열분해 생성물: 이산화탄소, 인화성 가스, 자극적/독성 흄과 가스(염소가스, 수소가스)\n      • 물과 반응 시 생성물: 염화수소(기체)가 물에 용해되어 염산(액체, 강산) 생성\n                                                                     화재동반 운송사고\n      • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우는 즉시 철수\n                                                                     발생 시 대피거리\n      • 탱크가 화재에 휩싸였을 경우에는 접근 금지\n 화재   • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단 • 기체: 반경 1.6 km\n 진압   • 용기내부로 물이 들어가지 않도록 조치                                     • 액체: 반경 0.8 km\n 요령   • 소화제                                                         유출 시 초기이격거리\n       - 소형화재: 이산화탄소, 분말 소화약제, 마른 모래, 알코올형포소화약제\n       - 대형화재: 분무주수(Water spray), 미(微)분무주수(Water fog), 알코올형포소화약제 • 소규모: 반경 30 m\n                                                                 • 대규모: 반경 500 m 이내\n     • 증기를 줄이고 증기구름의 이동억제를 위해 분무주수 또는 물분무 사용        유출 시 방호활동거리\n     • 마른 흙, 마른 모래 또는 기타 불연성 물질로 덮은 후 확산 및 빗물과의\n       접촉을 최소화하기 위해 플라스틱 시트로 덮을 것\n 누출                                              • 소규모: 풍하방향 낮 0.1 km,\n     • 환기 강화, 가스 축적 가능성이 있는 밀폐공간에는 들어가지 말 것        밤 0.5 km\n 방재\n     • 방재약품: 중탄산나트륨 등의 중화제, 마른 흙, 마른 모래 등의 비가연성 • 대규모: 풍하방향\n 요령           물질(팽창 질석, 팽창 진주암 등)                  낮 3.7 km 이내, 밤 9.7 km\n                                                   이내 ※ 풍속·운반용기에 따름\n     • 보호장비: SCBA, 완전 밀폐형 증기보호의, 내화학성 보호복\n     • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기\n노출경로                                 응급조치\n     신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡(피해자가 물질을 섭취하거나 흡입한 경우 구강 대\n 흡입\n     구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부  다량의 물과 비누를 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구  눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n     구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 의식이 있을 경우 물로 입을 헹구고\n 경구                                                                                   91\n     구토 및 호흡기계 질환이 없으면 물 또는 우유 공급, 보온 유지 후 병원 이송",
+          "page": 98,
+          "page_end": 98,
+          "substance": "hydrogen_chloride",
+          "cas": "7647-01-0"
+        },
+        {
+          "section": "일산화탄소                                                                                     Carbon monoxide>기본정보·물리화학적 특성·위험성",
+          "text": "      일산화탄소                                                                                     Carbon monoxide\n                 구조                CAS번호                        630-08-0\n                                   국문유사명                        산화탄소, 배기가스\n                                   영문유사명                        Carbon oxide, Exhaust gas, Flue gas\n                                   화학물질군                        무기 환원제\n                                   유해화학물질관리번호                   2023-1-1123(유독물질)\n                                   UN번호                         1016\n                                   ERG대응지침번호                    119: 가스-독성-인화성\n                                                      물리화학적 특성\n     상태: 기체                        옥탄올/물 분배계수(logKow): -\n     색상: 무색                        인화점: -191 ℃                                      발화점: 609 ℃\n     냄새: 무취                        폭발한계 (하한/상한): 12% / 75%\n                                   용해도\n     분자식·량: CO(28.01)              • 물: 불용성 (27.6 mg/L @ 25 ℃)\n                                   • 용매: 벤젠, 아세트산 에틸, 클로로폼, 아세트산, 에탄올에 용해\n     pH: -                                    작업장 허용노출기준                               일반 인구집단 대상 급성노출기준\n                              • TWA[노동부]: 30 ppm (34 mg/m3)\n     끓는점: -191.51 ℃                                                               • [AIHA]ERPG-1: 200 ppm (220 mg/m3)\n                              • TWA[NIOSH]: 35 ppm (40 mg/m3)\n                              • TWA[ACGIH]: 25 ppm (28 mg/m3)                     • [AIHA]ERPG-2: 350 ppm (400 mg/m3)\n                 8\n     증기압: 1.55×10 mmHg @ 25 ℃                                                     • [AIHA]ERPG-3: 500 ppm (570 mg/m3)\n                              • TWA[OSHA]: 50 ppm (55 mg/m3)\n     밀도/비중: 0.7909 g/cm3 @ -19 ℃ • STEL[노동부]: 200 ppm (229 mg/m3)                 • [NAC/NRC]AEGL-1: NR\n                                                                                  • [NAC/NRC]AEGL-2: 83 ppm (60분)\n                                   • Ceiling[NIOSH, OSHA*]: 200 ppm (229 mg/m )\n                                                                             3\n                                                                                  • [NAC/NRC]AEGL-3: 330 ppm (60분)\n     증기밀도: 0.968 (Air = 1)          * 1989년 폐지되었지만 일부 지역에서 준용하고 있음\n       용도     화학물질 중간체, 합성가스의 공급원료, 건조제, 환원제(금속 공정), 기체 연료\n     노출경로                                                인체노출 유해성 / 증상\n       흡입     자극, 두통, 현기증, 오심, 구토, 허탈, 호흡곤란, 발작, 보행/언어장애, 호흡부전, 청색증, 폐부종, 혼수, 호흡정지\n       피부     가려움, 종창, 수포(노출 24시간 안에 손바닥, 발바닥에 수포성 외상이 관찰됨)\n       안구     눈물, 결막충혈, 흐릿한 시야, 망막증, 안구후부의 신경염, 망막출혈, 시력의 손상 및 상실\n46     경구     구역질, 구토",
+          "page": 53,
+          "page_end": 53,
+          "substance": "carbon_monoxide",
+          "cas": "630-08-0"
+        },
+        {
+          "section": "일산화탄소                                                                                     Carbon monoxide>방제요령·응급조치",
+          "text": "                   사고대비물질,\n 국내규제               유독물질\n                                        -          노출, 작업, 관리        가연성, 독성\n                  NFPA 704                               물질분류 및 표시\n           •건강: 3(매우 유해, 전신보호복 착용)\n           •화재: 4(인화성이 큰 기체)\n           •반응: 0(물과 반응하지 않음)\n           •특수: -\n       • 열, 스파크, 화염에 의해 쉽게 점화, 증기는 공기와 결합 시 폭발성 혼합물을 형성가능\n       • 독성: 흡입, 섭취, 피부 흡수 시 치명적일 수 있음\n위험\n       • 혼합ㆍ적재금지: 강산화제, 염소화물, 브로민화물, 금속 분말\n       • 연소/열분해 생성물: 이산화탄소\n                                                                     화재동반 운송사고\n       • 누출을 멈추게 할 수 없고 누출 가스에 불이 붙은 경우 화재진압금지\n                                                                     발생 시 대피거리\n       • 분무/무상주수, 알코올형포소화약제 사용, 가능한 누출을 막고 불이 꺼진 후에도\n         다량의 물로 용기 및 인접 지역을 냉각시킬 것\n화재                                                                    반경 1.6 km\n       • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우 즉시 철수\n진압\n       • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단                 유출 시 초기이격거리\n요령\n       • 소화제\n        - 소형화재: 분말 소화약제, 이산화탄소, 분무주수(Water spray), 알코올형포소화약제 • 소규모: 반경 30 m\n        - 대형화재: 분무주수(Water spray), 미(微)분무주수(Water fog), 알코올형포소화약제 • 대규모: 반경 200 m\n                                                        유출 시 방호활동거리\n       • 증기구름 억제하기 위해 분무주수\n누출                                                    • 소규모:   풍하방향\n       • 유출물 및 누출원에 직사주수 금지, 오염지역 격리 / 위험하지 않다면 누출 차단\n방재                                                      낮 0.1 km, 밤 0.2 km\n       • 보호장비: SCBA, 완전 밀폐형 증기보호의, 내화학성 보호복\n요령     • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기\n                                                      • 대규모: 풍하방향\n                                                        낮 1.2 km , 밤 3.9 km\n노출경로                                     응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n 흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물을 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구    눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n 경구    구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 보온 유지 후 병원 이송                      47",
+          "page": 54,
+          "page_end": 54,
+          "substance": "carbon_monoxide",
+          "cas": "630-08-0"
+        },
+        {
+          "section": "톨루엔                                                                                                       Toluene>기본정보·물리화학적 특성·위험성",
+          "text": "       톨루엔                                                                                                       Toluene\n                 구조                CAS번호                       108-88-3\n                                   국문유사명                       메틸벤젠, 페닐메탄, 톨루올, 메타사이드\n                                   영문유사명                       Methacide, Methylbenzene, Phenylmethane, Toluol\n                                   화학물질군                       방향족 탄화수소류\n                                   유해화학물질관리번호                  97-1-298(유독물질)\n                                   UN번호                        1294\n                                   ERG대응지침번호                   130: 인화성 액체(물과 섞이지 않는/유해성)\n                                                       물리화학적 특성\n      상태: 액체                       옥탄올/물 분배계수(logKow): 2.73\n      색상: 무색                       인화점: 4.4 ℃                                       발화점: 480 ℃\n      냄새: 자극적인 벤젠 냄새               폭발한계(하한/상한): 1.27% / 7.1%\n                                   용해도\n      분자식·량: C7H8(92.14)           • 물: 난용성 (0.52 g/L @ 20 ℃)\n                                   • 용매: 알코올, 벤젠, 에테르, 아세톤, 클로로폼, 빙초산, 이황화탄소에 용해\n      pH: -                               작업장 허용노출기준                                일반 인구집단 대상 급성노출기준\n      끓는점: 110.6 ℃                 • TWA[노동부, ACGIH]\n                                     : 50 ppm (188 mg/m3)             • [AIHA]ERPG-1: 50 ppm* (180 mg/m3)\n                                                                    3 • [AIHA]ERPG-2: 300 ppm (1,100 mg/m )\n                                                                                                          3\n      증기압: 28.4 mmHg @ 25 ℃        • TWA[NIOSH]: 100 ppm (375 mg/m )\n                                                                      • [AIHA]ERPG-3: 1,000 ppm (3,700 mg/m3)\n                                   • TWA[OSHA]: 200 ppm (750 mg/m )\n                                                                  3\n                                                                        * 냄새로 감지 가능\n      밀도/비중: 0.8623 g/cm3 @ 25 ℃\n                                   • STEL[노동부, NIOSH,]                      • [NAC/NRC]AEGL-1: 67 ppm (60분)\n                                     : 150 ppm (560 mg/m3)                  • [NAC/NRC]AEGL-2: 560 ppm (60분)\n      증기밀도: 3.14 (Air = 1)                                                  • [NAC/NRC]AEGL-3: 3,700 ppm (60분)\n                                   • Ceiling[OSHA]: 300 ppm (1,120 mg/m3)\n               페인트, 수지, 접착제, 시너, 염색, 폭발물, 광택제, 가솔린 첨가제, 직물 & 종이 코팅, 우레탄, 인조 가죽 생성, 화장품,\n        용도\n               부동액, 잉크, 아스팔트와 나프타 구성 요소, 사카린, 의약품, 염색, 향수, TNT 제조, 껌, 수지, 고무와 비닐\n      노출경로                                              인체노출 유해성 / 증상\n        흡입     호흡기 자극, 기침, 오심, 피로, 두통, 어지러움, 수면, 반사작용 둔화, 발작, 마비, 청색증, 혼수\n        피부     자극, 염증, 홍반, 부종, 수포, 피부염\n        안구     자극, 화상, 안검경련, 결막염, 각막손상, 시력손상 및 상실\n186     경구     구역질, 복통, 구토, 현기증, 두통, 반응신경 저하, 불분명한 발음",
+          "page": 193,
+          "page_end": 193,
+          "substance": "toluene",
+          "cas": "108-88-3"
+        },
+        {
+          "section": "톨루엔                                                                                                       Toluene>방제요령·응급조치",
+          "text": "                     사고대비물질,\n 국내규제\n                                      제4류 제1석유류\n                                                          노출, 작업, 관리            가연성\n                      유독물질                (비수용성)\n                        NFPA 704                                     물질분류 및 표시\n             •건강: 2(유해, 전면형 자급식 공기호흡기, 눈 보호구 착용)\n             •화재: 3(상온에서 쉽게 발화할 수 있음)\n             •반응: 0(물과 반응하지 않음)\n             •특수: -\n       • 인화성이 높은 물질로 열, 스파크, 화염에 의해 쉽게 점화하고, 폭발 위험성 존재\n       • 증기는 공기와 섞여 폭발성 혼합물 형성\n위험     • 흡입 또는 접촉 시 피부와 눈에 자극 또는 화상 발생 가능\n       • 혼합ㆍ적재금지: 황+질산, 이산화질소, 과염소산은, 우라늄 헥사플루오라이드, 산, 산화제, 금속염, 할로겐\n       • 연소/열분해 생성물: 일산화탄소, 이산화탄소, 매캐한 연기 및 자극성 흄(탄화수소류)\n       • 가능한 누출을 막고 불이 꺼진 후에도 다량의 물로 용기 및 인접 지역을 냉각시킬 것                    화재동반 운송사고\n                                                                           발생 시 대피거리\n       • 유해증기의 흡입을 피하고 바람을 등지고 있을 것, 다량의 물로 노출용기 냉각\n       • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우 즉시 철수                                   반경 0.8 km\n화재     • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단\n진압     • 소화제                                                              유출 시 초기이격거리\n요령      - 소형화재: 분말 소화약제, 이산화탄소, 분무주수(Water spray), 수성막포소화약제(AFFF),\n                합성계면활성제포소화약제, 알코올형포소화약제\n        - 대형화재: 분무주수(Water spray), 미(微)분무주수(Water fog), 수성막포소화약제(AFFF),       반경 50 m\n                합성계면활성제포소화약제, 알코올형포소화약제\n       • 증기를 줄이기 위해 분무주수, 증기억제 폼을 사용                                      유출 시 방호활동거리\n       • 누출물 확산 방지/처리를 위해 도랑을 파거나 제방을 쌓아 가둘 것\n누출\n       • 흡수된 물질은 스파크가 발생하지 않는 도구를 이용하여 수거\n방재\n       • 방재약품: 마른 흙, 마른 모래 또는 비가연성 물질(팽창 질석, 팽창 진주암 등)                       대규모 유출 시\n요령     • 보호장비: SCBA, 내화학성 보호복                                             풍하방향으로 300 m 이상\n       • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기\n노출경로                                          응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n 흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물과 비누를 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구    눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n       구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 의식이 있을 경우 물로 입을 헹구고\n 경구                                                                                         187\n       구토 및 호흡기계 질환이 없으면 물 공급, 보온 유지 후 병원 이송",
+          "page": 194,
+          "page_end": 194,
+          "substance": "toluene",
+          "cas": "108-88-3"
+        },
+        {
+          "section": "황산                                                                                                    Sulfuric acid>기본정보·물리화학적 특성·위험성",
+          "text": "       황산                                                                                                    Sulfuric acid\n                      구조                CAS번호                     7664-93-9\n                                        국문유사명                     비트리올유, 메팅산, 디핑산, 노르드하우젠산, 배터리산\n                                                                  Oil of Vitriol, Matting acid, Dipping acid, Nordhausen acid,\n                                        영문유사명\n                                                                  Battery acid\n                                        화학물질군                     강산성류\n                                        유해화학물질관리번호 97-1-405(유독물질)\n                                                   51% 이상 액체: 1830, 51% 미만 액체: 2796, 흄: 1831, 폐산:\n                                        UN번호\n                                                   1832\n                                                   51% 이상 액체 및 흄, 폐산 137: 물질-물 반응성-부식성\n                                        ERG대응지침번호  51% 미만 액체 157: 물질-독성 그리고/또는 부식성(비가연성\n                                                   /수분에 민감)\n                                                물리화학적 특성\n      상태: 액체                            옥탄올/물 분배계수(logKow): -2.20\n      색상: 무색, 갈색(순도에 따라)                인화점: -                                        발화점: -\n      냄새: 무취 또는 약한 산성냄새                 폭발한계(하한/상한): - / -\n                                        용해도\n      분자식·량: H₂SO₄(98.08)               • 물: 가용성\n                                        • 용매: 알코올에 용해\n      pH: 0.3(1 N 용액), 1.2(0.1 N 용액),\n                                                  작업장 허용노출기준                             일반 인구집단 대상 급성노출기준\n          2.1(0.01 N 용액)\n                                                                                   • [AIHA]ERPG-1: 0.5 ppm* (2 mg/m3)\n      끓는점: 337 ℃\n                                        • TWA[노동부]: 0.05 ppm (0.2 mg/m3)           • [AIHA]ERPG-2: 2.5 ppm (10 mg/m3)\n                 -3\n      증기압: 1×10 mmHg @ 20 ℃             • TWA[NIOSH, ACGIH, OSHA]                  • [AIHA]ERPG-3: 30 ppm (120 mg/m3)\n                                          : 0.25 ppm (1.0 mg/m3)                     * 냄새로 감지 가능\n      밀도/비중: 1.8305 g/cm3 @ 20 ℃ • STEL[노동부]: 0.15 ppm (0.6 mg/m3)                 • [NAC/NRC]AEGL-1: 0.2 ppm (60분)\n                                        • STEL[ACGIH]: 0.7 ppm (3 mg/m3)           • [NAC/NRC]AEGL-2: 8.7 ppm (60분)\n      증기밀도: 3.4 (Air = 1)                                                          • [NAC/NRC]AEGL-3: 160 ppm (60분)\n               석유 화학, 레이온, 셀룰로오스 필름, 배터리 전해물, 전기 도금, 접착제, 비료, 화학 약품, 염료 및 안료, 철강,\n        용도\n               산업용 폭발물, 식품 첨가물, 탈수소화제, 광석의 정제, 식물 오일, 가죽 산업\n      노출경로                                                 인체노출 유해성 / 증상\n        흡입     자극, 기침, 화상, 부식, 후두/기관지 부종, 현기증, 두통, 오심, 무기력증, 경련, 호흡곤란, 폐부종, 폐렴\n        피부     홍반, 통증, 화상, 부식, 끈적이는 피부, 약하고 빠른 맥박, 얕은 호흡\n176     안구     흐릿한 시야, 눈물, 통증, 화상, 부식, 빛에 민감, 각막혼탁, 시력상실\n        경구     구강/식도/위의 화상, 통증, 구토, 설사, 토혈, 점액, 쇼크, 저혈압, 불규칙한 맥박",
+          "page": 183,
+          "page_end": 183,
+          "substance": "sulfuric_acid",
+          "cas": "7664-93-9"
+        },
+        {
+          "section": "황산                                                                                                    Sulfuric acid>방제요령·응급조치",
+          "text": "                  사고대비물질,                         노출, 작업,\n 국내규제              유독물질\n                                      -\n                                                  관리, 특별\n                                                                    -\n                    NFPA 704                            물질분류 및 표시\n             •건강: 3(매우 유해, 전신보호복 착용)\n             •화재: 0(연소성이 없는 물질)\n             •반응: 2(상온/상압에서 폭발성 없음. 온도상승,\n                    압력에 의해 폭발적 반응이 일어날 수 있음)\n             •특수: \\(물 상극물질)\n       • 증기 또는 물질의 흡입, 섭취, 접촉 시 심각한 상해, 화상 초래\n       • 산화제로 가연성 물질과 접촉 시 발화되거나 폭발 가능성 존재\n       • 물과 반응 시 격렬하게 수증기와 고열 발생\n위험     • 혼합ㆍ적재금지: 염소산류, 중금속류, 염산, 유기물류, 과염소산염류, 과망간산염류, 물(수분), 산, 산화제,\n                   유기물질카바이드, 금속분말, 알코올, 인, 아세톤, 아세트알데히드, 아크릴로니트릴\n       • 연소/열분해 생성물: 황산화물의 독성, 부식성 가스(이산화황 등)\n       • 물과 반응 시 생성물: 격렬한 반응으로 과량의 수증기와 열 발생\n                                                        화재동반 운송사고\n                                                        발생 시 대피거리\n       • 누출이 화재와 관련이 없다면 물질에 직접 주수 금지\n화재                                                        반경 0.8 km\n       • 물을 분사하여 온도를 낮게 유지\n                                                      유출 시 초기이격거리\n진압     • 수로나 배수구로의 유출을 차단하고 누출지역 또는 용기 내부에는 직사주수 금지\n요령     • 용기내부로 물이 들어가지 않도록 하고, 수로나 배수구로의 유출 차단      • 액체: 반경 50 m\n       • 소화제: 분말소화약제, 이산화탄소                         • 흄: 소규모 반경 60 m,\n                                                      대규모 반경 300 m\n       • 가연성 물질 제거, 밀폐공간으로의 유입 차단                   유출 시 방호활동거리\n       • 분무주수 또는 물분무로 증기발생 억제, 직접주수 금지\n누출     • 누출물 확산 방지/처리를 위해 도랑을 파거나 제방을 쌓아 가둘 것     • 액체: 풍하방향으로 50 m 이상\n방재     • 방재약품: 중탄산나트륨 등의 중화제, 마른 흙, 마른 모래 또는 비가연성 • 흄: 풍하방향\n요령              물질(팽창 질석, 팽창 진주암 등)                 소규모 낮 0.4 km, 밤 1.0 km /\n       • 보호장비: SCBA, 완전 밀폐형 증기 보호의, 내화학성 보호복\n                                                    대규모 낮 2.9 km, 밤 6.3 km\n       • 휴대용 측정장비: 적외선분광기, 라만분광기\n노출경로                                  응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡(피해자가 물질을 섭취하거나 흡입한 경우 구강 대\n 흡입\n       구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물을 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구    눈꺼풀을 위아래로 들어 올리고 최소 30분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n       구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 의식이 있을 경우 물로 입을 헹구고\n 경구                                                                            177\n       구토 및 호흡기계 질환이 없으면 물 또는 우유 공급, 보온 유지 후 병원 이송",
+          "page": 184,
+          "page_end": 184,
+          "substance": "sulfuric_acid",
+          "cas": "7664-93-9"
+        },
+        {
+          "section": "황화수소                                                                                         Hydrogen sulfide>기본정보·물리화학적 특성·위험성",
+          "text": "       황화수소                                                                                         Hydrogen sulfide\n                     구조                  CAS번호                     7783-06-4\n                                         국문유사명                     수소황화물, 황수소화물, 황이수소화물, 황화수소산\n                                         영문유사명                     Sulfur hydride, Sulfur dihydride, Hydrosulfuric acid\n                                         화학물질군                     황화물류\n                                         유해화학물질관리번호 2019-1-941(유독물질)\n                                         UN번호                      1053\n                                         ERG대응지침번호                 117: 가스-독성-인화성(극히 위험)\n                                                            물리화학적 특성\n      상태: 기체                              옥탄올/물 분배계수(logKow) : -\n      색상: 무색                              인화점: -82.4 ℃                                발화점: 260 ℃\n      냄새: 썩은 달걀 냄새                        폭발한계 (하한/상한): 4.3% / 45%\n                                          용해도\n      분자식·량: H2S(34.08)                   • 물: 난용성 (3.98 g/L @ 20 ℃)\n                                          • 용매: 이황화탄소, 알코올, 에테르, 글리세롤, 가솔린, 등유, 원유에 용해\n      pH: 4.5 (수용액)                                작업장 허용노출기준                           일반 인구집단 대상 급성노출기준\n      끓는점: -59.55 ℃                                                               • [AIHA]ERPG-1: 0.1 ppm* (0.13 mg/m3)\n                                  • TWA[노동부, ACGIH, OSHA]: 10 ppm (14 mg/m3) • [AIHA]ERPG-2: 30 ppm (41 mg/m )\n                                                                                                                   3\n      증기압: 1.52×104 mmHg @ 25.5 ℃                                             • [AIHA]ERPG-3: 100 ppm (130 mg/m3)\n                                  • STEL[노동부, ACGIH, OSHA]: 15 ppm (21 mg/m3)   * 냄새로 감지 가능\n      밀도/비중: 0.9923 g/cm3 @ -85.5 ℃ (액체) • Ceiling[NIOSH]: 10 ppm (14 mg/m3)      • [NAC/NRC]AEGL-1: 0.51 ppm (60분)\n                                          • Ceiling[OSHA]: 20 ppm (27 mg/m3)      • [NAC/NRC]AEGL-2: 27 ppm (60분)\n      증기밀도: 1.19 (Air = 1)                                                        • [NAC/NRC]AEGL-3: 50 ppm (60분)\n                염료, 의약품의 원료, 공업약품, 황산, 황분말, 황화나트륨, 기타 무기 황화물의 중간체, 윤활유와 절삭유,\n        용도\n                유기황화합물의 중간체\n      노출경로                                                   인체노출 유해성 / 증상\n        흡입      청색증, 폐부종, 기관지염, 무기력증, 메스꺼움, 구토, 설사, 현기증, 두통, 어지러움, 경련, 의식불명\n        피부      통증, 간지러움, 홍반, 피부염, 화상, 동상(액체 접촉 시)\n        안구      화상, 통증, 자극, 시력 저하 및 각막물집, 결막염\n100     경구      오심, 구토, 몸무게 감소",
+          "page": 107,
+          "page_end": 107,
+          "substance": "hydrogen_sulfide",
+          "cas": "7783-06-4"
+        },
+        {
+          "section": "황화수소                                                                                         Hydrogen sulfide>방제요령·응급조치",
+          "text": "                    사고대비물질,\n 국내규제                유독물질\n                                           -          노출, 작업, 관리         가연성, 독성\n                  NFPA 704                                  물질분류 및 표시\n           •건강: 4(치명적. 짧은 노출에도 사망 또는\n                  치명적 손상을 일으킬 수 있음)\n           •화재: 4(인화성이 큰 기체)\n           •반응: 0(일반적으로 안정함)\n           •특수: -\n       • 독성: 매우 유해한 물질, 물질의 흡입, 섭취, 피부접촉 시 심한 상해나 사망 초래 가능\n       • 극인화성 물질로 열, 스파크, 화염에 의해 쉽게 점화하고, 폭발 위험성 존재\n       • 공기와 섞여 폭발성 혼합물 형성, 화재 시 부식성, 자극성, 독성 가스 생성\n위험\n       • 혼합ㆍ적재금지: 산화성가스, 과산화물, 가연성 물질, 금속, 산화제, 질산\n       • 연소/열분해 생성물: 자극성/부식성/독성의 가스(황산화물)\n       • 물과 반응 시 생성물: 이산화황, 삼산화황\n                                                                         화재동반 운송사고\n       • 누출을 멈추게 할 수 없고 누출 가스에 불이 붙은 경우 화재진압 금지                          발생 시 대피거리\n       • 배출안전장치의 소리가 커지거나 탱크가 변색된 경우 즉시 철수\n화재                                                                         반경 1.6 km\n       • 가능한 누출을 막고 불이 꺼진 후에도 다량의 물로 용기 및 인접 지역을 냉각\n진압\n       • 수로, 하수구, 배수구로의 유출 차단, 지하실 등 밀폐된 장소로의 유입 차단                     유출 시 초기이격거리\n요령     • 소화제: 분무주수(Water spray), 미(微)분무주수(Water fog), 수성막포소화약제(AFFF),\n              합성계면활성제포소화약제, 알코올형포소화약제                                 • 소규모: 반경 30 m\n                                                                      • 대규모: 반경 400 m\n       • 열/스파크/점화원 제거, 환기, 장비 접지, 밀폐공간에 접근 금지            유출 시 방호활동거리\n       • 가스가 분산될 때까지 누출지역 격리 / 분무주수/물분무로 증기발생 억제\n누출                                                     • 소규모: 풍하방향\n       • 수로, 하수, 지하 등 밀폐공간으로의 유입을 차단할 것\n방재                                                       낮 0.1 km, 밤 0.5 km\n       • 보호 장비: SCBA, 완전 밀폐형 증기 보호의, 내화학성 보호복\n요령                                                     • 대규모: 풍하방향\n       • 방재약품: 분무주수, 마른 모래 또는 비가연성 물질(팽창 질석, 팽창 진주암 등)\n                                                         낮 2.4 km, 밤 6.3 km\n       • 휴대용 측정장비: 검지관, 가스측정기, 적외선분광기, 라만분광기\n노출경로                                       응급조치\n       신선한 공기, 산소공급, 적절한 장비를 이용한 인공호흡\n 흡입\n       (피해자가 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피할 것), 보온 유지 후 병원 이송\n 피부    다량의 물과 비누를 사용하여 최소 20분 이상 세척, 오염된 옷과 신발을 제거, 보온 유지 후 병원 이송\n 안구    눈꺼풀을 위아래로 들어 올리고 최소 20분 이상 물 또는 생리식염수로 세척, 보온 유지 후 병원 이송\n 경구    구토 발생 시 기도를 열고 한쪽 옆으로 머리를 몸보다 낮게 하여 눕힐 것, 보온 유지 후 병원 이송                          101",
+          "page": 108,
+          "page_end": 108,
+          "substance": "hydrogen_sulfide",
+          "cas": "7783-06-4"
+        }
+      ]
+    }
+  ]
+}

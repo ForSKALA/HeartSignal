@@ -1,0 +1,735 @@
+{
+  "date": "2026-10-23",
+  "index": "RAG/faiss_db/p1-complete",
+  "model": "text-embedding-ada-002",
+  "dimensions": 1536,
+  "vectors": {
+    "pdf": 2831,
+    "web": 5
+  },
+  "method": "고정된 데이터 검증 질문이며 사용자 요청 로그가 아님. collection만 선택하고 물질·문서·항목 필터 및 재정렬 없이 상위 10개 검색. 자료 근거 확보와 검색 순위를 별도로 기록.",
+  "evidence_cases_passed": 10,
+  "top10_cases_passed": 10,
+  "cases": [
+    {
+      "case": "Q1",
+      "fixture_question": "탱크로리 출하장에서 인화성 물질이 누출되면 어떻게 조치하는가?",
+      "evidence_present": true,
+      "expected_source": "G-78",
+      "expected_section": "10.2(13)",
+      "evidence": [
+        {
+          "id": "cf117942d45a88ebd077a057caf439d3038e24ed502e01ff4c09534d4b610aa2",
+          "page": 30,
+          "source": "KOSHA GUIDE G-78-2021"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.2(13)",
+          "page": 30,
+          "squared_l2": 0.22259840369224548
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "11.1",
+          "page": 32,
+          "squared_l2": 0.23472349345684052
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "9.1(3)",
+          "page": 27,
+          "squared_l2": 0.2366565763950348
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.2(14)",
+          "page": 30,
+          "squared_l2": 0.2427140474319458
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.1(3)",
+          "page": 29,
+          "squared_l2": 0.24734920263290405
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.1(1)",
+          "page": 29,
+          "squared_l2": 0.2502697706222534
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "9.2(14)",
+          "page": 28,
+          "squared_l2": 0.25141236186027527
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "14.2(6)",
+          "page": 38,
+          "squared_l2": 0.25170594453811646
+        },
+        {
+          "source": "안전보건공단 MSDS 아세틸렌",
+          "section": "5. 폭발·화재시 대처방법>다. 화재진압시 착용할 보호구 및 예방조치",
+          "page": 2,
+          "squared_l2": 0.25676706433296204
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "4.3.1(3)",
+          "page": 5,
+          "squared_l2": 0.2574106454849243
+        }
+      ]
+    },
+    {
+      "case": "Q2",
+      "fixture_question": "인화성 가스누출감지경보기의 1차 2차 경보 설정값은 폭발하한계의 몇 퍼센트인가?",
+      "evidence_present": true,
+      "expected_source": "C-C-87",
+      "expected_section": "7.1(2)",
+      "evidence": [
+        {
+          "id": "c16b3fe0eb63e62ee31f5bf92ef175925545395c87bdcf1ce3256cf41fcf37bd",
+          "page": 13,
+          "source": "KOSHA GUIDE C-C-87-2026"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "7.1(2)",
+          "page": 13,
+          "squared_l2": 0.1572447568178177
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "7.1(1)",
+          "page": 13,
+          "squared_l2": 0.18081411719322205
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "[부록 1]>14",
+          "page": 21,
+          "squared_l2": 0.19449958205223083
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "[부록 1]>13",
+          "page": 21,
+          "squared_l2": 0.20048393309116364
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "150(6)",
+          "page": 15,
+          "squared_l2": 0.21252590417861938
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "7.1(3)",
+          "page": 13,
+          "squared_l2": 0.21794334053993225
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "7.2(3)",
+          "page": 14,
+          "squared_l2": 0.22044840455055237
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "95(5)",
+          "page": 15,
+          "squared_l2": 0.2242184281349182
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "7.3(1)",
+          "page": 14,
+          "squared_l2": 0.22698460519313812
+        },
+        {
+          "source": "KOSHA GUIDE C-C-87-2026",
+          "section": "[부록 4]>9(2)",
+          "page": 29,
+          "squared_l2": 0.22872285544872284
+        }
+      ]
+    },
+    {
+      "case": "Q3",
+      "fixture_question": "황화수소의 시간가중평균 TWA 및 단시간 STEL 노출기준은 몇 ppm인가?",
+      "evidence_present": true,
+      "expected_source": "제2020-48호",
+      "expected_section": "별표1>728 황화수소",
+      "evidence": [
+        {
+          "id": "655dee8745f3b4654fd5b56dd1d11b4ed56ce4cd3087ad6b54edc8bf65185420",
+          "page": 43,
+          "source": "고용노동부고시 제2020-48호 별표1"
+        }
+      ],
+      "collection": "web",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "고용노동부고시 제2020-48호 별표1",
+          "section": "별표1>728 황화수소",
+          "page": 43,
+          "squared_l2": 0.2580969035625458
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제2조(산소 및 유해가스 농도의 측정결과 등의 기록 및 보존에 관한 적용례)",
+          "page": 1,
+          "squared_l2": 0.39291104674339294
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제618조(정의)",
+          "page": 1,
+          "squared_l2": 0.4173218607902527
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제232조(폭발 또는 화재 등의 예방)",
+          "page": 1,
+          "squared_l2": 0.42339158058166504
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제1조(시행일)",
+          "page": 1,
+          "squared_l2": 0.4660814702510834
+        }
+      ]
+    },
+    {
+      "case": "Q4",
+      "fixture_question": "밀폐공간에서 적정공기의 기준은 무엇인가?",
+      "evidence_present": true,
+      "expected_source": "산업안전보건기준",
+      "expected_section": "제618조(정의)",
+      "evidence": [
+        {
+          "id": "cb05244a4df17bc73ba52127295843b0673dab6a1f2ee6261683cc2561871d80",
+          "page": 1,
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)"
+        }
+      ],
+      "collection": "web",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제618조(정의)",
+          "page": 1,
+          "squared_l2": 0.2848927080631256
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제232조(폭발 또는 화재 등의 예방)",
+          "page": 1,
+          "squared_l2": 0.3205866813659668
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제2조(산소 및 유해가스 농도의 측정결과 등의 기록 및 보존에 관한 적용례)",
+          "page": 1,
+          "squared_l2": 0.3267165720462799
+        },
+        {
+          "source": "고용노동부고시 제2020-48호 별표1",
+          "section": "별표1>728 황화수소",
+          "page": 43,
+          "squared_l2": 0.4097587764263153
+        },
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제1조(시행일)",
+          "page": 1,
+          "squared_l2": 0.41910219192504883
+        }
+      ]
+    },
+    {
+      "case": "Q5",
+      "fixture_question": "황화철 취급 시 탑 및 탱크 상부에서 모니터링해야 할 가스는 무엇인가?",
+      "evidence_present": true,
+      "expected_source": "P-64",
+      "expected_section": "5.3.2(6)",
+      "evidence": [
+        {
+          "id": "8e3b22388af32fe2c40a66285092e18a5cc43afb182d81a32d7d044b3bfc4703",
+          "page": 11,
+          "source": "KOSHA GUIDE P-64-2012"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(6)",
+          "page": 11,
+          "squared_l2": 0.23426774144172668
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.3(13)",
+          "page": 32,
+          "squared_l2": 0.24160635471343994
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "3",
+          "page": 11,
+          "squared_l2": 0.24321530759334564
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "2",
+          "page": 11,
+          "squared_l2": 0.24555663764476776
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.2(14)",
+          "page": 30,
+          "squared_l2": 0.2501992881298065
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "4",
+          "page": 11,
+          "squared_l2": 0.2553468346595764
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "9.1(3)",
+          "page": 27,
+          "squared_l2": 0.2576945126056671
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "8.1.1(2)",
+          "page": 19,
+          "squared_l2": 0.25797367095947266
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "14.2(6)",
+          "page": 38,
+          "squared_l2": 0.2601009011268616
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "8.4.2(2)",
+          "page": 25,
+          "squared_l2": 0.26308581233024597
+        }
+      ]
+    },
+    {
+      "case": "Q6",
+      "fixture_question": "황화철이 침전된 용기에 물을 공급할 때 2시간 이상 필요한 이유는 무엇인가?",
+      "evidence_present": true,
+      "expected_source": "P-64",
+      "expected_section": "5.2.1(2)",
+      "evidence": [
+        {
+          "id": "5664043aa813db12101eeda1f89b3c646dec053902df7fec4ca2782565bd8b8a",
+          "page": 8,
+          "source": "KOSHA GUIDE P-64-2012"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.2.1(2)",
+          "page": 8,
+          "squared_l2": 0.2661042809486389
+        },
+        {
+          "source": "KOSHA GUIDE P-139-2013",
+          "section": "<부록 2>>3.4(3)",
+          "page": 56,
+          "squared_l2": 0.27064409852027893
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(3)",
+          "page": 11,
+          "squared_l2": 0.2935927212238312
+        },
+        {
+          "source": "KOSHA GUIDE A-G-14-2026",
+          "section": "8.2(5)",
+          "page": 22,
+          "squared_l2": 0.2961709797382355
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "6.2(3)",
+          "page": 9,
+          "squared_l2": 0.2969015836715698
+        },
+        {
+          "source": "안전지침/톨루엔.pdf",
+          "section": "폭발 및 화재위험성>소화방법",
+          "page": 1,
+          "squared_l2": 0.29733651876449585
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.2.2(1)",
+          "page": 9,
+          "squared_l2": 0.29878321290016174
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.5(2)",
+          "page": 12,
+          "squared_l2": 0.3007243275642395
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "4.1(3)",
+          "page": 4,
+          "squared_l2": 0.3007281422615051
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "1",
+          "page": 7,
+          "squared_l2": 0.30125126242637634
+        }
+      ]
+    },
+    {
+      "case": "Q7",
+      "fixture_question": "암모니아 소규모 및 대규모 누출의 초기이격거리는 얼마인가?",
+      "evidence_present": true,
+      "expected_source": "안전지침/암모니아.pdf",
+      "expected_section": "누출 시 대처요령>초기이격거리",
+      "evidence": [
+        {
+          "id": "021ea1c800becdb5b505bfd57bd5bd5e525c3aded9f84f35ef23951ad88d25d2",
+          "page": 2,
+          "source": "안전지침/암모니아.pdf"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "squared_l2": 0.2112821340560913
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "squared_l2": 0.29118219017982483
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>방호활동거리",
+          "page": 2,
+          "squared_l2": 0.31119105219841003
+        },
+        {
+          "source": "안전지침/일산화탄소.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "squared_l2": 0.314319372177124
+        },
+        {
+          "source": "안전지침/염화수소(염산).pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "squared_l2": 0.32041022181510925
+        },
+        {
+          "source": "안전지침/스티렌 모노머.pdf",
+          "section": "누출 시 대처요령>방호활동거리",
+          "page": 2,
+          "squared_l2": 0.33525514602661133
+        },
+        {
+          "source": "안전지침/스티렌 모노머.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "squared_l2": 0.34070056676864624
+        },
+        {
+          "source": "안전지침/메탄올.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "squared_l2": 0.34633296728134155
+        },
+        {
+          "source": "안전지침/불산.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "squared_l2": 0.3464118540287018
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "폭발 및 화재위험성>화재 및 폭발위험",
+          "page": 1,
+          "squared_l2": 0.35067257285118103
+        }
+      ]
+    },
+    {
+      "case": "Q8",
+      "fixture_question": "염소의 CAS 번호와 UN 번호는 무엇인가?",
+      "evidence_present": true,
+      "expected_source": "안전지침/염소.pdf",
+      "expected_section": "기본 물질 정보>CAS번호",
+      "evidence": [
+        {
+          "id": "0dfb3d7c628a1eb1d3309eb9f78d7e843dca861f1277dcbe1110058b5a881f7b",
+          "page": 1,
+          "source": "안전지침/염소.pdf"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "기본 물질 정보>CAS번호",
+          "page": 1,
+          "squared_l2": 0.22346889972686768
+        },
+        {
+          "source": "안전지침/염화수소(염산).pdf",
+          "section": "기본 물질 정보>CAS번호",
+          "page": 1,
+          "squared_l2": 0.2463986873626709
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "기본 물질 정보>UN번호",
+          "page": 1,
+          "squared_l2": 0.26483672857284546
+        },
+        {
+          "source": "안전지침/자일렌.pdf",
+          "section": "기본 물질 정보>CAS번호",
+          "page": 1,
+          "squared_l2": 0.2660553753376007
+        },
+        {
+          "source": "안전지침/수소.pdf",
+          "section": "기본 물질 정보>CAS번호",
+          "page": 1,
+          "squared_l2": 0.27847224473953247
+        },
+        {
+          "source": "안전지침/에틸렌.pdf",
+          "section": "기본 물질 정보>CAS번호",
+          "page": 1,
+          "squared_l2": 0.28252607583999634
+        },
+        {
+          "source": "안전지침/염화수소(염산).pdf",
+          "section": "기본 물질 정보>UN번호",
+          "page": 1,
+          "squared_l2": 0.2830400764942169
+        },
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "기본 물질 정보>CAS번호",
+          "page": 1,
+          "squared_l2": 0.2859014868736267
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "기본 물질 정보>ICSC번호",
+          "page": 1,
+          "squared_l2": 0.28695380687713623
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "기본 물질 정보>CAS번호",
+          "page": 1,
+          "squared_l2": 0.2884276807308197
+        }
+      ]
+    },
+    {
+      "case": "Q9",
+      "fixture_question": "염소를 흡입한 사람의 응급조치는 무엇인가?",
+      "evidence_present": true,
+      "expected_source": "안전지침/염소.pdf",
+      "expected_section": "응급조치>흡입",
+      "evidence": [
+        {
+          "id": "d32c0318f1534eb0faf6281185c4ef639d3227ac38ea5c8585d3651ed17bbac3",
+          "page": 3,
+          "source": "안전지침/염소.pdf"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 2,
+      "retrieved": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>경구",
+          "page": 3,
+          "squared_l2": 0.21079541742801666
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>흡입",
+          "page": 3,
+          "squared_l2": 0.23256872594356537
+        },
+        {
+          "source": "안전지침/염화수소(염산).pdf",
+          "section": "응급조치>응급조치",
+          "page": 3,
+          "squared_l2": 0.23458744585514069
+        },
+        {
+          "source": "안전지침/염화수소(염산).pdf",
+          "section": "응급조치>흡입",
+          "page": 3,
+          "squared_l2": 0.24981166422367096
+        },
+        {
+          "source": "안전지침/자일렌.pdf",
+          "section": "응급조치>흡입",
+          "page": 3,
+          "squared_l2": 0.2517491579055786
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "6.3",
+          "page": 9,
+          "squared_l2": 0.25401878356933594
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "6.2(1)",
+          "page": 9,
+          "squared_l2": 0.2545931935310364
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>경피",
+          "page": 3,
+          "squared_l2": 0.25612306594848633
+        },
+        {
+          "source": "안전지침/에틸벤젠.pdf",
+          "section": "응급조치>흡입",
+          "page": 3,
+          "squared_l2": 0.2599050998687744
+        },
+        {
+          "source": "안전보건공단 MSDS 메테인",
+          "section": "4. 응급조치요령>다. 흡입했을 때",
+          "page": 2,
+          "squared_l2": 0.2614024877548218
+        }
+      ]
+    },
+    {
+      "case": "Q10",
+      "fixture_question": "탱크로리 출하 중 인화성 물질이 누출된 후 다음 작업을 진행하기 전에 무엇을 확인하는가?",
+      "evidence_present": true,
+      "expected_source": "G-78",
+      "expected_section": "10.2(14)",
+      "evidence": [
+        {
+          "id": "6d7d0dfee879dfb1e9f152fd0b4f1526311dadda0d827b4ee22c98814325f2ca",
+          "page": 30,
+          "source": "KOSHA GUIDE G-78-2021"
+        }
+      ],
+      "collection": "pdf",
+      "top10_expected_rank": 1,
+      "retrieved": [
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.2(14)",
+          "page": 30,
+          "squared_l2": 0.24870656430721283
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "14.2(6)",
+          "page": 38,
+          "squared_l2": 0.2528614103794098
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.1(3)",
+          "page": 29,
+          "squared_l2": 0.25442764163017273
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.2(13)",
+          "page": 30,
+          "squared_l2": 0.2627229392528534
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.3(6)",
+          "page": 31,
+          "squared_l2": 0.2647380828857422
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.3(2)",
+          "page": 31,
+          "squared_l2": 0.2656192183494568
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "9.1(7)",
+          "page": 27,
+          "squared_l2": 0.2702920436859131
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "10.1(1)",
+          "page": 29,
+          "squared_l2": 0.2709716260433197
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "9.2(14)",
+          "page": 28,
+          "squared_l2": 0.2722117304801941
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "9.1(3)",
+          "page": 27,
+          "squared_l2": 0.2742290198802948
+        }
+      ]
+    }
+  ]
+}

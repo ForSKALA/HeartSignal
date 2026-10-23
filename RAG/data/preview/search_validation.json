@@ -1,0 +1,92 @@
+{
+  "embedding_model": "text-embedding-ada-002",
+  "index": "RAG/faiss_db/p1-build/pdf",
+  "vectors": 772,
+  "dimensions": 1536,
+  "cases": [
+    {
+      "question": "염소 누출 시 초기이격거리는?",
+      "filter": {
+        "substance": "chlorine"
+      },
+      "expected_section": "누출 시 대처요령>초기이격거리",
+      "passed": true,
+      "hits": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "score": 0.22798509895801544
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>누출 방지 및 개인보호구",
+          "page": 2,
+          "score": 0.3035360872745514
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>경피",
+          "page": 3,
+          "score": 0.32513976097106934
+        }
+      ]
+    },
+    {
+      "question": "염소를 흡입했을 때 응급조치는?",
+      "filter": {
+        "substance": "chlorine"
+      },
+      "expected_section": "응급조치>흡입",
+      "passed": true,
+      "hits": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>경구",
+          "page": 3,
+          "score": 0.2175452709197998
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>흡입",
+          "page": 3,
+          "score": 0.21886324882507324
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>경피",
+          "page": 3,
+          "score": 0.24563468992710114
+        }
+      ]
+    },
+    {
+      "question": "암모니아 누출 초기이격거리는?",
+      "filter": {
+        "substance": "ammonia"
+      },
+      "expected_section": "누출 시 대처요령>초기이격거리",
+      "passed": true,
+      "hits": [
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>초기이격거리",
+          "page": 2,
+          "score": 0.23046204447746277
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>방제약품 및 장비",
+          "page": 2,
+          "score": 0.31581148505210876
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "GHS정보>신호어",
+          "page": 4,
+          "score": 0.33260685205459595
+        }
+      ]
+    }
+  ]
+}
