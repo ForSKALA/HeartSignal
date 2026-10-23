@@ -1,5 +1,8 @@
 .env
 app/.env
+**/.env
+**/.env.*
+app/routers/uploads/
 .DS_Store
 __pycache__/
 *.py[cod]
