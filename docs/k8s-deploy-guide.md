@@ -13,14 +13,14 @@ flowchart TB
     I -->|/| W["web · P4<br/>nginx :80"]
     I -->|/api /login /signup /static /home| A["auth · P3<br/>Java :8080"]
     I -->|/rag-query /upload-* /docs /openapi.json| R["rag · P2<br/>FastAPI :8001"]
-    V2[브라우저] -->|heartsignal-voice.class-4.skala-us.com| V["voice · 음성 (선택)<br/>FastAPI :8008"]
+    I -->|"/voice/ (앞의 /voice 제거)"| V["voice · 음성 (선택)<br/>FastAPI :8008 · root-path /voice"]
     A --> D[("db · P3<br/>MariaDB StatefulSet :3306<br/>PVC")]
     R --> D
 ```
 
 - 모든 이미지는 Harbor `skala-registry.skala-us.com/class-4/heartsignal-*`에서 받습니다.
 - 컨테이너 사이는 Service 이름으로 연결합니다 (`localhost` 하드코딩 금지, AGENTS.md 5장).
-- voice는 `/`, `/index.html` 경로가 web과 겹치므로 **별도 호스트**로 연결합니다.
+- voice는 같은 호스트의 **`/voice/` 아래**로 연결합니다 (`web/k8s/ingress-voice.yaml`). 로그인 쿠키 `ACCESS_TOKEN`이 host-only라 별도 호스트에서는 401이 반복되기 때문입니다 ([#35](https://github.com/ForSKALA/HeartSignal/pull/35)). `/voice/tts/` → `/tts/`처럼 앞의 `/voice`를 떼는 rewrite는 이 Ingress에만 두고, voice는 `uvicorn --root-path /voice`로 화면 링크를 맞춥니다.
 
 ## 2. 팀 공통 이름·포트·경로 규칙
 
@@ -39,7 +39,7 @@ flowchart TB
 | `/` | web |
 | `/api`, `/login`, `/signup`, `/static`, `/home` | auth |
 | `/rag-query`, `/upload-paper`, `/upload-topic`, `/docs`, `/openapi.json` | rag |
-| 별도 호스트 `heartsignal-voice.class-4.skala-us.com` | voice |
+| `/voice(/\|$)(.*)` (정규식, `ingress-voice.yaml`) | voice |
 
 ## 3. 파트별 역할
 
@@ -344,7 +344,8 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
 - [x] **P3**: 로그인 성공 시 `http://localhost:8008/index.html`로 이동 → `LOGIN_REDIRECT_URL`(기본 `/#/home`)로 변경 ([#14](https://github.com/ForSKALA/HeartSignal/pull/14))
 - [x] **음성**: `Voice-AI/app/main.py`의 `SECRET_KEY = "RANDOM_SECRET_KEY"` 하드코딩 → `JWT_SECRET` 환경변수로 변경 ([#8](https://github.com/ForSKALA/HeartSignal/pull/8))
 - [ ] **음성**: torch CUDA 버전 설치로 이미지 3.49GB → CPU 전용 torch 권장
-- [ ] **P4**: `Voice-AI/app/static/index.html`이 `http://localhost:8080/api/auth/check` 호출
+- [x] **P4**: `Voice-AI/app/static/index.html`이 `http://localhost:8080/api/auth/check` 호출 → 같은 origin `/api/auth/check`로 변경 ([#35](https://github.com/ForSKALA/HeartSignal/pull/35))
+- [ ] **P4·음성**: 같은 호스트 `/voice/` Ingress 적용 + voice 1.0.3 배포 후 로그인 → Voice → 음성 생성·재생 → 로그아웃 공동 확인
 - [ ] **P4**: AGENTS.md 5·6장에 k8s용 Service 이름·환경변수 값 추가 (6장 RAG 변수는 #23에서 반영)
 - [ ] **P4**: 확장 화면(관리자·전광판·반장)용 Ingress 경로 `/alarm`, `/board` 추가 (rag 서비스)
 - [ ] **전원**: Ingress 호스트 이름(안: `heartsignal.class-4.skala-us.com`), 이미지 태그 규칙, ArgoCD 사용 여부 확정
