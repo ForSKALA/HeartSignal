@@ -23,7 +23,7 @@ spec:
         - name: harbor-registry-secret
       containers:
         - name: auth
-          image: skala-registry.skala-us.com/class-4/heartsignal-auth:1.0.0
+          image: skala-registry.skala-us.com/class-4/heartsignal-auth:1.0.1
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
@@ -40,6 +40,9 @@ spec:
                 secretKeyRef:
                   name: heartsignal-secret
                   key: JWT_SECRET
+            # Ingress 가 https 로 서비스하므로 쿠키에 Secure 를 붙인다
+            - name: COOKIE_SECURE
+              value: "true"
             - name: JAVA_OPTS
               value: "-Xms128m -Xmx384m"
           envFrom:

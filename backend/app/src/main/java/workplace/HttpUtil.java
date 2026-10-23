@@ -27,6 +27,11 @@ public final class HttpUtil {
             .filter(s -> !s.isEmpty())
             .collect(Collectors.toUnmodifiableSet());
 
+    // ==== Cookie ==== //
+    // https 배포(Ingress TLS)에서는 true: 쿠키가 http 로는 전송되지 않는다. 로컬 http 개발은 false(기본)
+    private static final boolean COOKIE_SECURE =
+            Boolean.parseBoolean(System.getenv().getOrDefault("COOKIE_SECURE", "false"));
+
     private HttpUtil() {}
 
     // ========= CORS =========
@@ -133,6 +138,7 @@ public final class HttpUtil {
         sb.append("; Path=/");
         if (maxAgeSeconds >= 0) sb.append("; Max-Age=").append(maxAgeSeconds);
         if (httpOnly) sb.append("; HttpOnly");
+        if (COOKIE_SECURE) sb.append("; Secure");
         sb.append("; SameSite=Lax");
         return sb.toString();
     }
