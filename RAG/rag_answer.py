@@ -170,6 +170,17 @@ PROMPT = (
     "답변:"
 )
 _CITATION = re.compile(r"\s*\[문서\s*(\d+)\]")
+_NUMBER = re.compile(r"\d+(?:[.,]\d+)?")
+
+
+def needs_review_flag(answer: str, evidence_text: str, cited: bool, question: str = "") -> bool:
+    """사람 확인 권장 (명세서 4.1, 평가 14행):
+    - 답변의 숫자(수치·농도·거리 등)가 근거 블록에도 질문에도 없으면 True — 근거 밖 수치·LLM 이 계산한 파생 수치
+      (예: LEL 25% 질문에 "0.525%vol" 처럼 계산해 답한 경우)
+    - LLM 이 [문서 n] 인용을 하나도 달지 않았으면 True (어느 근거를 썼는지 불명)"""
+    numbers = set(_NUMBER.findall(answer))
+    allowed = set(_NUMBER.findall(evidence_text)) | set(_NUMBER.findall(question))
+    return bool(numbers - allowed) or not cited
 
 
 def source_of(doc) -> dict:
@@ -252,12 +263,15 @@ def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=
     cited = [by_number[int(n)] for n in _CITATION.findall(text) if int(n) in by_number]
     final = _CITATION.sub("", text).strip()
     handoff = not final or final.upper() == "N/A"
+    needs_review = False
     if handoff:
         final, sources = NO_EVIDENCE, []
-    elif cited:  # 인용 표기가 있으면 실제로 쓴 청크의 출처만 (없으면 검색 청크 전체 유지)
-        sources = [src for src in sources if src in cited]
+    else:
+        if cited:  # 인용 표기가 있으면 실제로 쓴 청크의 출처만 (없으면 검색 청크 전체 유지)
+            sources = [src for src in sources if src in cited]
+        needs_review = needs_review_flag(final, "\n".join(blocks), bool(cited), prompt)
 
-    log_extra(hits=len(docs_scores), top_score=top_score, substance=substance, handoff=handoff, needs_review=False,
+    log_extra(hits=len(docs_scores), top_score=top_score, substance=substance, handoff=handoff, needs_review=needs_review,
               tokens_in=usage.get("input_tokens"), tokens_out=usage.get("output_tokens"))
     logger.debug("rag sources=%s distances=%s", sources, [None if s is None else round(float(s), 4) for _, s in docs_scores])
-    return {"response": final, "sources": sources, "needs_review": False, "handoff": handoff}
+    return {"response": final, "sources": sources, "needs_review": needs_review, "handoff": handoff}

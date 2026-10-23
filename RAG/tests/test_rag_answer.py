@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from openai import APITimeoutError
 
 from middleware import ApiError
-from rag_answer import NO_EVIDENCE, answer_with_sources, detect_substance, retrieve, rewrite_queries, tokenize
+from rag_answer import NO_EVIDENCE, answer_with_sources, detect_substance, needs_review_flag, retrieve, rewrite_queries, tokenize
 from conftest import make_token
 
 
@@ -53,7 +53,7 @@ def test_sources_filled_deduped_and_in_order():
         {"source": "노출기준 고시 별표1", "section": "황화수소"},
         {"source": "안전지침/황화수소.pdf", "section": "응급조치>흡입"},
     ]
-    assert out["handoff"] is False and out["needs_review"] is False
+    assert out["handoff"] is False and out["needs_review"] is True   # 인용 표기 없음 → 확인 권장
 
 
 def test_top_k_is_respected():
@@ -295,3 +295,42 @@ def test_bm25_only_chunk_does_not_break_top_score(client, rag_module, monkeypatc
     res = client.post("/rag-query", json={"prompt": "황화철에 물은 얼마나 뿌려?", "source": "pdf"})
     assert res.status_code == 200 and res.json()["sources"] == [{"source": "P-64", "section": "5.2.1(2)"}]
     assert json.loads(access_log[-1])["top_score"] is None
+
+
+# ---- needs_review (평가 14행) ----
+
+@pytest.mark.parametrize("answer,evidence,cited,expected", [
+    ("TWA 10ppm, STEL 15ppm", "황화수소 TWA 10ppm STEL 15ppm", True, False),     # 숫자 모두 근거에 있음 + 인용
+    ("TWA 10ppm, STEL 20ppm", "황화수소 TWA 10ppm STEL 15ppm", True, True),      # 20 은 근거에 없음 → 수치 환각 의심
+    ("반경 30m", "소규모: 반경 30m 대규모: 150m", False, True),                   # 인용 없음
+    ("신선한 공기를 공급한다", "응급조치 신선한 공기", True, False),              # 숫자 없음 + 인용
+    ("10.2(13)에 따라 출하 중단", "10.2(13) 출하를 중단", True, False),           # 소수점 형태도 근거와 비교
+])
+def test_needs_review_flag(answer, evidence, cited, expected):
+    assert needs_review_flag(answer, evidence, cited) is expected
+
+
+def test_needs_review_allows_question_numbers_but_flags_derived_numbers():
+    # 질문의 25 는 허용, LLM 이 계산한 0.525 는 근거에 없어 표시 (Q2 LEL 25% 사례)
+    assert needs_review_flag("LEL 25%는 0.525%vol", "폭발하한범위 2.1%", True, "LEL 25%가 뭐야? 프로판이면 몇 %vol?") is True
+    assert needs_review_flag("폭발하한범위는 2.1%, LEL 25% 기준", "폭발하한범위 2.1%", True, "LEL 25%가 뭐야?") is False
+
+
+def test_needs_review_false_for_cited_answer_with_evidence_numbers():
+    llm = _LLM(text="TWA 10ppm [문서 1], STEL 15ppm입니다. [문서 2]")
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), llm, top_k=5)
+    assert out["needs_review"] is False
+
+
+def test_needs_review_true_when_number_not_in_evidence():
+    llm = _LLM(text="TWA 10ppm, STEL 25ppm입니다. [문서 1]")
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), llm, top_k=5)
+    assert out["needs_review"] is True and out["handoff"] is False
+
+
+def test_needs_review_is_logged(client, rag_module, monkeypatch, access_log):
+    monkeypatch.setattr(rag_module, "VECTORSTORE_PDF", _Store(ROWS))
+    monkeypatch.setattr(rag_module, "ChatOpenAI", lambda *a, **kw: _LLM(text="TWA 99ppm [문서 1]"))
+    client.cookies.set("ACCESS_TOKEN", make_token())
+    res = client.post("/rag-query", json={"prompt": "황화수소 노출기준?", "source": "pdf"})
+    assert res.json()["needs_review"] is True and json.loads(access_log[-1])["needs_review"] is True

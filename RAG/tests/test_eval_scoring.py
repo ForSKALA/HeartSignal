@@ -11,7 +11,7 @@ HANDOFF = {"id": "H1", "type": "handoff"}
 
 def test_correct_and_grounded():
     body = {"response": "TWA 10ppm, STEL 15ppm입니다.", "sources": [{"source": "노출기준 고시 별표1", "section": "황화수소"}]}
-    assert score(CORE, body) == {"correct": True, "keyword_recall": 1.0, "grounded": True, "section_match": False, "ungrounded_answer": False}
+    assert score(CORE, body) == {"correct": True, "keyword_recall": 1.0, "grounded": True, "section_match": False, "ungrounded_answer": False, "needs_review": False}
 
 
 def test_section_match_requires_expected_section():
