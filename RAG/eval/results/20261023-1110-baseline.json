@@ -1,0 +1,166 @@
+{
+  "label": "baseline",
+  "url": "http://localhost:18001",
+  "source": "pdf",
+  "top_k": 5,
+  "summary": {
+    "core_n": 10,
+    "accuracy_pct": 20.0,
+    "keyword_recall_avg": 0.23,
+    "grounded_pct": 0.0,
+    "ungrounded_answer_pct": 50.0,
+    "handoff_n": 3,
+    "handoff_hit_pct": 100.0,
+    "errors": 0,
+    "latency_ms_avg": 2163
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "type": "core",
+      "latency_ms": 3461,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.33,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "출하 중에 프로판이 새면 즉시 예방책을 세우고, 유출/누출 지역 사방 50 m 지역을 격리시켜야 합니다. 또한, 방호활동거리를 풍하 방향으로 최소 50 m 이상 증가시켜야 합니다. 누출된 가스는 환기시켜 분산시키고, 증기를 줄이기 위해 물 스프레이를 사용할 수 있습니다. 개인보호구로는 양압의 자급식 공기호흡기와 제조업자에 의해 권고되는 화학 물질용 보호의를 착용해야 합니다.",
+      "sources": []
+    },
+    {
+      "id": "Q2",
+      "type": "core",
+      "latency_ms": 2184,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "LEL은 \"Lower Explosive Limit\"의 약자로, 화학 물질이 공기 중에서 폭발할 수 있는 최저 농도를 의미합니다. 프로판의 폭발하한범위(LEL)는 2.1%입니다. 따라서 LEL의 25%는 2.1%의 25%를 계산하면 됩니다. \n\n계산: \n2.1% * 0.25 = 0.525% \n\n따라서 프로판의 경우 LEL 25%는 약 0.525%vol입니다.",
+      "sources": []
+    },
+    {
+      "id": "Q3",
+      "type": "core",
+      "latency_ms": 1460,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    },
+    {
+      "id": "Q4",
+      "type": "core",
+      "latency_ms": 4143,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    },
+    {
+      "id": "Q5",
+      "type": "core",
+      "latency_ms": 1707,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    },
+    {
+      "id": "Q6",
+      "type": "core",
+      "latency_ms": 1426,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    },
+    {
+      "id": "Q7",
+      "type": "core",
+      "latency_ms": 1417,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "암모니아가 새는 경우, 최소 반경 50m 지역을 격리시켜야 합니다. 이는 누출 또는 유출 지점으로부터의 거리입니다.",
+      "sources": []
+    },
+    {
+      "id": "Q8",
+      "type": "core",
+      "latency_ms": 2754,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "119에 염소 누출을 신고할 때는 다음과 같은 정보를 제공해야 합니다:\n\n1. 사고물질의 특성: 염소의 특성과 관련된 정보를 제공하여, 응급 대응팀이 적절한 보호조치를 취할 수 있도록 합니다.\n2. 피해자의 상태: 피해자가 있는 경우, 그들의 상태를 설명하고 필요한 응급조치를 받을 수 있도록 합니다.\n3. 사고 위치: 정확한 사고 발생 위치를 알려주어 신속한 대응이 가능하도록 합니다.\n4. 누출 규모: 누출된 염소의 양이나 범위를 설명하여, 적절한 대응이 이루어질 수 있도록 합니다.\n5. 주변 환경: 사고 주변의 환경, 예를 들어 인근에 민감한 시설이나 인구 밀집 지역이 있는지를 설명합니다.\n\n이러한 정보를 제공함으로써 응급 대응팀이 신속하고 효과적으로 대응할 수 있도록 돕습니다.",
+      "sources": []
+    },
+    {
+      "id": "Q9",
+      "type": "core",
+      "latency_ms": 3497,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "염소를 들이마신 사람에 대한 응급조치는 다음과 같습니다:\n\n1. 피해자를 즉시 오염 지역에서 벗어나 신선한 공기가 있는 곳으로 옮깁니다.\n2. 피해자가 호흡을 하지 않는다면 인공호흡을 실시합니다. 이때, 물질을 섭취하거나 흡입한 경우 구강 대 구강 인공호흡은 피하고, 포켓 마스크와 같은 적절한 호흡 의료 장비를 사용합니다.\n3. 호흡이 곤란하면 산소를 공급합니다.\n4. 기침이나 호흡 곤란, 입, 후두나 가슴이 타는 듯한 느낌 등의 증상이 있으면 즉시 의사를 호출하고, 병원으로 환자를 옮길 준비를 합니다.\n5. 필요한 경우, 자급식 공기호흡기를 사용하여 구조합니다.\n6. 즉시 119 또는 응급의료기관에 연락하여 추가적인 의료 조치를 받도록 합니다.",
+      "sources": []
+    },
+    {
+      "id": "Q10",
+      "type": "core",
+      "latency_ms": 1578,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    },
+    {
+      "id": "H1",
+      "type": "handoff",
+      "latency_ms": 1286,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    },
+    {
+      "id": "H2",
+      "type": "handoff",
+      "latency_ms": 1082,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    },
+    {
+      "id": "H3",
+      "type": "handoff",
+      "latency_ms": 2120,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "PDF 지식베이스에서 답을 찾을 수 없습니다. 질문을 구체적으로 작성해 보세요.",
+      "sources": []
+    }
+  ]
+}
