@@ -332,11 +332,15 @@ def _load_agent_from(tmp_path, monkeypatch, init_source):
         (tmp_path / "agent").mkdir()
         (tmp_path / "agent" / "__init__.py").write_text(init_source, encoding="utf-8")
         monkeypatch.syspath_prepend(str(tmp_path))
-    monkeypatch.delitem(sys.modules, "agent", raising=False)
+        monkeypatch.delitem(sys.modules, "agent", raising=False)
+    else:
+        # [P2] 실제 agent 패키지가 생겨서, "미설치"는 import 자체를 막아 재현한다
+        monkeypatch.setitem(sys.modules, "agent", None)
     try:
         return agent_bridge._load_agent()
     finally:
-        sys.modules.pop("agent", None)
+        if init_source is not None:
+            sys.modules.pop("agent", None)
 
 
 def test_load_agent_not_installed(tmp_path, monkeypatch):

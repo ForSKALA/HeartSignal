@@ -118,6 +118,11 @@ if os.path.exists(f"{pdf_path}/index.faiss") and os.path.exists(f"{pdf_path}/ind
 else:
     print("❌ VECTORSTORE_PDF 벡터화된 파일이 없습니다.")
 
+# [P2] 경보 에이전트(확장)에 근거 조회용 저장소 연결 — 로직은 agent/ 패키지, 여기서는 연결만
+import agent as heartsignal_agent
+heartsignal_agent.configure(VECTORSTORE_PDF, VECTORSTORE_WEB)
+print("✅ 에이전트 근거 조회 준비" if heartsignal_agent.is_configured() else "❌ 에이전트 근거 없음 (템플릿만 동작)")
+
 # ✅ PDF 텍스트 추출
 def load_paper(file_path: str) -> str:
     reader = PdfReader(file_path)
