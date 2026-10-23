@@ -1,7 +1,7 @@
 # HeartSignal - 구현 명세서
 
 > 기준 문서: [`HeartSignal-Plan.md`](HeartSignal-Plan.md)(기획서), [`../AGENTS.md`](../AGENTS.md)(공통 규칙), [`k8s-deploy-guide.md`](k8s-deploy-guide.md)(배포)
-> 기준 시점: 2026-10-23 오전, `main` = `172dbf8` (PR #1~#4 병합 후)
+> 기준 시점: 2026-10-23 오전, `main` = `10887a4` (PR #1~#5 병합 후)
 > 기획서가 **무엇을·왜**라면, 이 문서는 **누가·어떤 입출력으로·언제까지·어떻게 확인하는지**를 정합니다. 둘이 다르면 기획서가 우선이고, 이 문서를 고칩니다.
 
 ---
@@ -26,7 +26,7 @@
 | --- | --- | --- | --- |
 | P1 정순욱 | `안전지침/` PDF 22종 저장소 반영 (허지원·한유진 업로드) | 적재 스크립트, 정제·청킹, 메타데이터, KOSHA·법령 자료 확보, 데이터 출처표 | `faiss_db/`는 베이스 인덱스 그대로입니다. **`/upload-paper`는 업로드할 때마다 PDF 인덱스를 통째로 바꿔서** 여러 파일 적재에 쓸 수 없습니다 → 스크립트로 일괄 적재해야 합니다. S1의 근거인 `프로판.pdf`는 "자료없음"이라 **KOSHA G-78이 꼭 필요**합니다 |
 | P2 심혁 | RAG 오타 2건 수정(PR #1), 기획서 개정(PR #4) | `/rag-query` 응답 확장, 프롬프트, handoff, 에이전트 도구 7개, 템플릿 폴백, 평가 | 교재 TODO Q01~Q05는 채워진 상태 |
-| P3 김근홍 | Java TODO ①~⑤-B, `users.role` + JWT `role`, 기존 DB 마이그레이션, `JWT_SECRET` 미설정 시 기동 중단, 소스 파일 분리(PR #3), auth·db k8s(PR #2) | RAG JWT 검증, 오류 형식·로그 미들웨어, 경보 API 6개 | 새 기획에서 `device` 역할이 빠졌는데 `User.ROLES`와 `02_users_role.sql` CHECK에 남아 있음. 로그인 후 `localhost:8008`로 이동함. 파일 분리는 AGENTS.md 8장(내부 static class 유지)과 달라 **팀 합의 필요** |
+| P3 김근홍 | Java TODO ①~⑤-B, `users.role` + JWT `role`, 기존 DB 마이그레이션, `JWT_SECRET` 미설정 시 기동 중단, 소스 파일 분리(PR #3), auth·db k8s(PR #2), `device` 역할 제거·role 없는 토큰 401 버그 수정(PR #5) | RAG JWT 검증, 오류 형식·로그 미들웨어, 경보 API 7개 | 로그인 후 `localhost:8008`로 이동함(`SimpleAuthServer.java`, `login.html`), CORS origin도 `localhost:8008` 고정(`HttpUtil.java`). 파일 분리는 AGENTS.md 8장(내부 static class 유지)과 달라 **팀 합의 필요** |
 | P4 허지원 | `안전지침/` PDF 추가, web 이미지·Ingress·공통 Secret·ConfigMap(PR #2, 김근홍 작성) | 화면 4종, 루트 `docker-compose.yml`, README, 배포 URL | 루트 HTML 3종은 아직 범용 RAG 화면. Ingress에 `/alarm`·`/board` 경로가 없음 |
 | 음성 한유진 | 베이스 업로드, voice k8s(PR #2, 김근홍 작성) | 에이전트용 방송 API, `JWT_SECRET` 연동, 평가셋 질문, 발표 자료 | `Voice-AI/app/main.py`의 `SECRET_KEY = "RANDOM_SECRET_KEY"` 하드코딩 → 토큰 검증 실패. CUDA torch로 이미지 3.49GB |
 
@@ -220,10 +220,9 @@ P3 라우터는 `POST /alarm`에서 경보 객체를 만든 뒤 `run_agent(alarm
 
 | 우선 | 작업 | 산출물 | 완료 확인 |
 | --- | --- | --- | --- |
-| P0 | 로그인 후 이동 주소를 `localhost:8008` 하드코딩에서 환경변수·상대경로로 변경 | `SimpleAuthServer.java`, `login.html` | 로그인하면 web 화면으로 이동 |
+| P0 | 로그인 후 이동 주소와 CORS origin을 `localhost:8008` 하드코딩에서 환경변수·상대경로로 변경 | `SimpleAuthServer.java`, `login.html`, `HttpUtil.java` | 로그인하면 web 화면으로 이동 |
 | P0 | RAG JWT 검증 의존성 (`ACCESS_TOKEN` 쿠키, 서명·만료·발급자·role), `require_role(*roles)` | `RAG/auth.py` | 무토큰 401, 만료 401, worker 업로드 403 |
 | P0 | 오류 형식 통일 + request_id + 질문 원문 미저장 로그 | `RAG/middleware.py` | 오류 응답이 모두 3.3 형식 |
-| P0 | `device` 역할 제거 (`User.ROLES`, `02_users_role.sql` CHECK, 예시 주석) | Java·SQL | role 3개만 허용 |
 | P1 | 경보 API 6개 + `/board/current` (4.2장), 30초 보류 타이머 | `RAG/alarm/` | worker·foreman 발령 403, 보류된 신고 미발송, 자동 해제 없음 |
 | P1 | 계정 시드: `admin1`, `foreman1`, `worker1` (시연용, 비밀번호는 `.env`) | `db/init/03_seed.sql` 또는 README 절차 | 세 역할로 로그인 가능 |
 | P1 | 테스트 | `RAG/tests/test_auth.py`, `test_alarm.py` | AGENTS.md 9장 P3 기준 통과 |
