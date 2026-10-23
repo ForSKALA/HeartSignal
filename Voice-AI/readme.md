@@ -22,10 +22,25 @@ python -m pip install -r requirements.txt
 ## 이미지 빌드 및 배포
 
 ```bash
-./docker-build.sh 1.0.0
-./docker-push.sh 1.0.0
+./docker-build.sh 1.0.1
+./docker-push.sh 1.0.1
 kubectl --context skala-admin-sa@class-4 -n class-4 apply -f k8s/
 kubectl --context skala-admin-sa@class-4 -n class-4 rollout status deployment/heartsignal-voice --timeout=180s
 ```
 
 Harbor 인증 환경변수와 배포 대상은 팀 배포 가이드를 따릅니다. 이미 사용된 태그를 덮어쓰지 말고 새 태그와 Deployment 이미지 설정을 함께 갱신합니다.
+
+## CPU 추론 의존성
+
+`faster-whisper`는 CTranslate2로 추론하므로 `torch`와 그에 따라 설치되던 CUDA 패키지를 제외합니다. Whisper small 모델과 FFmpeg는 계속 이미지에 포함됩니다.
+
+### 이미지 크기 검증
+
+동일한 로컬 Docker에서 컨테이너 실행 후 `docker image ls heartsignal-voice`로 비교했습니다.
+
+| 태그 | 구성 | 표시 크기 |
+| --- | --- | --- |
+| 1.0.0 | Whisper small 포함 + torch/CUDA 의존성 | 11.1GB |
+| 1.0.1 | Whisper small 포함, torch/CUDA 제외 | 2.56GB |
+
+약 77% 감소했습니다. `--network none` 컨테이너에서 한국어 STT와 API 기동, `pip check`를 검증했습니다. Docker 저장소·크기 표시 방식에 따라 실제 표시값은 달라질 수 있습니다.
