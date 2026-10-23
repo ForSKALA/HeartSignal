@@ -69,6 +69,20 @@ spec:
                 name: heartsignal-rag
                 port:
                   number: 8001
+          - path: /alarm
+            pathType: Prefix
+            backend:
+              service:
+                name: heartsignal-rag
+                port:
+                  number: 8001
+          - path: /board
+            pathType: Prefix
+            backend:
+              service:
+                name: heartsignal-rag
+                port:
+                  number: 8001
           - path: /upload-paper
             pathType: Prefix
             backend:
