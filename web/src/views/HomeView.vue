@@ -287,8 +287,6 @@ onBeforeUnmount(() => {
           {{ voiceBlocked ? "🔊 눌러서 음성 듣기" : voiceOn ? "🔊 음성 안내" : "🔇 음성 꺼짐" }}
         </button>
         <RouterLink class="chat-link" to="/chatbot">안전 정보 묻기</RouterLink>
-        <!-- Voice-AI 화면 (같은 origin /voice/, Vue 라우터 밖이라 a 태그) -->
-        <a class="chat-link" href="/voice/">음성 도구</a>
         <span class="level-badge">
           <span class="level-dot"></span>
           {{ topAlarm ? `${topAlarm.stage}단계 · ${STAGES[topAlarm.stage]}` : "평상시" }}
@@ -380,6 +378,29 @@ onBeforeUnmount(() => {
             </li>
           </ul>
         </div>
+
+        <!-- 관리자 대응 지침 (P2 에이전트 guide_card.sections, 각 섹션은 RAG 답변 + 출처) -->
+        <section v-if="isAdmin && alarm.guide_card?.sections?.length" class="alarm-guide" aria-label="관리자 대응 지침">
+          <p class="alarm-section-title">관리자 대응 지침</p>
+          <div class="guide-sections">
+            <article
+              v-for="section in alarm.guide_card.sections"
+              :key="section.id"
+              class="guide-section"
+              :class="{ 'is-handoff': section.handoff }"
+            >
+              <h3>
+                {{ section.title }}
+                <span v-if="section.needs_review" class="guide-review">검토 필요</span>
+              </h3>
+              <!-- handoff 이면 answer 에 "확인된 자료가 없습니다" 문구가 이미 들어 있음 -->
+              <p class="guide-answer">{{ section.answer }}</p>
+              <ul v-if="section.sources?.length" class="guide-sources" aria-label="출처">
+                <li v-for="(src, i) in section.sources" :key="i">📄 {{ src.source }} {{ src.section }}</li>
+              </ul>
+            </article>
+          </div>
+        </section>
       </article>
     </section>
 
