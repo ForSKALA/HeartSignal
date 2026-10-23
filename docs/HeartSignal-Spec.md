@@ -129,7 +129,8 @@
   "cleared_by": null,
   "cleared_at": null,
   "board": {"lines": ["프로판 누출 — 출하장 접근 금지", "차량 시동을 즉시 끄세요", "바람 반대 방향 B 집결지로 대피"], "source": {"source": "KOSHA GUIDE G-78-2021", "section": "10.2(13)"}},
-  "guide_card": {"immediate": [], "ppe": [], "first_aid": [], "report_info": {}, "sources": []},
+  "guide_card": {"immediate": [], "ppe": [], "first_aid": [], "report_info": {}, "sources": [],
+                 "sections": [{"id": "substance_info", "title": "누출 물질 확인", "question": "...", "answer": "...", "sources": [{"source": "...", "section": "..."}], "handoff": false, "needs_review": false}]},
   "checklist": [{"item": "출하 중단", "source": {"source": "...", "section": "..."}}],
   "briefing": null,
   "report": {"report_id": "r-0001", "status": "pending", "send_at": "2026-10-23T14:02:41.000+09:00",
@@ -171,7 +172,7 @@ P3 라우터는 `POST /alarm`에서 경보 객체를 만든 뒤 `run_agent(alarm
 | 도구 | `output` → 경보 객체 필드 |
 | --- | --- |
 | `display_board` | `{"lines": [str, ...(3~4줄)], "source": {"source", "section"} \| None}` → `board` (4줄 초과는 자름) |
-| `notify_manager` | `{"immediate": [str], "ppe": [str], "first_aid": [str], "report_info": {...}, "sources": [...]}` → `guide_card` |
+| `notify_manager` | `{"immediate": [str], "ppe": [str], "first_aid": [str], "report_info": {...}, "sources": [...], "sections": [...]}` → `guide_card`. `sections`는 `RAG/prompts/guide_sections.json`의 7개 질문(물질정보·초기대응·이격거리·보호구·응급조치·119정보·재개조건, 정순욱 `docs/emergency_prompts.json`과 id 동일)을 발령 직후 RAG(`answer_with_sources`)로 동시에 답한 결과. 각 항목 `id·title·question·answer·sources·handoff·needs_review`. LLM 없으면 `[]`. 전광판 문구는 `RAG/prompts/board_templates.json` |
 | `notify_foreman` | `{"checklist": [{"item": str, "source": {...} \| None}]}` → `checklist` |
 | `report_119` | `{"text": str, "sources": [...]}` → `report.text`, `report.sources` (발송 여부는 바꾸지 않음) |
 | `build_briefing` | `{"summary": [str], "first_aid": [str], "sources": [...]}` → `briefing` |

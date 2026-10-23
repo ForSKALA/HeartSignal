@@ -5,6 +5,7 @@
 import logging
 from datetime import datetime
 
+from . import sections as S
 from . import tools as T
 from .tools import KST
 
@@ -49,4 +50,22 @@ async def run_agent(alarm: dict) -> list[dict]:
         except Exception as exc:  # 도구 장애가 경보를 멈추지 않게 한다
             rec = _failed(tool, exc)
         actions.append(rec)
+    if key != "cleared":
+        await _attach_sections(alarm, actions)
     return actions
+
+
+async def _attach_sections(alarm: dict, actions: list[dict]) -> None:
+    """지침 카드(notify_manager 출력)에 RAG 상세 섹션 7개를 붙인다. LLM 이 없으면 빈 목록, 실패해도 경보는 그대로."""
+    card = next((a for a in actions if a.get("tool") == "notify_manager" and a.get("ok")), None)
+    if card is None:
+        return
+    try:
+        zone, substance = T._names(alarm)
+        secs = await S.build_sections(substance, zone)
+    except Exception as exc:
+        logger.warning("guide sections failed: %s", type(exc).__name__)
+        secs = []
+    card["output"]["sections"] = secs
+    card["sections_n"] = len(secs)
+    card["sections_handoff"] = sum(1 for x in secs if x.get("handoff"))

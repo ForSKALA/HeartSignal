@@ -5,6 +5,8 @@
 
 import logging
 import uuid
+import json
+from pathlib import Path
 from datetime import datetime, timezone, timedelta
 
 from . import evidence as ev
@@ -54,14 +56,20 @@ def rag_search(alarm: dict) -> dict:
 
 # ---- 2. display_board: 전광판 3~4줄 + 출처 1건 ----
 
+BOARD_TEMPLATES = json.loads((Path(__file__).resolve().parent.parent / "prompts" / "board_templates.json").read_text(encoding="utf-8"))
+
+
 def display_board(alarm: dict, bundle: dict) -> dict:
+    """문구는 prompts/board_templates.json (고정 템플릿, AGENTS.md 2장 4번). 근거가 있으면 이격거리 줄과 출처가 붙는다."""
     zone, substance = _names(alarm)
     stage, status = alarm.get("stage"), alarm.get("status")
+    fmt = lambda t, **kw: t.format(zone=zone, substance=substance, **kw)
+    T = BOARD_TEMPLATES
     if status == "cleared":
-        lines = [f"{zone} 경보 해제", "작업 재개는 안전관리자 승인 후", "작업반장 안내에 따르세요"]
+        lines = [fmt(t) for t in T["cleared"]["lines"]]
         resume = bundle.get("guides_resume") or []
         if resume:  # 재개 조건 근거(G-78 10.2(14) 등)가 있으면 전광판용 짧은 문구 + 출처
-            lines[1] = "가스 농도 측정·안전 확인 후 작업 재개"
+            lines[1] = fmt(T["cleared"]["resume_line"])
             return _record("display_board", {"lines": lines, "source": resume[0][1]}, [resume[0][1]], False)
         return _record("display_board", {"lines": lines, "source": None}, [], True)
 
@@ -69,13 +77,12 @@ def display_board(alarm: dict, bundle: dict) -> dict:
     if iso:
         dist = ev.isolation_distances(iso[0][0])
         radius = dist.get("소규모") or dist.get("대규모")
-        lines = [f"{substance} 누출 — {zone} 접근 금지" if stage == 3 else f"{zone} {substance} 경고 — 작업 중지",
-                 f"접근 금지 반경 {radius} (초기이격거리)" if radius else "접근 금지 — 초기이격거리 확인",
-                 "바람 반대 방향으로 대피", "집결지에서 인원 점검"]
+        I = T["isolation"]
+        lines = [fmt(I["headline"][str(stage if stage in (2, 3) else 3)]),
+                 fmt(I["radius"], radius=radius) if radius else fmt(I["no_radius"]),
+                 *[fmt(t) for t in I["tail"]]]
         return _record("display_board", {"lines": lines[:4], "source": iso[0][1]}, [iso[0][1]], False)
-    lines = {1: [f"{zone} {substance} 주의", "작업반장 지시에 따라 점검", "이상 시 즉시 보고"],
-             2: [f"{zone} {substance} 경고", "작업을 중지하고 점화원을 제거하세요", "대피 준비 — 작업반장 지시 대기"],
-             3: [f"{substance} 누출 — {zone} 접근 금지", "즉시 바람 반대 방향으로 대피", "집결지에서 인원 점검"]}[stage or 3]
+    lines = [fmt(t) for t in T["stage"][str(stage or 3)]]
     return _record("display_board", {"lines": lines, "source": None}, [], True)
 
 

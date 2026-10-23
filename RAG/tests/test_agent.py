@@ -157,3 +157,58 @@ def test_tool_failure_is_recorded_and_others_continue(monkeypatch):
 def test_isolation_distance_parser():
     assert evidence.isolation_distances("초기이격거리 • 소규모: 반경 30m • 대규모: 반경 150m") == {"소규모": "30m", "대규모": "150m"}
     assert evidence.isolation_distances("자료없음") == {}
+
+
+# ---- 지침 카드 상세 섹션 (RAG 답변 7개, LLM 없으면 빈 목록) · 전광판 템플릿 파일 ----
+
+def test_sections_empty_without_llm_and_board_lines_come_from_template_file():
+    from agent import sections
+    sections.configure_llm(None, ())
+    actions = asyncio.run(runner.run_agent(_alarm(substance="ammonia", stage=3)))
+    card = next(a for a in actions if a["tool"] == "notify_manager")
+    assert card["output"]["sections"] == [] and card["sections_n"] == 0
+    templates = json.loads((AGENT_DIR.parent / "prompts" / "board_templates.json").read_text(encoding="utf-8"))
+    board = next(a for a in actions if a["tool"] == "display_board")["output"]
+    assert board["lines"][2:] == templates["isolation"]["tail"]       # 문구는 파일에서 온다
+    outputs, records = agent_bridge._collect(actions)
+    assert outputs["guide_card"]["sections"] == []                      # P3 검사기 통과, 필드 그대로 전달
+
+
+def test_sections_fill_seven_answers_with_sources_when_llm_present(monkeypatch):
+    import rag_answer
+    from agent import sections
+    seen = []
+
+    def fake_answer(prompt, store, llm, top_k, extra_stores=(), rewrite_llm=None):
+        seen.append(prompt)
+        if "보호구" in prompt:
+            return {"response": rag_answer.NO_EVIDENCE, "sources": [], "needs_review": False, "handoff": True}
+        return {"response": f"답: {prompt[:10]} [문서 1]", "sources": [{"source": "안전지침/암모니아.pdf", "section": "x"}],
+                "needs_review": False, "handoff": False}
+
+    monkeypatch.setattr(rag_answer, "answer_with_sources", fake_answer)
+    sections.configure_llm(object(), (object(), object()))
+    try:
+        actions = asyncio.run(runner.run_agent(_alarm(substance="ammonia", stage=3)))
+    finally:
+        sections.configure_llm(None, ())
+    card = next(a for a in actions if a["tool"] == "notify_manager")
+    secs = card["output"]["sections"]
+    assert [s["id"] for s in secs] == ["substance_info", "initial_response", "evacuation_info", "protective_equipment",
+                                       "exposure_response", "report_119", "restart_conditions"]
+    assert all("암모니아" in s["question"] for s in secs) and "출하장" in secs[-1]["question"]
+    assert card["sections_n"] == 7 and card["sections_handoff"] == 1
+    ppe = next(s for s in secs if s["id"] == "protective_equipment")
+    assert ppe["handoff"] is True and ppe["sources"] == []
+    assert secs[0]["sources"][0]["source"] == "안전지침/암모니아.pdf"
+    assert len(seen) == 7
+
+
+def test_sections_are_skipped_on_clear():
+    from agent import sections
+    sections.configure_llm(object(), (object(),))
+    try:
+        actions = asyncio.run(runner.run_agent(_alarm(status="cleared")))
+    finally:
+        sections.configure_llm(None, ())
+    assert all("sections" not in a.get("output", {}) for a in actions if isinstance(a.get("output"), dict))
