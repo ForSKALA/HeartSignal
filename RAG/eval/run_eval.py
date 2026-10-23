@@ -3,7 +3,8 @@
 #
 # 지표 (기획서 7.2, 명세서 6.2)
 # - 정확성: 핵심 질문의 keywords가 답변에 모두 들어 있는 비율
-# - 근거성: 핵심 질문의 expected_sources 중 하나가 응답 sources에 있는 비율
+# - 근거성: 핵심 질문의 expected_sources 중 하나가 응답 sources에 있는 비율 (문서 단위)
+# - 절 일치율: expected_sections 중 하나가 응답 sources 의 section 에 있는 비율 (엄격, 9행부터)
 # - 무근거 답변률(환각률 대용): 거절하지 않고 답했는데 기대 출처가 응답 sources에 없는 비율
 # - handoff 적중률: handoff 질문에서 handoff=true 이거나 거절 문구로 답한 비율
 
@@ -39,10 +40,13 @@ def score(q: dict, body: dict) -> dict:
         return {"handoff_hit": refused}
     hits = [k for k in q["keywords"] if k in answer]
     grounded = any(s in source_text(body) for s in q["expected_sources"])
+    sections = " ".join(s.get("section", "") for s in body.get("sources") or [])
+    section_match = any(sec in sections for sec in q.get("expected_sections", []))
     return {
         "correct": len(hits) == len(q["keywords"]),
         "keyword_recall": round(len(hits) / len(q["keywords"]), 2),
         "grounded": grounded,
+        "section_match": section_match,
         "ungrounded_answer": not refused and not grounded,
     }
 
@@ -56,6 +60,7 @@ def summarize(rows: list[dict]) -> dict:
         "accuracy_pct": pct(core, "correct"),
         "keyword_recall_avg": round(sum(r["keyword_recall"] for r in core) / len(core), 2) if core else None,
         "grounded_pct": pct(core, "grounded"),
+        "section_match_pct": pct(core, "section_match"),
         "ungrounded_answer_pct": pct(core, "ungrounded_answer"),
         "handoff_n": len(handoff),
         "handoff_hit_pct": pct(handoff, "handoff_hit"),
@@ -72,11 +77,14 @@ def main() -> None:
     ap.add_argument("--questions", default=str(EVAL_DIR / "questions.jsonl"))
     ap.add_argument("--source", default="pdf")
     ap.add_argument("--top-k", type=int, default=5)
+    ap.add_argument("--repeat", type=int, default=1, help="질문당 반복 횟수. 2 이상이면 지표는 반복 평균, 행은 마지막 실행")
     args = ap.parse_args()
 
     cookies = {"ACCESS_TOKEN": args.token} if args.token else None
-    rows = []
+    rows, runs = [], []
     with httpx.Client(base_url=args.url, cookies=cookies, timeout=60) as client:
+      for rep in range(args.repeat):
+        rows = []
         for q in load_questions(Path(args.questions)):
             started = time.perf_counter()
             row = {"id": q["id"], "type": q["type"]}
@@ -93,12 +101,19 @@ def main() -> None:
                 row["latency_ms"] = int((time.perf_counter() - started) * 1000)
                 row["error"] = type(exc).__name__
             rows.append(row)
-            print(f"{q['id']:>4} {row.get('status', '-'):>4} "
+            print(f"{'r'+str(rep+1) if args.repeat > 1 else '':>3}{q['id']:>4} {row.get('status', '-'):>4} "
                   + ("ERR " + str(row["error"])[:60] if "error" in row else
                      ("handoff " + str(row["handoff_hit"]) if q["type"] == "handoff"
-                      else f"correct={row['correct']} recall={row['keyword_recall']} grounded={row['grounded']}")))
+                      else f"correct={row['correct']} recall={row['keyword_recall']} grounded={row['grounded']} section={row['section_match']}")))
 
-    summary = summarize(rows)
+        runs.append(summarize(rows))
+
+    summary = runs[-1]
+    if args.repeat > 1:  # 반복 평균 (측정 편차 완화) + 실행별 값
+        keys = [k for k, v in runs[0].items() if isinstance(v, (int, float)) and k not in ("core_n", "handoff_n", "errors")]
+        summary = {**summary, **{k: round(sum(r[k] for r in runs if r[k] is not None) / len(runs), 1) for k in keys},
+                   "errors": sum(r["errors"] for r in runs), "repeat": args.repeat,
+                   "per_run": {k: [r[k] for r in runs] for k in ("accuracy_pct", "grounded_pct", "section_match_pct", "handoff_hit_pct")}}
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
     out_dir = EVAL_DIR / "results"
