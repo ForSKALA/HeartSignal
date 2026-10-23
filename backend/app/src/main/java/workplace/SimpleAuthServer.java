@@ -42,51 +42,37 @@ At this time, copy/move the entire folder containing gradlew, settings.gradle (o
     SELECT * FROM sql_db.users;
 8. Run (e.g. from root directory workplace)
     workplace % ./gradlew build
-    ./gradlew :app:run --no-configuration-cache 
+    ./gradlew :app:run --no-configuration-cache
 */
 
 package workplace;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
 
-import workplace.SimpleAuthServer.AuthService;
-import workplace.SimpleAuthServer.JdbcUserRepository;
-import workplace.SimpleAuthServer.JwtUtil;
-import workplace.SimpleAuthServer.User;
-import workplace.SimpleAuthServer.UserRepository;
+import static workplace.HttpUtil.addCorsHeaders;
+import static workplace.HttpUtil.cookie;
+import static workplace.HttpUtil.getCookieValue;
+import static workplace.HttpUtil.methodNotAllowed;
+import static workplace.HttpUtil.notFound;
+import static workplace.HttpUtil.parseFormBody;
+import static workplace.HttpUtil.redirect;
+import static workplace.HttpUtil.serveResource;
+import static workplace.HttpUtil.writeJson;
+import static workplace.HttpUtil.writeText;
+import static workplace.TextUtil.escapeHtml;
+import static workplace.TextUtil.escapeJson;
+import static workplace.TextUtil.isBlank;
+import static workplace.TextUtil.trimToNull;
 
-import org.mindrot.jbcrypt.BCrypt;
-
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-
-// java.sql – Specify only what is needed
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.sql.Statement;
-
-// java.time
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 
 // java.util – Specify only what is needed
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -103,6 +89,10 @@ Modification history:
   4) Maintained redirect to http://localhost:8008/index.html on successful login
   5) Added DEBUG logs to identify login failure causes
      - Outputs raw params / username/password / bcrypt matches result to console
+  6) [HeartSignal P3] 내부 static class를 영역별 파일로 분리
+     - User / UserRepository / JdbcUserRepository / AuthService / JwtUtil / HttpUtil / TextUtil
+     - 이 파일에는 설정값·세션 저장소·라우팅(main)만 남김
+  7) [HeartSignal P3] users.role 컬럼 + JWT role 클레임 추가, /api/auth/check 응답에 role 포함
  */
 
 public class SimpleAuthServer {
@@ -123,14 +113,16 @@ public class SimpleAuthServer {
     // ==== (Optional) Cookie name for login status check in Vue ==== //
     private static final String APP_AUTH_COOKIE_NAME = "APP_AUTH";
 
-    // ==== CORS (dev) ==== //
-    // In case frontend (8008) calls Java API (8080)
-    private static final String DEV_FRONTEND_ORIGIN = "http://localhost:8008";
-
     // ==== DEBUG ==== //
-    private static final boolean DEBUG = true;
+    static final boolean DEBUG = true;
 
     public static void main(String[] args) throws Exception {
+        // 비밀값이 없으면 기동하지 않는다 (JwtUtil 클래스 초기화 실패보다 원인을 먼저 알린다)
+        if (isBlank(System.getenv("JWT_SECRET"))) {
+            System.err.println("[BOOT] JWT_SECRET 환경변수가 없습니다. .env 를 확인하세요.");
+            System.exit(1);
+        }
+
         // Load JDBC Driver
         Class.forName("org.mariadb.jdbc.Driver");
 
@@ -222,6 +214,7 @@ public class SimpleAuthServer {
 
             try {
                 //  회원가입 요청을 어떤 계층으로 위임해야 하는가?
+                // (role 은 받지 않는다: 가입자는 항상 worker, 다른 role 은 관리자가 DB 에서 부여)
                 authService.signUp(username, password);redirect(exchange, "/login");
             } catch (SQLIntegrityConstraintViolationException dup) {
                 writeText(exchange, 400, "username already exists");
@@ -254,7 +247,7 @@ public class SimpleAuthServer {
                 }
 
                 // [① 로그인 연결] 서비스의 로그인 결과를 받아 실패 시 401, 성공 시 쿠키 발급으로 이어지게 하세요.
-                User user = /* TODO ①: 로그인 검증 */ null;
+                User user = /* TODO ①: 로그인 검증 */ authService.login(username, password);
                 if (user == null) {
                     writeJson(exchange, 401, "{\"ok\":false,\"error\":\"invalid credentials\"}");
                     return;
@@ -318,7 +311,7 @@ public class SimpleAuthServer {
             User sessionUser = null;
             if (!isBlank(sessionId)) {
                 // [② 세션 검증] 쿠키의 세션 ID는 사용자 자체가 아닙니다. 서버 저장소에서 해당 사용자를 조회하세요.
-                sessionUser = /* TODO ②: 서버 저장소 조회 */ null;
+                sessionUser = /* TODO ②: 서버 저장소 조회 */ SESSION_STORE.get(sessionId);
             }
 
             // (B) JWT validation
@@ -326,14 +319,16 @@ public class SimpleAuthServer {
             boolean jwtOk = false;
             String jwtUsername = null;
             String jwtSubject = null;
+            String jwtRole = null;
 
             if (!isBlank(token)) {
                 try {
                     // [③ JWT 검증] 토큰 내용을 단순 디코딩하지 말고 서명·만료·발급자 검증 함수를 사용하세요.
-                    DecodedJWT decoded = /* TODO ③: 토큰 검증 */ null;
+                    DecodedJWT decoded = /* TODO ③: 토큰 검증 */ JwtUtil.verifyToken(token);
                     jwtOk = true;
                     jwtUsername = decoded.getClaim("username").asString();
                     jwtSubject = decoded.getSubject();
+                    jwtRole = JwtUtil.roleOf(decoded);
                 } catch (JWTVerificationException ex) {
                     jwtOk = false;
                 } catch (Exception ex) {
@@ -343,19 +338,21 @@ public class SimpleAuthServer {
 
             // Policy: pass if either session OR JWT is valid
             // [④ 인증 정책] Session OR JWT: 두 방식 모두 실패한 경우에만 거부하도록 조건을 작성하세요.
-            if (/* TODO ④: 두 인증 수단이 모두 실패했는가? */ false) {
+            if (/* TODO ④: 두 인증 수단이 모두 실패했는가? */ sessionUser == null && !jwtOk) {
                 writeJson(exchange, 401, "{\"ok\":false,\"reason\":\"UNAUTHORIZED\"}");
                 return;
             }
 
             if (sessionUser != null) {
                 String body = "{\"ok\":true,\"via\":\"session\",\"username\":\""
-                        + escapeJson(sessionUser.getUsername()) + "\"}";
+                        + escapeJson(sessionUser.getUsername()) + "\",\"role\":\""
+                        + escapeJson(sessionUser.getRole()) + "\"}";
                 writeJson(exchange, 200, body);
             } else {
                 String body = "{\"ok\":true,\"via\":\"jwt\",\"username\":\""
                         + escapeJson(jwtUsername) + "\",\"sub\":\""
-                        + escapeJson(jwtSubject) + "\"}";
+                        + escapeJson(jwtSubject) + "\",\"role\":\""
+                        + escapeJson(jwtRole) + "\"}";
                 writeJson(exchange, 200, body);
             }
         });
@@ -420,106 +417,7 @@ public class SimpleAuthServer {
         server.start();
     }
 
-    // ========= CORS =========
-
-    private static void addCorsHeaders(HttpExchange exchange) {
-        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", DEV_FRONTEND_ORIGIN);
-        exchange.getResponseHeaders().set("Access-Control-Allow-Credentials", "true");
-        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
-        exchange.getResponseHeaders().set("Vary", "Origin");
-    }
-
-    // ========= Resource/Reponse Helper =========
-
-    private static void serveResource(HttpExchange exchange, String resourcePath, String contentType) throws IOException {
-        InputStream is = SimpleAuthServer.class.getClassLoader().getResourceAsStream(resourcePath);
-        if (is == null) {
-            notFound(exchange);
-            return;
-        }
-        byte[] bytes = is.readAllBytes();
-        exchange.getResponseHeaders().add("Content-Type", contentType);
-        exchange.sendResponseHeaders(200, bytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(bytes);
-        }
-    }
-
-    private static void writeText(HttpExchange exchange, int status, String body) throws IOException {
-        byte[] bytes = body.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "text/plain; charset=utf-8");
-        exchange.sendResponseHeaders(status, bytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(bytes);
-        }
-    }
-
-    private static void writeJson(HttpExchange exchange, int status, String json) throws IOException {
-        byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
-        exchange.getResponseHeaders().add("Content-Type", "application/json; charset=utf-8");
-        exchange.sendResponseHeaders(status, bytes.length);
-        try (OutputStream os = exchange.getResponseBody()) {
-            os.write(bytes);
-        }
-    }
-
-    private static void redirect(HttpExchange exchange, String location) throws IOException {
-        exchange.getResponseHeaders().add("Location", location);
-        exchange.sendResponseHeaders(302, -1);
-        exchange.close();
-    }
-
-    private static void methodNotAllowed(HttpExchange exchange) throws IOException {
-        writeText(exchange, 405, "Method Not Allowed");
-    }
-
-    private static void notFound(HttpExchange exchange) throws IOException {
-        writeText(exchange, 404, "Not Found");
-    }
-
-    private static Map<String, String> parseFormBody(HttpExchange exchange) throws IOException {
-        String body = new String(exchange.getRequestBody().readAllBytes(), StandardCharsets.UTF_8);
-        Map<String, String> params = new HashMap<>();
-        for (String pair : body.split("&")) {
-            if (pair.isEmpty()) continue;
-            String[] kv = pair.split("=", 2);
-            String key = urlDecode(kv[0]);
-            String value = kv.length > 1 ? urlDecode(kv[1]) : "";
-            params.put(key, value);
-        }
-        return params;
-    }
-
-    private static String urlDecode(String s) {
-        return URLDecoder.decode(s, StandardCharsets.UTF_8);
-    }
-
-    private static boolean isBlank(String s) {
-        return s == null || s.trim().isEmpty();
-    }
-
-    private static String trimToNull(String s) {
-        if (s == null) return null;
-        String t = s.trim();
-        return t.isEmpty() ? null : t;
-    }
-
-// Read common cookie
-    private static String getCookieValue(HttpExchange exchange, String name) {
-        List<String> cookies = exchange.getRequestHeaders().get("Cookie");
-        if (cookies == null) return null;
-        for (String header : cookies) {
-            String[] parts = header.split(";\\s*");
-            for (String part : parts) {
-                String[] kv = part.split("=", 2);
-                if (kv.length == 2 && name.equals(kv[0])) {
-                    return kv[1];
-                }
-            }
-        }
-        return null;
-    }
+    // ========= Session Helper =========
 
     private static String resolveSessionId(HttpExchange exchange) {
         return getCookieValue(exchange, SESSION_COOKIE_NAME);
@@ -529,186 +427,5 @@ public class SimpleAuthServer {
         String sessionId = resolveSessionId(exchange);
         if (sessionId == null) return null;
         return SESSION_STORE.get(sessionId);
-    }
-
-    private static String escapeHtml(String s) {
-        if (s == null) return "";
-        return s.replace("&", "&amp;")
-                .replace("<", "&lt;")
-                .replace(">", "&gt;")
-                .replace("\"", "&quot;")
-                .replace("'", "&#39;");
-    }
-
-    private static String escapeJson(String s) {
-        if (s == null) return "";
-        return s.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
-    }
-
-  // Cookie creation helper (unified attributes)
-    // maxAgeSeconds:
-    //  -1 : Max-Age not set (behaves like a session cookie)
-    //   0 : Delete immediately
-    
-    private static String cookie(String name, String value, boolean httpOnly, int maxAgeSeconds) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(name).append("=").append(value == null ? "" : value);
-        sb.append("; Path=/");
-        if (maxAgeSeconds >= 0) sb.append("; Max-Age=").append(maxAgeSeconds);
-        if (httpOnly) sb.append("; HttpOnly");
-        sb.append("; SameSite=Lax");
-        return sb.toString();
-    }
-
-    // ========= Domain/ Repository / Service =========
-
-    public static class User {
-        private Long id;
-        private String username;
-        private String password;
-
-        public Long getId() { return id; }
-        public void setId(Long id) { this.id = id; }
-
-        public String getUsername() { return username; }
-        public void setUsername(String username) { this.username = username; }
-
-        public String getPassword() { return password; }
-        public void setPassword(String password) { this.password = password; }
-    }
-
-    public interface UserRepository {
-        void save(User user) throws Exception;
-        User findByUsername(String username) throws Exception;
-    }
-
-    public static class JdbcUserRepository implements UserRepository {
-        private final String url;
-        private final String user;
-        private final String password;
-
-        public JdbcUserRepository(String url, String user, String password) {
-            this.url = url;
-            this.user = user;
-            this.password = password;
-        }
-
-        private Connection getConnection() throws SQLException {
-            return DriverManager.getConnection(url, user, password);
-        }
-
-        @Override
-        public void save(User u) throws Exception {
-            String sql = "INSERT INTO users(username, password) VALUES(?, ?)";
-            try (Connection conn = getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-                //  SQL의 ? 자리와 사용자 필드를 연결하세요(문자열 결합 SQL 금지).
-                ps.setString(1, u.getUsername());ps.setString(2, u.getPassword());ps.executeUpdate();
-                try (ResultSet rs = ps.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        u.setId(rs.getLong(1));
-                    }
-                }
-            }
-        }
-
-        @Override
-        public User findByUsername(String username) throws Exception {
-            String sql = "SELECT id, username, password FROM users WHERE username = ?";
-            try (Connection conn = getConnection();
-                 PreparedStatement ps = conn.prepareStatement(sql)) {
-                ps.setString(1, username);
-                try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
-                        User u = new User();
-                        u.setId(rs.getLong("id"));
-                        u.setUsername(rs.getString("username"));
-                        u.setPassword(rs.getString("password"));
-                        return u;
-                    }
-                }
-            }
-            return null;
-        }
-    }
-
-    public static class AuthService {
-        private final UserRepository userRepository;
-
-        public AuthService(UserRepository userRepository) {
-            this.userRepository = userRepository;
-        }
-
-        public void signUp(String username, String rawPassword) throws Exception {
-            username = trimToNull(username);
-            if (rawPassword != null) rawPassword = rawPassword.trim();
-
-            User existing = userRepository.findByUsername(username);
-            if (existing != null) {
-                throw new SQLIntegrityConstraintViolationException("username already exists");
-            }
-
-            // [⑤-A 비밀번호 저장] 평문 대신 cost 12의 BCrypt salt 포함 해시를 저장하세요.
-            String hashed = /* TODO ⑤-A: bcrypt 해시 생성(cost=12) */ null;
-
-            User u = new User();
-            u.setUsername(username);
-            u.setPassword(hashed);
-            userRepository.save(u);
-        }
-
-        public User login(String username, String rawPassword) throws Exception {
-            username = trimToNull(username);
-            if (rawPassword != null) rawPassword = rawPassword.trim();
-
-            User u = userRepository.findByUsername(username);
-            if (u == null) {
-                if (DEBUG) System.out.println("[AUTH] user not found: " + username);
-                return null;
-            }
-            if (DEBUG) {
-                System.out.println("[AUTH] user found: " + username);
-                String hash = u.getPassword();
-                System.out.println("[AUTH] dbHash prefix: " + (hash == null ? "null" : hash.substring(0, Math.min(7, hash.length()))));
-            }
-
-            // [⑤-B 비밀번호 검증] 입력 평문과 저장된 BCrypt 해시를 검증하세요. ⑤-A와 한 묶음입니다.
-            boolean ok = /* TODO ⑤-B: 입력 비밀번호와 저장된 해시 검증 */ false;
-            if (DEBUG) System.out.println("[AUTH] bcrypt matches=" + ok);
-
-            if (!ok) return null;
-            return u;
-        }
-    }
-
-    // ========= JWT Util =========
-
-    public static class JwtUtil {
-        private static final String SECRET = System.getenv("JWT_SECRET");
-        private static final Algorithm ALG = Algorithm.HMAC256(SECRET);
-        private static final String ISSUER = "simple-auth-server";
-
-        public static String createToken(User user) {
-            Instant now = Instant.now();
-            return JWT.create()
-                    .withIssuer(ISSUER)
-                    .withIssuedAt(Date.from(now))
-                    //  JWT가 무기한 유효하지 않도록 발급 시점 기준 1시간 만료를 지정하세요.
-                    .withExpiresAt(Date.from(now.plus(1, ChronoUnit.HOURS))).withSubject(String.valueOf(user.getId()))
-                    .withClaim("username", user.getUsername())
-                    .sign(ALG);
-        }
-
-        public static DecodedJWT verifyToken(String token) throws JWTVerificationException {
-            JWTVerifier verifier = JWT.require(ALG)
-                    .withIssuer(ISSUER)
-                    .build();
-            //  JWT 파싱만 하지 말고 검증기의 검증 결과를 반환하세요.
-            return verifier.verify(token);
-        }
     }
 }
