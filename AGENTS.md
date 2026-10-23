@@ -5,18 +5,18 @@
 
 ## 1. 프로젝트 한 줄
 
-가스 농도 경보를 **규칙 엔진이 판정**하고, **에이전트가 문서 근거로 연락·정리 업무(119 신고, 인근 공장 알림, 방송, 체크리스트)를 수행**하며, **사람은 대피 지휘·설비 조작·보류·해제**를 맡는 정유·석유화학 현장 안전 서비스.
+비상상황(가스 누출·화재·노출) 경보를 **안전관리자가 발령**하면, **에이전트가 문서 근거로 정리·안내·연락 업무(전광판 대피 안내, 관리자 대응 지침, 방송, 체크리스트, 119 신고)를 수행**하며, **사람은 경보 발령·대피 지휘·설비 조작·보류·해제**를 맡는 정유·석유화학 현장 안전 서비스.
 
 ## 2. 절대 규칙 (모든 파트 공통)
 
-1. **경보 단계 판정·해제는 규칙 엔진과 사람만 합니다.** LLM·에이전트 코드에서 단계를 정하거나 바꾸는 함수를 호출하지 않습니다.
-2. **에이전트 도구는 기획서 3.3의 7개뿐입니다** (`rag_search`, `broadcast_tts`, `notify_foreman`, `notify_manager`, `report_119`, `notify_neighbors`, `build_briefing`). 설비 조작·대피 판단·의료 판단 도구를 만들지 않습니다.
+1. **경보 발령·해제는 사람(안전관리자, `admin`)만 합니다.** 센서·자동 판정은 없습니다. LLM·에이전트 코드에서 단계를 정하거나 바꾸는 함수를 호출하지 않습니다.
+2. **에이전트 도구는 기획서 3.3의 7개뿐입니다** (`rag_search`, `broadcast_tts`, `notify_foreman`, `notify_manager`, `report_119`, `display_board`, `build_briefing`). 설비 조작·대피 판단·의료 판단 도구를 만들지 않습니다.
 3. **대응 문장은 검색된 문서에서만** 가져오고 출처를 붙입니다. 근거가 0건이면 LLM을 호출하지 않고 `handoff: true`.
 4. **LLM 장애 시에도 경보·방송·신고는 고정 템플릿으로 동작**해야 합니다.
-5. 119·문자·인근 공장 알림은 **모의 발송만** (로그 + 화면 표시). 실제 외부 발송 코드 금지.
+5. 119·문자 알림은 **모의 발송만** (로그 + 화면 표시). 실제 외부 발송 코드 금지.
 6. **비밀값은 코드에 넣지 않습니다.** `OPENAI_API_KEY`, `JWT_SECRET`, `DB_PASSWORD`는 `.env`(커밋 금지)로만. `.env-example`에는 키 이름만.
 7. **로그에 질문 원문·음성 원본을 저장하지 않습니다.** (길이·해시·request_id만)
-8. 공개 문서와 가상 센서 데이터만 사용합니다. 사이트 자동 크롤링 금지, 수동 다운로드.
+8. 공개 문서만 사용합니다. 센서·농도값 같은 가상 데이터는 쓰지 않습니다. 사이트 자동 크롤링 금지, 수동 다운로드.
 
 ## 3. 베이스 코드 정책
 
@@ -31,7 +31,7 @@
 | ------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------ |
 | `안전지침/`, `RAG/scripts/ingest.py`, `RAG/faiss_db/`, `docs/data_sources.md`, `RAG/data/`                                            | 원본 자료, 적재 스크립트, 인덱스, 출처표 | **P1 데이터**      |
 | `RAG/rag_external-web_pdf_closed_llm.py`의 검색·프롬프트·답변 로직, `RAG/prompts/`, `RAG/agent/`, `RAG/eval/`, `docs/eval_results.md` | RAG 체인, 프롬프트, 에이전트, 평가       | **P2 RAG·LLM**     |
-| `backend/`, `db/`, `RAG/auth.py`, `RAG/middleware.py`, `RAG/alarm/`(규칙 엔진·`thresholds.json`·`/sensor-event`)                      | 인증, JWT 검증, 오류·로그, 경보 API      | **P3 인증·API**    |
+| `backend/`, `db/`, `RAG/auth.py`, `RAG/middleware.py`, `RAG/alarm/`(`/alarm` 경보 발령·`/board/current` 전광판)                     | 인증, JWT 검증, 오류·로그, 경보 API      | **P3 인증·API**    |
 | `*.html`(루트), `web/`, 루트 `docker-compose.yml`, `README.md`                                                                        | 화면, 배포                               | **P4 프론트·배포** |
 | `Voice-AI/`                                                                                                                           | STT·TTS (확장)                           | 음성 담당          |
 
@@ -69,8 +69,8 @@ LLM_TIMEOUT_S=20
 
 ### 7.1 JWT
 
-- 발급: Java `JwtUtil` — HS256, `iss=simple-auth-server`, `sub`(user id), `username`, **`role`**(`worker`|`foreman`|`admin`|`device`), `exp`=1시간
-- 전달: 브라우저는 쿠키 `ACCESS_TOKEN`, 센서(device)는 `Authorization: Bearer <JWT>`
+- 발급: Java `JwtUtil` — HS256, `iss=simple-auth-server`, `sub`(user id), `username`, **`role`**(`worker`|`foreman`|`admin`), `exp`=1시간
+- 전달: 브라우저는 쿠키 `ACCESS_TOKEN`
 - 검증: 각 Python 서비스가 **독립적으로** 서명·만료·발급자·role 검증 (`Voice-AI/app/main.py`의 `get_current_user()` 패턴). 회원 DB에 접근하지 않습니다.
 - `role` 클레임이 없으면 `worker`로 간주합니다. 프론트가 보낸 role 값은 신뢰하지 않습니다.
 
@@ -105,7 +105,7 @@ LLM_TIMEOUT_S=20
 | `cas`       | 물질 문서만 | `7782-50-5`                                  |
 | `published` | 가능하면    | `2021-12`                                    |
 
-- 물질 키는 **영문 snake_case** (`hydrogen_sulfide`, `propane`)로 `thresholds.json`·메타데이터·센서 이벤트에서 동일하게 씁니다.
+- 물질 키는 **영문 snake_case** (`hydrogen_sulfide`, `propane`)로 메타데이터·경보 발령 입력(`substance`)에서 동일하게 씁니다.
 - `"자료없음"` 항목은 청크로 만들지 않습니다.
 
 ### 7.4 출처 표기
@@ -116,7 +116,7 @@ LLM_TIMEOUT_S=20
 
 - 공통: `ts`, `request_id`, `path`, `status`, `latency_ms`, `user_sub`, `role`
 - RAG: `prompt_len`, `hits`, `top_score`, `needs_review`, `handoff`, `tokens_in`, `tokens_out`
-- 경보 감사: `alarm_id`, `zone`, `substance`, `value`, `unit`, `stage`, `rule`, `rule_source`, `tool`, `tool_result`, `actor`(`rule`|`agent`|사람 sub)
+- 경보 감사: `alarm_id`, `zone`, `substance`, `stage`, `tool`, `tool_result`, `actor`(`agent`|사람 sub)
 
 ## 8. 코드 스타일
 
@@ -131,7 +131,7 @@ LLM_TIMEOUT_S=20
 | ---- | ------------------------------------------------------------------------------------ |
 | P1   | 적재 스크립트 재실행 시 같은 청크 수, 출처표 갱신, "자료없음" 청크 0건               |
 | P2   | `RAG/eval/` 평가 스크립트 실행 결과를 `docs/eval_results.md`에 기록 (변경 1개당 1회) |
-| P3   | 무토큰 401 · role 불일치 403 · 스키마 오류 422 · 기준표 경계값 테스트 통과           |
+| P3   | 무토큰 401 · role 불일치 403 · 스키마 오류 422 · 경보 발령은 `admin`만 통과           |
 | P4   | `docker compose up` 후 로그인 → 질의 → S1 시나리오 수동 확인                         |
 
 - "된다"고 말하기 전에 **실제로 실행한 명령과 결과**를 PR에 붙입니다.
