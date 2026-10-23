@@ -1,7 +1,15 @@
-# web/Dockerfile 전용 (BuildKit은 <Dockerfile>.dockerignore를 우선 사용)
-# 저장소 루트가 컨텍스트이므로 필요한 파일만 넣는다.
+# web/Dockerfile 전용 BuildKit ignore 파일.
+# Build context is the repository root; only frontend build inputs are included.
 *
 !intro_main.html
 !external_index.html
 !internal_index.html
+!web/
+web/*
 !web/default.conf
+!web/package.json
+!web/package-lock.json
+!web/index.html
+!web/vite.config.js
+!web/src/
+!web/src/**
