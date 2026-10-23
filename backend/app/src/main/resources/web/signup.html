@@ -8,7 +8,7 @@
 <body>
 <div class="container">
     <h1>Sign Up</h1>
-    <form method="POST" action="/api/signup">
+    <form id="signupForm" method="POST" action="/api/signup">
         <label>Username
             <input type="text" name="username" required>
         </label>
@@ -17,8 +17,36 @@
         </label>
         <button type="submit">Sign Up</button>
     </form>
+    <p id="msg" style="color:#c00; margin-top:10px;"></p>
     <p><a href="/login">Back to Login</a></p>
 </div>
 <script src="/static/app.js"></script>
+<script>
+// /api/signup 은 JSON 으로 응답한다 (login.html 과 같은 방식)
+(() => {
+  const form = document.getElementById("signupForm");
+  const msg = document.getElementById("msg");
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    msg.textContent = "";
+    try {
+      const res = await fetch("/api/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(new FormData(form)),
+      });
+      const data = await res.json().catch(() => null);
+      if (!res.ok) {
+        msg.textContent = (data && data.error) ? data.error : ("Signup error (HTTP " + res.status + ")");
+        return;
+      }
+      window.location.href = "/login";
+    } catch (err) {
+      console.error(err);
+      msg.textContent = "Signup failed due to a network error.";
+    }
+  });
+})();
+</script>
 </body>
 </html>

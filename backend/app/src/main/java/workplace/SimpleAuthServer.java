@@ -61,7 +61,6 @@ import static workplace.HttpUtil.parseFormBody;
 import static workplace.HttpUtil.redirect;
 import static workplace.HttpUtil.serveResource;
 import static workplace.HttpUtil.writeJson;
-import static workplace.HttpUtil.writeText;
 import static workplace.TextUtil.escapeHtml;
 import static workplace.TextUtil.escapeJson;
 import static workplace.TextUtil.isBlank;
@@ -96,6 +95,9 @@ Modification history:
   8) [HeartSignal P3] localhost:8008 하드코딩 제거
      - 로그인 후 이동 주소: LOGIN_REDIRECT_URL (기본 /#/home, web 과 같은 origin)
      - CORS 허용 origin: CORS_ORIGINS (HttpUtil), JWT 발급자: JWT_ISSUER (JwtUtil)
+  9) [HeartSignal P3] /api/signup 도 /api/login 처럼 302 대신 JSON 응답
+     - 성공 200 {"ok":true}, 입력 누락 400, 중복 409, 서버 오류 500 ({"ok":false,"error":...})
+     - fetch 로 호출하는 web 화면이 302 → HTML 을 JSON 으로 읽다 실패하던 문제 수정
  */
 
 public class SimpleAuthServer {
@@ -196,7 +198,7 @@ public class SimpleAuthServer {
             serveResource(exchange, resourcePath, contentType);
         });
 
-        // POST /api/signup -> Sign up
+        // POST /api/signup -> Sign up (JSON 응답, 화면 이동은 클라이언트가 한다)
         server.createContext("/api/signup", exchange -> {
             if (!"POST".equalsIgnoreCase(exchange.getRequestMethod())) {
                 methodNotAllowed(exchange);
@@ -215,19 +217,19 @@ public class SimpleAuthServer {
             }
 
             if (isBlank(username) || isBlank(password)) {
-                writeText(exchange, 400, "username and password are required");
+                writeJson(exchange, 400, "{\"ok\":false,\"error\":\"username and password are required\"}");
                 return;
             }
 
             try {
                 //  회원가입 요청을 어떤 계층으로 위임해야 하는가?
                 // (role 은 받지 않는다: 가입자는 항상 worker, 다른 role 은 관리자가 DB 에서 부여)
-                authService.signUp(username, password);redirect(exchange, "/login");
+                authService.signUp(username, password);writeJson(exchange, 200, "{\"ok\":true}");
             } catch (SQLIntegrityConstraintViolationException dup) {
-                writeText(exchange, 400, "username already exists");
+                writeJson(exchange, 409, "{\"ok\":false,\"error\":\"username already exists\"}");
             } catch (Exception e) {
                 e.printStackTrace();
-                writeText(exchange, 500, "signup error");
+                writeJson(exchange, 500, "{\"ok\":false,\"error\":\"signup error\"}");
             }
         });
 
