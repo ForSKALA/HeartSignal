@@ -168,6 +168,65 @@ AUTH_URL=https://heartsignal.class-4.skala-us.com db/seed-demo-users.sh k8s
 
 최종 확인은 AGENTS.md 9장 기준으로 ingress 주소에서 로그인 → 질의 → S1 시나리오입니다. 실행한 명령과 결과는 PR 본문에 붙입니다.
 
+### 6.2 DB(MariaDB)가 k8s에서 동작하는 방식 (P3)
+
+파일: `db/k8s/statefulset.yaml`, `db/k8s/service.yaml`, `db/k8s/create-init-configmap.sh`
+
+```mermaid
+flowchart TB
+    A["auth (Java)"] --> S["Service heartsignal-db:3306<br/>headless · 클러스터 내부 전용"]
+    R["rag (Python)"] --> S
+    S --> P["Pod heartsignal-db-0<br/>StatefulSet · replicas 1 · mariadb:11.4"]
+    PVC[("PVC data-heartsignal-db-0<br/>gp3 1Gi · 실제 데이터")] -->|/var/lib/mysql| P
+    CM["ConfigMap heartsignal-db-init<br/>db/init/*.sql"] -->|/docker-entrypoint-initdb.d| P
+    SEC["Secret heartsignal-secret<br/>DB_PASSWORD"] -->|MARIADB_ROOT_PASSWORD| P
+```
+
+| 리소스 | 역할 |
+| --- | --- |
+| StatefulSet `heartsignal-db` | MariaDB 파드 1개(`heartsignal-db-0`). 문자셋 옵션은 `db/docker-compose.yml`과 같음. 파드 이름과 디스크가 고정되어야 해서 Deployment 대신 StatefulSet 사용 |
+| PVC (`volumeClaimTemplates`) | gp3 1Gi에 데이터 저장. **파드 재시작·StatefulSet 삭제에도 PVC는 남아** 데이터 유지 (로컬의 `heartsignal_mariadb_data` 볼륨에 해당) |
+| headless Service `heartsignal-db` | auth는 `jdbc:mariadb://heartsignal-db:3306/sql_db`, rag는 `heartsignal-db:3306`으로 접속. **Ingress에 연결하지 않으므로 외부에서 접근 불가** |
+| ConfigMap `heartsignal-db-init` | `db/init/*.sql`(users 테이블, role 마이그레이션)을 담음. 원본은 `db/init` 하나라 로컬과 같은 SQL 사용 |
+| Secret `heartsignal-secret` | `DB_PASSWORD`를 root 비밀번호로 사용. auth·rag도 같은 값을 받음 |
+| readiness·liveness probe | MariaDB 공식 `healthcheck.sh`로 접속·InnoDB 준비 확인. 준비 전에는 트래픽을 받지 않음 |
+
+**처음 배포할 때 일어나는 일** (6장 "1. P3: DB → auth")
+1. PVC가 새로 만들어집니다 (빈 디스크).
+2. MariaDB가 빈 디스크를 보고 초기화합니다. Secret의 비밀번호로 root를 만들고 `sql_db`를 만든 뒤 `db/init/` SQL을 **이때 한 번만** 실행합니다.
+3. probe를 통과하면 auth·rag가 접속할 수 있습니다. 그다음 `backend/k8s/`를 적용합니다.
+
+**주의할 점**
+1. **초기화 SQL은 빈 PVC에서 1회만 실행됩니다.** `db/init/`에 SQL을 추가하고 ConfigMap을 갱신해도 이미 초기화된 DB에는 적용되지 않습니다. 이 경우 직접 실행합니다.
+   ```bash
+   kubectl exec -i -n class-4 heartsignal-db-0 -c mariadb -- \
+     sh -c 'mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" sql_db' < db/init/<파일>.sql
+   ```
+2. **root 비밀번호도 첫 초기화 때 고정됩니다.** 나중에 Secret의 `DB_PASSWORD`만 바꾸면 DB는 예전 비밀번호, auth·rag는 새 비밀번호를 써서 연결이 끊깁니다. 바꾸려면 DB 안에서 `ALTER USER`로 `root@'%'`와 `root@'localhost'`의 비밀번호를 먼저 바꾸고 Secret을 바꾼 뒤 auth·rag를 재시작합니다.
+3. **처음부터 다시 만들려면 PVC를 지워야 합니다.** `kubectl delete -f db/k8s/`로는 PVC가 남습니다. 데이터를 완전히 지우려면 `kubectl delete pvc data-heartsignal-db-0 -n class-4`가 필요하며, **되돌릴 수 없으므로 팀 합의 후** 실행합니다. 다시 만든 뒤에는 시연 계정 시드(6.1)도 다시 실행합니다.
+4. **복제본·백업이 없습니다.** 시연용이라 파드 1개·디스크 1개입니다. 경보 데이터는 RAG 서버 메모리에 있고 DB에는 회원 정보만 있어 시연 범위에서는 충분합니다.
+5. **PVC는 한 노드에만 붙습니다(RWO).** 파드가 다른 노드로 옮겨지면 디스크를 다시 붙이느라 기동이 조금 늦어질 수 있습니다.
+
+**로컬과 비교**
+
+| | 로컬 (`db/docker-compose.yml`) | k8s |
+| --- | --- | --- |
+| 접속 주소 | `localhost:53301` | `heartsignal-db:3306` (클러스터 내부) |
+| 비밀번호 | `db/.env`의 `DB_PASSWORD` (필수, [#14](https://github.com/ForSKALA/HeartSignal/pull/14)) | Secret `heartsignal-secret` |
+| 데이터 | Docker 볼륨 `heartsignal_mariadb_data` | gp3 PVC `data-heartsignal-db-0` |
+| 초기화 SQL | `./init` 폴더 직접 마운트 | ConfigMap으로 담아 마운트 |
+
+**상태 확인**
+
+```bash
+kubectl get statefulset,pod,pvc -n class-4 -l part-of=heartsignal
+kubectl logs -n class-4 heartsignal-db-0                       # 초기화 SQL 실행 로그 포함
+kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
+  sh -c 'mariadb -uroot -p"$MARIADB_ROOT_PASSWORD" -e "SELECT username, role FROM sql_db.users"'
+```
+
+> 2026-10-23 기준 클러스터에 실제로 기동해 본 적은 없습니다. PR #2 시점에 `kubectl apply --dry-run=server`로 매니페스트만 검증했습니다(8장).
+
 ## 7. 협업 규칙
 
 1. **git이 기준입니다.** 매니페스트 변경은 PR로 머지한 뒤 적용합니다. 각자 PC에서 같은 파일을 apply하면 마지막 사람의 것이 남습니다.
