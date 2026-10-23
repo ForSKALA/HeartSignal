@@ -1,0 +1,104 @@
+# HeartSignal RAG FastAPI Deployment (P2)
+# - image 태그는 docker-push.sh로 올린 VERSION과 맞춘다.
+# - 비밀값은 heartsignal-secret(web/k8s/create-secret.sh), 일반 설정은 heartsignal-config에서 받는다.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heartsignal-rag
+  namespace: class-4
+  labels:
+    app: heartsignal-rag
+    part-of: heartsignal
+spec:
+  replicas: 1
+  # RWO PVC를 쓰므로 새 파드가 뜨기 전에 기존 파드를 내린다.
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: heartsignal-rag
+  template:
+    metadata:
+      labels:
+        app: heartsignal-rag
+        part-of: heartsignal
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      # PVC가 비어 있으면(최초 기동) 이미지에 포함된 기본 인덱스를 복사한다.
+      initContainers:
+        - name: seed-faiss
+          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.0.0
+          imagePullPolicy: Always
+          command: ["sh", "-c", "[ -f /data/pdf/index.faiss ] || cp -r /app/faiss_db_seed/. /data/"]
+          volumeMounts:
+            - name: faiss
+              mountPath: /data
+      containers:
+        - name: rag
+          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8001
+          env:
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: heartsignal-secret
+                  key: OPENAI_API_KEY
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: heartsignal-secret
+                  key: DB_PASSWORD
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: heartsignal-secret
+                  key: JWT_SECRET
+            - name: NAVER_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: heartsignal-secret
+                  key: NAVER_CLIENT_ID
+                  optional: true
+            - name: NAVER_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: heartsignal-secret
+                  key: NAVER_CLIENT_SECRET
+                  optional: true
+            # $(DB_PASSWORD)는 위에서 선언한 env를 k8s가 치환한다.
+            - name: ASYNC_DB_URL
+              value: "mysql+aiomysql://root:$(DB_PASSWORD)@heartsignal-db:3306/sql_db?charset=utf8mb4"
+          envFrom:
+            - configMapRef:
+                name: heartsignal-config
+          volumeMounts:
+            - name: faiss
+              mountPath: /app/faiss_db
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              memory: 1Gi
+          # 기동 시 인덱스 로딩이 끝날 때까지 기다린다.
+          startupProbe:
+            tcpSocket:
+              port: 8001
+            periodSeconds: 5
+            failureThreshold: 24
+          readinessProbe:
+            httpGet:
+              path: /openapi.json
+              port: 8001
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: 8001
+            periodSeconds: 20
+      volumes:
+        - name: faiss
+          persistentVolumeClaim:
+            claimName: heartsignal-rag-faiss

@@ -1,0 +1,44 @@
+# HeartSignal 화면 Deployment (P4)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: heartsignal-web
+  namespace: class-4
+  labels:
+    app: heartsignal-web
+    part-of: heartsignal
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: heartsignal-web
+  template:
+    metadata:
+      labels:
+        app: heartsignal-web
+        part-of: heartsignal
+    spec:
+      imagePullSecrets:
+        - name: harbor-registry-secret
+      containers:
+        - name: web
+          image: skala-registry.skala-us.com/class-4/heartsignal-web:1.0.0
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 20m
+              memory: 32Mi
+            limits:
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 80
+            periodSeconds: 20

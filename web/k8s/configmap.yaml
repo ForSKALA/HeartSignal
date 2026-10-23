@@ -1,0 +1,13 @@
+# HeartSignal 공통 설정 (비밀값이 아닌 것만). 비밀값은 create-secret.sh로 만든다.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: heartsignal-config
+  namespace: class-4
+  labels:
+    part-of: heartsignal
+data:
+  JWT_ISSUER: "simple-auth-server"
+  LLM_MODEL: "gpt-4o"
+  LLM_TIMEOUT_S: "20"
+  CORS_ORIGINS: "https://heartsignal.class-4.skala-us.com"

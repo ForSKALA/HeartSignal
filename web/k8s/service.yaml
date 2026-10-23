@@ -1,0 +1,16 @@
+# HeartSignal 화면 Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: heartsignal-web
+  namespace: class-4
+  labels:
+    part-of: heartsignal
+spec:
+  type: ClusterIP
+  selector:
+    app: heartsignal-web
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80
