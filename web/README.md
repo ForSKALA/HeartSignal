@@ -10,7 +10,7 @@ npm ci
 npm run dev
 ```
 
-Open `http://localhost:5173`. Vue Router uses hash-based URLs so client-side pages do not conflict with the existing Ingress API paths. Vite proxies `/api` to the auth service on port 8080 and `/rag-query` to the RAG service on port 8001.
+Open `http://localhost:5174`. Vue Router uses hash-based URLs so client-side pages do not conflict with the existing Ingress API paths. Vite proxies `/api` to the auth service on port 8080 and `/rag-query` to the RAG service on port 8001.
 
 ## Production image
 
