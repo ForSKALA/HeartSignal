@@ -1,6 +1,8 @@
 <script setup>
 import { nextTick, ref } from "vue";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
+
+const router = useRouter();
 
 const RAG_API_URL = import.meta.env.VITE_RAG_API_URL || "/rag-query";
 const prompt = ref("");
@@ -24,18 +26,27 @@ async function ask() {
     const response = await fetch(RAG_API_URL, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      credentials: "include", // 로그인 쿠키(ACCESS_TOKEN)를 함께 보냄 — 없으면 401
       body: JSON.stringify({ prompt: question, source: source.value, top_k: 5 }),
     });
     const result = await response.json().catch(() => null);
 
+    if (response.status === 401) {
+      await router.push("/login");
+      return;
+    }
     if (!response.ok) {
-      const detail = result?.detail || result?.error || `HTTP ${response.status}`;
+      // 표준 오류 {"error": {code, message, request_id}} (AGENTS.md 7.2) 또는 베이스 detail
+      const detail = result?.error?.message || result?.detail || `HTTP ${response.status}`;
       throw new Error(typeof detail === "string" ? detail : JSON.stringify(detail));
     }
     if (typeof result?.response !== "string" || !result.response.trim()) {
       throw new Error("검색 서버에서 답변을 받지 못했습니다.");
     }
     answer.text = result.response;
+    answer.handoff = result.handoff === true;       // 근거 없음 → 안전관리자 문의 안내
+    answer.needsReview = result.needs_review === true;
+    answer.sources = Array.isArray(result.sources) ? result.sources : [];
   } catch (error) {
     console.error(error);
     answer.role = "error";
@@ -99,6 +110,13 @@ function onInputKeydown(event) {
               {{ message.role === "user" ? "나" : message.role === "error" ? "연결 오류" : message.loading ? "검색 중" : "HeartSignal 안전 도우미" }}
             </p>
             <div class="message-bubble">{{ message.text }}</div>
+            <p v-if="message.handoff" class="message-handoff">
+              이 질문은 문서 근거로 답할 수 없습니다. 안전관리자에게 직접 문의해 주세요.
+            </p>
+            <p v-else-if="message.needsReview" class="message-review">⚠ 근거가 1건뿐이거나 수치 확인이 필요합니다. 원문을 확인하세요.</p>
+            <ul v-if="message.sources && message.sources.length" class="message-sources" aria-label="출처">
+              <li v-for="(src, i) in message.sources" :key="i">📄 {{ src.source }} <span v-if="src.section">{{ src.section }}</span></li>
+            </ul>
           </div>
         </article>
       </section>
@@ -108,7 +126,7 @@ function onInputKeydown(event) {
           <textarea
             v-model="prompt"
             rows="1"
-            maxlength="2000"
+            maxlength="500"
             placeholder="안전 관련 질문을 입력하세요..."
             aria-label="질문 입력"
             required
