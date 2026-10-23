@@ -48,9 +48,12 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 app = FastAPI()
 
 # Configuration that must match the Java server
-SECRET_KEY = "RANDOM_SECRET_KEY"   # Must be identical to Java JwtUtil.SECRET
+SECRET_KEY = os.getenv("JWT_SECRET")
 ALGORITHM = "HS256"
-ISSUER = "simple-auth-server"      # Must be identical to Java JwtUtil.ISSUER
+ISSUER = os.getenv("JWT_ISSUER", "simple-auth-server")
+
+if not SECRET_KEY:
+    raise RuntimeError("JWT_SECRET 환경변수가 설정되지 않았습니다.")      # Must be identical to Java JwtUtil.ISSUER
 
 # 3) JWT decoding dependency
 
