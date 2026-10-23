@@ -41,7 +41,8 @@ def _iso(dt: datetime) -> str:
 def audit_log(alarm: dict, tool: str, tool_result: str, actor: str) -> None:
     """경보 감사 로그 한 줄 (AGENTS.md 7.5). actor: 'agent' 또는 사람 sub"""
     audit.info(json.dumps({
-        "ts": _iso(now()),
+        # 요청 로그(middleware)와 같은 형식으로 남겨 함께 정렬할 수 있게 한다
+        "ts": datetime.now(timezone.utc).isoformat(timespec="milliseconds"),
         "alarm_id": alarm["alarm_id"],
         "zone": alarm["zone"],
         "substance": alarm["substance"],
