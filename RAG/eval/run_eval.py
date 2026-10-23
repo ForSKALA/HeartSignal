@@ -39,6 +39,7 @@ def score(q: dict, body: dict) -> dict:
     refused = is_refusal(body)
     if q["type"] == "handoff":
         return {"handoff_hit": refused}
+    # core 와 variant(변형 질문)는 같은 방식으로 채점하고 집계만 분리한다
     hits = [k for k in q["keywords"] if k in answer]
     grounded = any(s in source_text(body) for s in q["expected_sources"])
     sections = " ".join(s.get("section", "") for s in body.get("sources") or [])
@@ -54,7 +55,8 @@ def score(q: dict, body: dict) -> dict:
 
 
 def summarize(rows: list[dict]) -> dict:
-    core = [r for r in rows if r["type"] != "handoff" and "error" not in r]
+    core = [r for r in rows if r["type"] == "core" and "error" not in r]
+    variant = [r for r in rows if r["type"] == "variant" and "error" not in r]
     handoff = [r for r in rows if r["type"] == "handoff" and "error" not in r]
     pct = lambda items, key: round(100 * sum(r[key] for r in items) / len(items), 1) if items else None
     return {
@@ -67,6 +69,12 @@ def summarize(rows: list[dict]) -> dict:
         # needs_review 품질: 오답(틀렸거나 근거 없음)에서는 높고, 정답에서는 낮아야 한다
         "review_flag_on_wrong_pct": pct([r for r in core if not (r["correct"] and r["grounded"])], "needs_review"),
         "review_flag_on_right_pct": pct([r for r in core if r["correct"] and r["grounded"]], "needs_review"),
+        # 변형 질문(한유진): 현장 말투·약어로 바꾼 10개. 어휘표 등이 평가셋에 과적합됐는지 보는 용도
+        "variant_n": len(variant),
+        "variant_accuracy_pct": pct(variant, "correct"),
+        "variant_grounded_pct": pct(variant, "grounded"),
+        "variant_section_match_pct": pct(variant, "section_match"),
+        "variant_ungrounded_answer_pct": pct(variant, "ungrounded_answer"),
         "handoff_n": len(handoff),
         "handoff_hit_pct": pct(handoff, "handoff_hit"),
         "errors": sum("error" in r for r in rows),
@@ -118,7 +126,7 @@ def main() -> None:
         keys = [k for k, v in runs[0].items() if isinstance(v, (int, float)) and k not in ("core_n", "handoff_n", "errors")]
         summary = {**summary, **{k: round(sum(r[k] for r in runs if r[k] is not None) / len(runs), 1) for k in keys},
                    "errors": sum(r["errors"] for r in runs), "repeat": args.repeat,
-                   "per_run": {k: [r[k] for r in runs] for k in ("accuracy_pct", "grounded_pct", "section_match_pct", "handoff_hit_pct", "review_flag_on_wrong_pct", "review_flag_on_right_pct")}}
+                   "per_run": {k: [r[k] for r in runs] for k in ("accuracy_pct", "grounded_pct", "section_match_pct", "handoff_hit_pct", "review_flag_on_wrong_pct", "review_flag_on_right_pct", "variant_accuracy_pct", "variant_section_match_pct")}}
     print(json.dumps(summary, ensure_ascii=False, indent=2))
 
     out_dir = EVAL_DIR / "results"

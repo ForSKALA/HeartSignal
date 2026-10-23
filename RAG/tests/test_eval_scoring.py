@@ -50,4 +50,5 @@ def test_summary_skips_errors():
 def test_questions_file_is_valid():
     qs = load_questions(Path(__file__).resolve().parents[1] / "eval" / "questions.jsonl")
     assert sum(q["type"] == "core" for q in qs) == 10 and sum(q["type"] == "handoff" for q in qs) == 3
-    assert all(q["keywords"] and q["expected_sources"] and q["expected_sections"] for q in qs if q["type"] == "core")
+    assert sum(q["type"] == "variant" for q in qs) == 10 and all(q["base"] in {c["id"] for c in qs} for q in qs if q["type"] == "variant")
+    assert all(q["keywords"] and q["expected_sources"] and q["expected_sections"] for q in qs if q["type"] in ("core", "variant"))
