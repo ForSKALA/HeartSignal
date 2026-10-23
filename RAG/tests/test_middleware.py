@@ -57,7 +57,7 @@ def test_api_error_503():
 
 
 class _FakeStore:
-    def similarity_search_with_score(self, q, k):
+    def similarity_search_with_score(self, q, k, **kw):  # [P2] filter·fetch_k 허용
         return [(Document(page_content="황화수소 TWA 10ppm", metadata={"source": "x.pdf"}), 0.1)]
 
 

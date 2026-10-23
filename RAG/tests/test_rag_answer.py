@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from openai import APITimeoutError
 
 from middleware import ApiError
-from rag_answer import NO_EVIDENCE, answer_with_sources
+from rag_answer import NO_EVIDENCE, answer_with_sources, detect_substance, retrieve
 from conftest import make_token
 
 
@@ -18,8 +18,12 @@ class _Store:
     def __init__(self, rows):
         self.rows = rows
 
-    def similarity_search_with_score(self, q, k):
-        return self.rows[:k]
+    def similarity_search_with_score(self, q, k, filter=None, fetch_k=None):
+        self.calls = getattr(self, "calls", []) + [(k, filter, fetch_k)]
+        rows = self.rows
+        if filter:
+            rows = [r for r in rows if r[0].metadata.get("substance") == filter["substance"]]
+        return rows[:k]
 
 
 class _LLM:
@@ -109,3 +113,50 @@ def test_index_not_loaded_is_503_not_ready(client):
 def test_request_limits_are_422(client, payload):
     client.cookies.set("ACCESS_TOKEN", make_token())
     assert client.post("/rag-query", json=payload).status_code == 422
+
+
+# ---- 물질 인식·검색 제한 (평가 3행) ----
+
+def _sdoc(text, source, section, substance=None):
+    return Document(page_content=text, metadata={"source": source, "section": section, "substance": substance})
+
+
+@pytest.mark.parametrize("prompt,key", [
+    ("염소 들이마신 사람 응급조치는?", "chlorine"),
+    ("H2S 몇 ppm까지 괜찮아?", "hydrogen_sulfide"),
+    ("황화수소 노출기준이 몇 ppm이야?", "hydrogen_sulfide"),   # '수소'(hydrogen) 보다 긴 이름 우선
+    ("메탄올 증기 흡입하면?", "methanol"),                     # '메탄'(methane) 보다 긴 이름 우선
+    ("염산 누출 시 조치", "hydrogen_chloride"),
+    ("경보 꺼지면 바로 작업 재개해도 돼?", None),
+])
+def test_detect_substance(prompt, key):
+    assert detect_substance(prompt) == key
+
+
+def test_retrieve_without_substance_is_plain_search():
+    store = _Store(ROWS)
+    rows, key = retrieve(store, "경보 꺼지면 재개해도 돼?", 5)
+    assert key is None and store.calls == [(5, None, None)] and len(rows) == 4
+
+
+def test_retrieve_merges_substance_chunks_and_general_docs_but_drops_other_substances():
+    rows = [
+        (_sdoc("염산 응급조치", "안전지침/염화수소(염산).pdf", "응급조치", "hydrogen_chloride"), 0.20),  # 다른 물질 → 제외
+        (_sdoc("G-78 일반 절차", "KOSHA GUIDE G-78-2021", "10.2(13)", None), 0.30),                 # 일반 문서 → 포함
+        (_sdoc("염소 흡입 응급조치", "안전지침/염소.pdf", "응급조치>흡입", "chlorine"), 0.35),          # 해당 물질 → 포함
+        (_sdoc("염소 흡입 응급조치", "안전지침/염소.pdf", "응급조치>흡입", "chlorine"), 0.35),          # 중복 → 제거
+    ]
+    store = _Store(rows)
+    merged, key = retrieve(store, "염소 들이마신 사람 응급조치는?", 5)
+    assert key == "chlorine"
+    assert [d.metadata["source"] for d, _ in merged] == ["KOSHA GUIDE G-78-2021", "안전지침/염소.pdf"]
+    # 물질 필터 검색은 fetch_k 를 크게 주고, 일반 검색은 4배 넓게 본다
+    assert (5, {"substance": "chlorine"}, 10_000) in store.calls and (20, None, None) in store.calls
+
+
+def test_substance_is_logged(client, rag_module, monkeypatch, access_log):
+    monkeypatch.setattr(rag_module, "VECTORSTORE_PDF", _Store(ROWS))
+    monkeypatch.setattr(rag_module, "ChatOpenAI", lambda *a, **kw: _LLM())
+    client.cookies.set("ACCESS_TOKEN", make_token())
+    assert client.post("/rag-query", json={"prompt": "황화수소 노출기준?", "source": "pdf"}).status_code == 200
+    assert json.loads(access_log[-1])["substance"] == "hydrogen_sulfide"

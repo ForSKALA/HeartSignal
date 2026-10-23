@@ -1,0 +1,342 @@
+{
+  "label": "substance-filter",
+  "url": "http://localhost:18004",
+  "source": "pdf",
+  "top_k": 5,
+  "summary": {
+    "core_n": 10,
+    "accuracy_pct": 50.0,
+    "keyword_recall_avg": 0.53,
+    "grounded_pct": 60.0,
+    "ungrounded_answer_pct": 20.0,
+    "handoff_n": 3,
+    "handoff_hit_pct": 100.0,
+    "errors": 0,
+    "latency_ms_avg": 1856
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "type": "core",
+      "latency_ms": 2833,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.33,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "프로판이 누출될 경우, 모든 점화원을 제거하라는 예방조치문구(P381)가 있습니다. 따라서 출하 중에 프로판이 새면 먼저 모든 점화원을 제거해야 합니다.",
+      "sources": [
+        {
+          "source": "안전보건공단 MSDS 프로판",
+          "section": "14. 운송에 필요한 정보>나. 적정선적명"
+        },
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "기본 물질 정보>물질명"
+        },
+        {
+          "source": "안전보건공단 MSDS 프로판",
+          "section": "4. 응급조치요령>라. 먹었을 때"
+        },
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "10.2(2)"
+        },
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "8.2(3)"
+        },
+        {
+          "source": "안전보건공단 MSDS 프로판",
+          "section": "4. 응급조치요령>가. 눈에 들어갔을 때"
+        },
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "GHS정보>예방조치문구"
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "type": "core",
+      "latency_ms": 2616,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "LEL은 \"Lower Explosive Limit\"의 약자로, 폭발하한범위를 의미합니다. 이는 가연성 가스가 공기 중에서 폭발할 수 있는 최저 농도를 나타냅니다. 프로판의 폭발하한범위는 2.1%입니다. 따라서 LEL의 25%는 프로판의 폭발하한범위의 25%를 의미하며, 이는 2.1%의 25%에 해당합니다. 계산하면 0.525%vol가 됩니다.",
+      "sources": [
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "물리화학적 특성>폭발하한범위"
+        },
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "물리화학적 특성>폭발상한범위"
+        },
+        {
+          "source": "안전보건공단 MSDS 프로판",
+          "section": "9. 물리화학적 특성>차. 인화 또는 폭발 범위의 상한/하한"
+        },
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "기본 물질 정보>물질명"
+        },
+        {
+          "source": "안전보건공단 MSDS 프로판",
+          "section": "9. 물리화학적 특성>하. 비중"
+        }
+      ]
+    },
+    {
+      "id": "Q3",
+      "type": "core",
+      "latency_ms": 2400,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "황화수소의 노출기준은 국내 규정에 따르면 TWA(시간 가중 평균) 10ppm, STEL(단시간 노출 한계) 15ppm입니다. ACGIH(미국 산업위생전문가협회) 규정에 따르면 TWA는 1ppm, STEL은 5ppm입니다.",
+      "sources": [
+        {
+          "source": "안전보건공단 MSDS 황화수소",
+          "section": "8. 노출방지 및 개인보호구>가. 화학물질의 노출기준, 생물학적 노출기준 등"
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "600"
+        },
+        {
+          "source": "안전보건공단 MSDS 황화수소",
+          "section": "11. 독성에 관한 정보>나. 건강 유해성 정보"
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "500"
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "4"
+        }
+      ]
+    },
+    {
+      "id": "Q4",
+      "type": "core",
+      "latency_ms": 1363,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q5",
+      "type": "core",
+      "latency_ms": 1631,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "증류탑을 열 때 황화철 때문에 모니터링해야 하는 것은 이산화황, 일산화탄소, 그리고 이산화탄소의 농도입니다. 이는 정유 및 석유화학 공정에서 황화철 취급에 관한 안전관리 기술지침에 명시되어 있습니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE A-G-14-2026",
+          "section": "8.1.5(20)"
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "폭발 및 화재위험성>소화방법"
+        },
+        {
+          "source": "KOSHA GUIDE H-117-2019",
+          "section": "4"
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(6)"
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.5(3)"
+        }
+      ]
+    },
+    {
+      "id": "Q6",
+      "type": "core",
+      "latency_ms": 1796,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "황화철에 물을 뿌릴 때는 단순히 물에 접촉된 상태가 아닌, 각 황화철 알갱이들과 물이 충분하게 혼합되어 있어야 합니다. 이를 위해 주기적으로 물을 계속 공급하면서 황화철 슬러지를 삽 등을 이용하여 고루고루 혼합시켜야 합니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "4.1(3)"
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.4(1)"
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(3)"
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "1(4)"
+        },
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "5.3.2(4)"
+        }
+      ]
+    },
+    {
+      "id": "Q7",
+      "type": "core",
+      "latency_ms": 1870,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "암모니아 누출 시 초기 이격거리는 소규모 누출의 경우 반경 30m, 대규모 누출의 경우 반경 150m입니다. 또한, 탱크, 철도차량 또는 탱크트럭 화재 시에는 반경 800m를 초기 이격거리로 설정해야 합니다. 따라서 상황에 따라 적절한 거리로 사람을 대피시켜야 합니다.",
+      "sources": [
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "응급조치>경피"
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>방호활동거리"
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>일반적 대처요령"
+        },
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "폭발 및 화재위험성>소화방법"
+        }
+      ]
+    },
+    {
+      "id": "Q8",
+      "type": "core",
+      "latency_ms": 1770,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q9",
+      "type": "core",
+      "latency_ms": 2194,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "염소를 들이마신 경우의 응급조치는 신선한 공기를 공급하고, 필요시 산소를 공급하며, 적절한 장비를 이용하여 인공호흡을 실시합니다. 또한, 환자의 체온을 보온하여 유지하고 신속히 병원으로 이송해야 합니다.",
+      "sources": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>경구"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>방제약품 및 장비"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>경피"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>안구"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>흡입"
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "type": "core",
+      "latency_ms": 2038,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "PDF에 근거하여 답변하자면, 경보가 꺼진 후 바로 작업을 재개할 수 있는지에 대한 직접적인 언급은 없습니다. 그러나 밀폐공간 작업과 관련하여, 작업을 중단하고 장소를 떠난 후 다시 작업을 시작하기 전에는 관리자나 감시인의 허가가 필요하다는 규정이 있습니다(문서 4). 따라서 경보가 꺼진 후에도 작업을 재개하기 전에는 적절한 절차와 허가가 필요할 것으로 보입니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "8.2(3)"
+        },
+        {
+          "source": "KOSHA GUIDE A-G-14-2026",
+          "section": "8.1.5(9)"
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "9.2(12)"
+        },
+        {
+          "source": "KOSHA GUIDE E-G-18-2026",
+          "section": "7.3(4)"
+        },
+        {
+          "source": "KOSHA GUIDE A-G-14-2026",
+          "section": "9(2)"
+        }
+      ]
+    },
+    {
+      "id": "H1",
+      "type": "handoff",
+      "latency_ms": 1205,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H2",
+      "type": "handoff",
+      "latency_ms": 1062,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H3",
+      "type": "handoff",
+      "latency_ms": 1345,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    }
+  ]
+}
