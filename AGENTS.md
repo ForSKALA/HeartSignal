@@ -20,7 +20,7 @@
 
 ## 3. 베이스 코드 정책
 
-- 베이스 코드는 교재 실습 코드입니다. **TODO 빈칸을 채우고 최소한으로 확장**합니다. 구조 재작성·프레임워크 교체(Spring 도입, Vite 전환 등)는 팀 합의 후에만.
+- 베이스 코드는 교재 실습 코드입니다. **TODO 빈칸을 채우고 최소한으로 확장**합니다. 구조 재작성·프레임워크 교체는 팀 합의 후에만 합니다. 프론트엔드는 팀 합의에 따라 `web/`의 Vue 3 + Vite 구성을 사용합니다.
 - 저작권 머리말은 지우지 않습니다.
 - 기존 필드·경로 이름은 유지하고 **필드 추가로만 확장**합니다. (예: `/rag-query` 응답 `prompt`·`response` 유지 + `sources`·`needs_review`·`handoff`·`request_id`·`latency_ms` 추가)
 - 의존성 추가는 해당 `requirements*.txt` / `build.gradle`에 버전 범위와 함께 기록하고 PR에 이유를 적습니다.
@@ -133,7 +133,7 @@ RAG_MAX_CONTEXT_CHARS=12000          # 답변 LLM 에 넣는 근거 블록 총 �
 
 - **Python:** FastAPI + Pydantic v2, 타입 힌트, `async` 라우터. 라우터는 얇게, 로직은 모듈 함수로. `print` 디버그는 커밋 전 `logging`으로 교체.
 - **Java:** 베이스 구조(`HttpServer` + 내부 static class) 유지. 프레임워크 도입 금지.
-- **Vue:** 베이스의 Vue 3 CDN 단일 HTML 패턴 유지. API base URL은 설정값 하나로 관리. API 키·JWT 비밀키를 프론트에 넣지 않습니다.
+- **Vue:** `web/`의 Vue 3 + Vite 구성을 유지합니다. API base URL은 설정값 하나로 관리하고 API 키·JWT 비밀키를 프론트에 넣지 않습니다.
 - 주석·커밋 메시지·문서는 **한국어**, 코드 식별자는 영어.
 
 ## 9. 테스트 · 완료 기준
