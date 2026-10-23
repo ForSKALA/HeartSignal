@@ -5,10 +5,13 @@ USE sql_db;
 ALTER TABLE `users`
   ADD COLUMN IF NOT EXISTS `role` varchar(20) NOT NULL DEFAULT 'worker' AFTER `password`;
 
+-- device 역할 폐지(센서 제거): 남아 있는 device 계정은 worker 로 낮춘 뒤 제약을 다시 만든다
+UPDATE `users` SET `role` = 'worker' WHERE `role` NOT IN ('worker','foreman','admin');
+
+ALTER TABLE `users` DROP CONSTRAINT IF EXISTS `ck_users_role`;
 ALTER TABLE `users`
-  ADD CONSTRAINT IF NOT EXISTS `ck_users_role` CHECK (`role` IN ('worker','foreman','admin','device'));
+  ADD CONSTRAINT `ck_users_role` CHECK (`role` IN ('worker','foreman','admin'));
 
 -- 역할 부여 예시 (가입 화면에서는 role 을 받지 않음, 관리자가 직접 실행)
 -- UPDATE users SET role = 'admin'   WHERE username = 'manager1';
 -- UPDATE users SET role = 'foreman' WHERE username = 'foreman1';
--- UPDATE users SET role = 'device'  WHERE username = 'sensor-gw1';
