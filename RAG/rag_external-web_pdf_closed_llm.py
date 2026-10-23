@@ -92,7 +92,9 @@ VECTORSTORE_WEB = None
 VECTORSTORE_PDF = None
 
 # ✅ 외부 (웹검색, OpenAI 전용)
-web_path = "faiss_db/web"
+# [P2] 인덱스 폴더. 기본값은 P1 정식 인덱스(PR #13). 베이스 실습 인덱스를 쓰려면 RAG_INDEX_DIR=faiss_db
+INDEX_DIR = os.getenv("RAG_INDEX_DIR", "faiss_db/p1-complete")
+web_path = f"{INDEX_DIR}/web"
 if os.path.exists(f"{web_path}/index.faiss") and os.path.exists(f"{web_path}/index.pkl"):
     VECTORSTORE_WEB = FAISS.load_local(
         web_path,
@@ -104,7 +106,7 @@ else:
     print("❌ VECTORSTORE_WEB 벡터화된 파일이 없습니다.")
 
 # ✅ PDF (업로드용, OpenAI 전용)
-pdf_path = "faiss_db/pdf"
+pdf_path = f"{INDEX_DIR}/pdf"
 if os.path.exists(f"{pdf_path}/index.faiss") and os.path.exists(f"{pdf_path}/index.pkl"):
     VECTORSTORE_PDF = FAISS.load_local(
         pdf_path,
@@ -197,7 +199,7 @@ async def upload_topic(topic: str = Query(..., description="검색할 주제")):
         VECTORSTORE_WEB = FAISS.from_documents(docs, OpenAIEmbeddings())
 
         # ---- 5) 디스크 저장 ----
-        save_path = "faiss_db/web"
+        save_path = web_path
         os.makedirs(save_path, exist_ok=True)
         VECTORSTORE_WEB.save_local(save_path)
 
@@ -240,8 +242,8 @@ async def upload_pdf(file: UploadFile = File(...)):
         VECTORSTORE_PDF = FAISS.from_documents(docs, OpenAIEmbeddings())
 
         # ✅ 디스크에 저장
-        os.makedirs("faiss_db/pdf", exist_ok=True)
-        VECTORSTORE_PDF.save_local("faiss_db/pdf")
+        os.makedirs(pdf_path, exist_ok=True)
+        VECTORSTORE_PDF.save_local(pdf_path)
 
         return JSONResponse(content={
             "message": f"{len(docs)}개의 PDF 청크 벡터화 및 저장 완료",
