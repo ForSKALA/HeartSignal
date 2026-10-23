@@ -66,7 +66,13 @@ SEED_FOREMAN_PASSWORD=
 SEED_WORKER_PASSWORD=
 LLM_MODEL=gpt-4o
 LLM_TIMEOUT_S=20
+REWRITE_MODEL=gpt-4o-mini            # RAG 검색어 재작성용 가벼운 모델 (답변은 LLM_MODEL)
+RAG_INDEX_DIR=faiss_db/p1-complete   # RAG 가 읽는 인덱스 폴더 (P1 정식 인덱스). 베이스 실습 인덱스는 faiss_db
+RAG_MAX_CONTEXT_CHARS=12000          # 답변 LLM 에 넣는 근거 블록 총 글자 수 상한
 ```
+
+- RAG 는 `OPENAI_API_KEY` 가 없어도 기동합니다. 이때 `/rag-query`·업로드는 503 `NOT_READY`, 경보 에이전트는 문서 근거·템플릿으로 동작합니다 (2장 4번).
+- `REWRITE_MODEL`·`RAG_INDEX_DIR`·`RAG_MAX_CONTEXT_CHARS` 는 기본값으로 동작하므로 compose/k8s 에 꼭 넣을 필요는 없습니다. 바꿀 때만 ConfigMap(`web/k8s/configmap.yaml`)에 추가합니다.
 
 새 변수를 추가하면 이 표와 해당 `.env-example`을 함께 고칩니다.
 
