@@ -259,3 +259,101 @@ def test_late_issue_result_after_clear_is_discarded(ac, monkeypatch):
     time.sleep(0.6)
     alarm = as_role(ac, "admin").get(f"/alarm/{aid}").json()
     assert alarm["status"] == "cleared" and "해제" in alarm["board"]["lines"][0]
+
+
+# ---------- 리뷰 반영 (PR #10): 출력 형태 검사, import 오류 구분 ----------
+
+def _run_with_agent(ac, monkeypatch, actions):
+    from alarm import agent_bridge
+
+    async def fake_agent(alarm):
+        return actions
+
+    monkeypatch.setattr(agent_bridge, "run_agent", fake_agent)
+    alarm = issue(ac)
+    aid = alarm["alarm_id"]
+    assert wait_until(lambda: len(as_role(ac, "admin").get(f"/alarm/{aid}").json()["actions"]) == len(actions))
+    return alarm, as_role(ac, "admin").get(f"/alarm/{aid}").json()
+
+
+@pytest.mark.parametrize("tool,output", [
+    ("display_board", "프로판 누출"),
+    ("display_board", {"lines": "한 줄 문자열"}),
+    ("display_board", {"lines": []}),
+    ("display_board", {"lines": ["a", 3]}),
+    ("display_board", {"lines": ["a"], "source": "KOSHA"}),
+    ("notify_foreman", [{"item": "x"}]),
+    ("notify_foreman", {"checklist": [{"no_item": 1}]}),
+    ("notify_manager", ["not", "dict"]),
+    ("report_119", {"sources": []}),
+    ("build_briefing", "text"),
+])
+def test_bad_agent_output_keeps_template_and_board_alive(ac, monkeypatch, tool, output):
+    before, after = _run_with_agent(ac, monkeypatch, [{"tool": tool, "ok": True, "fallback": False, "ts": "t", "output": output}])
+    action = after["actions"][0]
+    assert action["ok"] is False and action["fallback"] is True and action["reason"] == "bad_output"
+    for field in ["board", "guide_card", "checklist", "briefing"]:
+        assert after[field] == before[field]
+    assert after["report"]["text"] == before["report"]["text"]
+    ac.cookies.clear()
+    res = ac.get("/board/current")
+    assert res.status_code == 200 and isinstance(res.json()["lines"], list) and res.json()["lines"]
+
+
+def test_p2_output_format_is_applied(ac, monkeypatch):
+    src = {"source": "KOSHA GUIDE G-78-2021", "section": "10.2(13)"}
+    actions = [
+        {"tool": "display_board", "ok": True, "fallback": False, "ts": "t", "sources": [src],
+         "output": {"lines": ["1", "2", "3", "4", "5"], "source": src}},
+        {"tool": "notify_foreman", "ok": True, "fallback": False, "ts": "t",
+         "output": {"checklist": [{"item": "출하 중단", "source": src}]}},
+        {"tool": "notify_manager", "ok": True, "fallback": False, "ts": "t",
+         "output": {"immediate": ["출입 통제"], "ppe": [], "first_aid": [], "report_info": {}, "sources": [src]}},
+        {"tool": "report_119", "ok": True, "fallback": False, "ts": "t", "output": {"text": "신고문", "sources": [src]}},
+        {"tool": "build_briefing", "ok": True, "fallback": False, "ts": "t",
+         "output": {"summary": ["요약"], "first_aid": [], "sources": [src]}},
+    ]
+    _, after = _run_with_agent(ac, monkeypatch, actions)
+    assert after["board"] == {"lines": ["1", "2", "3", "4"], "source": src}  # 4줄 초과는 자름
+    assert after["checklist"] == [{"item": "출하 중단", "source": src}]
+    assert after["guide_card"]["immediate"] == ["출입 통제"]
+    assert after["report"]["text"] == "신고문" and after["report"]["sources"] == [src]
+    assert after["report"]["status"] == "pending"
+    assert after["briefing"]["summary"] == ["요약"]
+    assert all(a["ok"] for a in after["actions"]) and after["actions"][0]["sources"] == [src]
+
+
+def _load_agent_from(tmp_path, monkeypatch, init_source):
+    import sys
+
+    from alarm import agent_bridge
+
+    if init_source is not None:
+        (tmp_path / "agent").mkdir()
+        (tmp_path / "agent" / "__init__.py").write_text(init_source, encoding="utf-8")
+        monkeypatch.syspath_prepend(str(tmp_path))
+    monkeypatch.delitem(sys.modules, "agent", raising=False)
+    try:
+        return agent_bridge._load_agent()
+    finally:
+        sys.modules.pop("agent", None)
+
+
+def test_load_agent_not_installed(tmp_path, monkeypatch):
+    assert _load_agent_from(tmp_path, monkeypatch, None) == (None, "agent_not_installed")
+
+
+@pytest.mark.parametrize("init_source", [
+    "import some_missing_dependency_xyz\n",
+    "raise RuntimeError('broken')\n",
+    "x = 1\n",  # run_agent 없음 (ImportError)
+])
+def test_load_agent_internal_error_is_reported(tmp_path, monkeypatch, caplog, init_source):
+    with caplog.at_level("ERROR", logger="heartsignal.alarm"):
+        assert _load_agent_from(tmp_path, monkeypatch, init_source) == (None, "agent_import_failed")
+    assert "agent import failed" in caplog.text
+
+
+def test_load_agent_success(tmp_path, monkeypatch):
+    fn, reason = _load_agent_from(tmp_path, monkeypatch, "async def run_agent(alarm):\n    return []\n")
+    assert callable(fn) and reason is None
