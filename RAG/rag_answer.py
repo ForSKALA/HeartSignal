@@ -43,20 +43,24 @@ def _search_one(store, prompt: str, top_k: int, key: str | None) -> list:
     return focused + broad
 
 
-def retrieve(vectorstore, prompt: str, top_k: int, extra_stores=()) -> tuple[list, str | None]:
-    """주 저장소 + 보조 저장소(P1 법령 web 인덱스 등)를 모두 검색해 거리순으로 합친다 (중복 제거)."""
+def retrieve(vectorstore, prompt: str, top_k: int, extra_stores=(), rewrites=()) -> tuple[list, str | None]:
+    """원문 + 재작성 검색어로 주 저장소 + 보조 저장소(P1 법령 web 인덱스 등)를 모두 검색해 거리순으로 합친다 (중복 제거).
+    청크가 짧아(중앙값 84자) 질의 수에 비례해 상한을 늘려도 컨텍스트 비용은 작다."""
     key = detect_substance(prompt)
+    queries = [prompt, *rewrites]
     pairs = []
     for store in (vectorstore, *extra_stores):
-        if store is not None:
-            pairs += _search_one(store, prompt, top_k, key)
+        if store is None:
+            continue
+        for query in queries:
+            pairs += _search_one(store, query, top_k, key)
     seen, merged = set(), []
     for doc, score in sorted(pairs, key=lambda pair: pair[1]):
         if doc.page_content in seen:
             continue
         seen.add(doc.page_content)
         merged.append((doc, score))
-    return merged[: 2 * top_k], key
+    return merged[: 2 * top_k * len(queries)], key
 
 # 베이스 프롬프트 그대로 (문구 개선은 평가 1회를 끼워 별도 변경으로 진행)
 PROMPT = (
@@ -74,6 +78,27 @@ def source_of(doc) -> dict:
     return {"source": str(meta.get("source", "")), "section": str(meta.get("section", ""))}
 
 
+# 검색어 재작성: 현장 말투 질문을 지침·MSDS 문체의 검색어로 바꾼다 (평가 4행: 원문 >60위 → 문서 문체 1위).
+# 이 호출은 사용자에게 보이는 문장을 만들지 않는다. 답변 생성은 아래 answer_with_sources 에서 근거가 있을 때만 한다.
+REWRITE_PROMPT = (
+    "다음 현장 질문을 한국 산업안전 기술지침(KOSHA GUIDE)·법령·물질안전지침(MSDS)에서 검색하기 위한 검색어 2개로 바꾸세요. "
+    "문서 문체(명사형, 전문용어: 누출, 인화성 물질, 출하작업, 가스 감지기 농도 측정, 응급조치, 노출기준 등)로 쓰고, "
+    "물질명이 있으면 유지하세요. 한 줄에 하나씩, 번호·설명 없이 검색어만 쓰세요.\n질문: {question}"
+)
+MAX_REWRITES = 2
+
+
+def rewrite_queries(prompt: str, llm) -> list[str]:
+    """재작성 검색어 목록. 실패하면 빈 목록 — 검색은 항상 원문으로는 진행된다."""
+    try:
+        raw = llm.invoke([HumanMessage(content=REWRITE_PROMPT.format(question=prompt))]).content
+    except Exception as exc:  # 재작성 실패가 질의를 막지 않게 한다
+        logger.warning("query rewrite failed: %s", type(exc).__name__)
+        return []
+    lines = [line.strip().lstrip("-•0123456789. )").strip() for line in str(raw).splitlines()]
+    return [line for line in lines if line and line != prompt][:MAX_REWRITES]
+
+
 def _handoff(hits: int, top_score, substance):
     log_extra(hits=hits, top_score=top_score, substance=substance, handoff=True, needs_review=False)
     return {"response": NO_EVIDENCE, "sources": [], "needs_review": False, "handoff": True}
@@ -82,7 +107,9 @@ def _handoff(hits: int, top_score, substance):
 def answer_with_sources(prompt: str, vectorstore, llm, top_k: int, extra_stores=()) -> dict:
     """응답 필드(response·sources·needs_review·handoff)를 돌려준다. 로그 필드는 log_extra 로 남긴다.
     handoff=True: 검색 0건 또는 LLM 이 근거 없음(N/A)으로 답한 경우. 이때 sources 는 비운다."""
-    docs_scores, substance = retrieve(vectorstore, prompt, top_k, extra_stores)
+    rewrites = rewrite_queries(prompt, llm)
+    docs_scores, substance = retrieve(vectorstore, prompt, top_k, extra_stores, rewrites)
+    log_extra(rewrites=len(rewrites))
     # top_score 는 FAISS L2 거리 — 낮을수록 유사 (AGENTS.md 7.5 필드 이름 유지)
     top_score = round(float(docs_scores[0][1]), 4) if docs_scores else None
     if not docs_scores:
