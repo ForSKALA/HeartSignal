@@ -226,7 +226,7 @@
       btn.disabled = true;
 
       try {
-        const response = await fetch("/tts/", {
+        const response = await fetch("tts/", {
           method: "POST",
           headers: {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -247,7 +247,7 @@
         }
 
         const data = await response.json();
-        audioPlayer.src = data.file_path + "?v=" + new Date().getTime();
+        audioPlayer.src = new URL(data.file_path.replace(/^\/+/, ""), document.baseURI).href + "?v=" + new Date().getTime();
         audioWrapper.style.display = "block";
         audioPlayer.play();
         statusEl.textContent = "TTS generated. You can play it using the player below.";

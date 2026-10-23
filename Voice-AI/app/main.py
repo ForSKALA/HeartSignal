@@ -3,9 +3,12 @@
 
 from fastapi import FastAPI, Depends, HTTPException, status, Cookie, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response
+from fastapi.responses import FileResponse, HTMLResponse, Response, RedirectResponse
+from fastapi.exception_handlers import http_exception_handler
 from starlette.staticfiles import StaticFiles
-from jose import jwt, JWTError
+from app.auth import auth_config, get_current_user
+import json
+from html import escape
 
 from app.routers.stt_router import router as stt_router
 from app.routers.tts_router import router as tts_router
@@ -47,49 +50,34 @@ UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
 
 app = FastAPI()
 
-# Configuration that must match the Java server
-SECRET_KEY = os.getenv("JWT_SECRET")
-ALGORITHM = "HS256"
-ISSUER = os.getenv("JWT_ISSUER", "simple-auth-server")
+# 미인증 HTML 탐색은 로그인으로 안내하되 API의 401 응답은 유지한다.
+HTML_PATHS = {"/", "/index.html", "/stt.html", "/tts.html", "/stt-tts.html"}
 
-if not SECRET_KEY:
-    raise RuntimeError("JWT_SECRET 환경변수가 설정되지 않았습니다.")      # Must be identical to Java JwtUtil.ISSUER
 
-# 3) JWT decoding dependency
+def route_path(request: Request) -> str:
+    """프록시 prefix를 포함한 ASGI path도 앱 내부 경로로 통일한다."""
+    path = request.url.path
+    prefix = request.scope.get("root_path", "").rstrip("/")
+    if prefix and (path == prefix or path.startswith(prefix + "/")):
+        return path[len(prefix):] or "/"
+    return path
 
-def get_current_user(
-    access_token: str | None = Cookie(default=None, alias="ACCESS_TOKEN")
-):
-    """
-    Reads the ACCESS_TOKEN(JWT) cookie issued by the 8080 server
-    and returns the current logged-in user information as a dependency.
-    """
-    if access_token is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated (no ACCESS_TOKEN cookie)",
-        )
 
-    try:
-        # [Q01] Java 인증 서버와의 JWT 신뢰 연결
-        # 힌트: 쿠키의 토큰을 Java 서버와 동일한 비밀키, 알고리즘, 발급자로 검증하세요.
-        payload = jwt.decode(access_token, SECRET_KEY, algorithms=[ALGORITHM], issuer=ISSUER)
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token",
-        )
+@app.exception_handler(HTTPException)
+async def handle_auth_error(request: Request, exc: HTTPException):
+    if exc.status_code == 401 and request.method == "GET" and route_path(request) in HTML_PATHS:
+        return RedirectResponse(auth_config(request)["login_url"], status_code=302)
+    return await http_exception_handler(request, exc)
 
-    user_id = payload.get("sub")
-    username = payload.get("username")
 
-    if user_id is None or username is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token payload",
-        )
+@app.get("/auth-config.js", include_in_schema=False)
+async def public_auth_config(request: Request):
+    return Response(
+        "window.HEARTSIGNAL_AUTH = " + json.dumps(auth_config(request)) + ";",
+        media_type="application/javascript",
+        headers={"Cache-Control": "no-store"},
+    )
 
-    return {"id": user_id, "username": username}
 
 # 4) (Key) HTML is served only as a "route" + protected with Depends
 #    - Direct access to /index.html is also blocked (= JWT required to open)
@@ -99,32 +87,37 @@ def _must_exist(p: Path, name: str):
     if not p.exists():
         raise HTTPException(status_code=404, detail=f"{name} not found: {p}")
 
+
+def html_page(request: Request, path: Path):
+    """rewrite 후에도 상대 API·음성·화면 링크를 공개 prefix 안에서 해석한다."""
+    _must_exist(path, path.name)
+    base = request.scope.get("root_path", "").rstrip("/") + "/"
+    html = path.read_text(encoding="utf-8")
+    base_tag = f'<head>\n  <base href="{escape(base, quote=True)}">'
+    return HTMLResponse(html.replace("<head>", base_tag, 1))
+
+
 @app.get("/", include_in_schema=False)
-async def root_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(INDEX_HTML, "index.html")
-    return FileResponse(INDEX_HTML)
+async def root_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, INDEX_HTML)
 
 @app.get("/index.html", include_in_schema=False)
-async def index_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(INDEX_HTML, "index.html")
-    return FileResponse(INDEX_HTML)
+async def index_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, INDEX_HTML)
 
 @app.get("/stt.html", include_in_schema=False)
-async def stt_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(STT_HTML, "stt.html")
-    return FileResponse(STT_HTML)
+async def stt_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, STT_HTML)
 
 @app.get("/tts.html", include_in_schema=False)
-async def tts_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(TTS_HTML, "tts.html")
-    return FileResponse(TTS_HTML)
+async def tts_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, TTS_HTML)
 
 @app.get("/stt-tts.html", include_in_schema=False)
 # [Q02] 음성 통번역 HTML의 접근 제어
 # 힌트: 페이지 함수 실행 전 인증 의존성이 먼저 수행되도록 연결하세요.
-async def stt_tts_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(STT_TTS_HTML, "stt-tts.html")
-    return FileResponse(STT_TTS_HTML)
+async def stt_tts_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, STT_TTS_HTML)
 
 # 5) Static file mount
 #    Note: If /static is opened with StaticFiles(directory=STATIC_DIR),
@@ -145,7 +138,7 @@ async def stt_tts_page(current_user: dict = Depends(get_current_user)):
 async def block_direct_html_under_static(request: Request, call_next):
     # Block direct requests for HTML files via the /static path
     # (e.g., /static/index.html, /static/stt.html, etc.)
-    path = request.url.path
+    path = route_path(request)
     if path.startswith("/static/") and path.lower().endswith(".html"):
         return Response(status_code=404)
     return await call_next(request)
@@ -197,7 +190,7 @@ if __name__ == "__main__":
     uvicorn.run("app.main:app", host="127.0.0.1", port=8008, reload=True)
     
 # 1. Direct access blocking without authentication is applied: Both of the following must be blocked to function correctly
-# http://localhost:8008/index.html  → 401
+# http://localhost:8008/index.html  → 로그인으로 302
 # http://localhost:8008/static/index.html → 404 (blocked by middleware)
     
 # With virtual environment activated

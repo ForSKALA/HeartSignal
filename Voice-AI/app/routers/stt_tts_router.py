@@ -1,5 +1,5 @@
-from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, status, Cookie
-from jose import jwt, JWTError
+from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, status
+from app.auth import get_current_user
 import os
 import shutil
 import logging
@@ -14,54 +14,8 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
-# Configuration that must match the Java server
-SECRET_KEY = "RANDOM_SECRET_KEY"
-ALGORITHM = "HS256"
-ISSUER = "simple-auth-server"
-
 SUPPORTED_TARGET_LANGUAGES = {"en", "zh", "ko", "ja", "vi"}
 
-
-def get_current_user(
-    access_token: str | None = Cookie(default=None, alias="ACCESS_TOKEN")
-):
-    """
-    Reads the ACCESS_TOKEN(JWT) cookie issued by the Java server
-    and returns the current logged-in user information.
-    """
-
-    if access_token is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Not authenticated. ACCESS_TOKEN cookie is missing.",
-        )
-
-    try:
-        payload = jwt.decode(
-            access_token,
-            SECRET_KEY,
-            algorithms=[ALGORITHM],
-            issuer=ISSUER,
-        )
-    except JWTError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token.",
-        )
-
-    user_id = payload.get("sub")
-    username = payload.get("username")
-
-    if user_id is None or username is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid token payload.",
-        )
-
-    return {
-        "id": user_id,
-        "username": username,
-    }
 
 
 # Upload directory configuration
