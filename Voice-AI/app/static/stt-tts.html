@@ -347,7 +347,7 @@
             formData.append("target_language", selectedLanguage);
 
             try {
-              const res = await fetch("/stt-tts/", {
+              const res = await fetch("stt-tts/", {
                 method: "POST",
                 body: formData,
               });
@@ -362,7 +362,7 @@
               llmResponseEl.textContent = "Translated Text: " + (data.llm_response || "(none)");
 
               if (data.tts_file_path) {
-                ttsAudioEl.src = data.tts_file_path + "?v=" + new Date().getTime();
+                ttsAudioEl.src = new URL(data.tts_file_path.replace(/^\/+/, ""), document.baseURI).href + "?v=" + new Date().getTime();
                 ttsAudioEl.style.display = "block";
                 await ttsAudioEl.play();
               } else {

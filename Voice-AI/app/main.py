@@ -3,11 +3,12 @@
 
 from fastapi import FastAPI, Depends, HTTPException, status, Cookie, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, Response, RedirectResponse
+from fastapi.responses import FileResponse, HTMLResponse, Response, RedirectResponse
 from fastapi.exception_handlers import http_exception_handler
 from starlette.staticfiles import StaticFiles
 from app.auth import auth_config, get_current_user
 import json
+from html import escape
 
 from app.routers.stt_router import router as stt_router
 from app.routers.tts_router import router as tts_router
@@ -53,10 +54,19 @@ app = FastAPI()
 HTML_PATHS = {"/", "/index.html", "/stt.html", "/tts.html", "/stt-tts.html"}
 
 
+def route_path(request: Request) -> str:
+    """프록시 prefix를 포함한 ASGI path도 앱 내부 경로로 통일한다."""
+    path = request.url.path
+    prefix = request.scope.get("root_path", "").rstrip("/")
+    if prefix and (path == prefix or path.startswith(prefix + "/")):
+        return path[len(prefix):] or "/"
+    return path
+
+
 @app.exception_handler(HTTPException)
 async def handle_auth_error(request: Request, exc: HTTPException):
-    if exc.status_code == 401 and request.method == "GET" and request.url.path in HTML_PATHS:
-        return RedirectResponse(auth_config(request, request.url.path)["login_url"], status_code=302)
+    if exc.status_code == 401 and request.method == "GET" and route_path(request) in HTML_PATHS:
+        return RedirectResponse(auth_config(request)["login_url"], status_code=302)
     return await http_exception_handler(request, exc)
 
 
@@ -77,32 +87,37 @@ def _must_exist(p: Path, name: str):
     if not p.exists():
         raise HTTPException(status_code=404, detail=f"{name} not found: {p}")
 
+
+def html_page(request: Request, path: Path):
+    """rewrite 후에도 상대 API·음성·화면 링크를 공개 prefix 안에서 해석한다."""
+    _must_exist(path, path.name)
+    base = request.scope.get("root_path", "").rstrip("/") + "/"
+    html = path.read_text(encoding="utf-8")
+    base_tag = f'<head>\n  <base href="{escape(base, quote=True)}">'
+    return HTMLResponse(html.replace("<head>", base_tag, 1))
+
+
 @app.get("/", include_in_schema=False)
-async def root_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(INDEX_HTML, "index.html")
-    return FileResponse(INDEX_HTML)
+async def root_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, INDEX_HTML)
 
 @app.get("/index.html", include_in_schema=False)
-async def index_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(INDEX_HTML, "index.html")
-    return FileResponse(INDEX_HTML)
+async def index_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, INDEX_HTML)
 
 @app.get("/stt.html", include_in_schema=False)
-async def stt_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(STT_HTML, "stt.html")
-    return FileResponse(STT_HTML)
+async def stt_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, STT_HTML)
 
 @app.get("/tts.html", include_in_schema=False)
-async def tts_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(TTS_HTML, "tts.html")
-    return FileResponse(TTS_HTML)
+async def tts_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, TTS_HTML)
 
 @app.get("/stt-tts.html", include_in_schema=False)
 # [Q02] 음성 통번역 HTML의 접근 제어
 # 힌트: 페이지 함수 실행 전 인증 의존성이 먼저 수행되도록 연결하세요.
-async def stt_tts_page(current_user: dict = Depends(get_current_user)):
-    _must_exist(STT_TTS_HTML, "stt-tts.html")
-    return FileResponse(STT_TTS_HTML)
+async def stt_tts_page(request: Request, current_user: dict = Depends(get_current_user)):
+    return html_page(request, STT_TTS_HTML)
 
 # 5) Static file mount
 #    Note: If /static is opened with StaticFiles(directory=STATIC_DIR),
@@ -123,7 +138,7 @@ async def stt_tts_page(current_user: dict = Depends(get_current_user)):
 async def block_direct_html_under_static(request: Request, call_next):
     # Block direct requests for HTML files via the /static path
     # (e.g., /static/index.html, /static/stt.html, etc.)
-    path = request.url.path
+    path = route_path(request)
     if path.startswith("/static/") and path.lower().endswith(".html"):
         return Response(status_code=404)
     return await call_next(request)

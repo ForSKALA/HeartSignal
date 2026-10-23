@@ -1,6 +1,6 @@
 # HeartSignal Voice-AI Deployment (음성 담당, 선택 배포)
 # - Dockerfile CMD의 --reload는 운영에 맞지 않으므로 여기서 command로 덮어쓴다.
-# - /, /index.html 등 경로가 web과 겹치므로 별도 호스트(heartsignal-voice.*)로 연결한다 (web/k8s/ingress.yaml).
+# - /, /index.html 등 경로가 web과 겹치므로 P4의 별도 Ingress에서 같은 호스트의 /voice/로 연결하고 prefix를 제거한다.
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -24,9 +24,9 @@ spec:
         - name: harbor-registry-secret
       containers:
         - name: voice
-          image: skala-registry.skala-us.com/class-4/heartsignal-voice:1.0.2
+          image: skala-registry.skala-us.com/class-4/heartsignal-voice:1.0.3
           imagePullPolicy: Always
-          command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8008"]
+          command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8008", "--root-path", "/voice"]
           ports:
             - containerPort: 8008
           env:
@@ -54,7 +54,7 @@ spec:
               port: 8008
             periodSeconds: 5
             failureThreshold: 36
-          # / 는 JWT가 없으면 401을 돌려주므로 TCP로 확인한다.
+          # HTML은 미인증 시 로그인으로 이동하므로 TCP로 확인한다.
           readinessProbe:
             tcpSocket:
               port: 8008

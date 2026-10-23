@@ -224,7 +224,7 @@
             formData.append("audio", blob, "recording.webm");
 
             try {
-              const res = await fetch("/stt/", {
+              const res = await fetch("stt/", {
                 method: "POST",
                 body: formData,
               });

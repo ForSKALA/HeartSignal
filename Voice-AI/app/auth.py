@@ -2,7 +2,6 @@
 
 import os
 from pathlib import Path
-from urllib.parse import urlencode
 
 from dotenv import load_dotenv
 from fastapi import Cookie, HTTPException, Request
@@ -16,25 +15,12 @@ ALGORITHM = "HS256"
 if not SECRET_KEY:
     raise RuntimeError("JWT_SECRET 환경변수가 설정되지 않았습니다.")
 
-# 브라우저가 접근하는 공개 주소이다. 컨테이너 간 통신 주소와 구분한다.
-AUTH_ORIGINS = {
-    "local": "http://localhost:8080",
-    "deployed": "https://heartsignal.class-4.skala-us.com",
-}
-VOICE_ORIGINS = {
-    "local": "http://localhost:8008",
-    "deployed": "https://heartsignal-voice.class-4.skala-us.com",
-}
-
-
-def auth_config(request: Request, return_path: str = "/index.html") -> dict[str, str]:
-    """로컬·배포 환경의 주소를 한 곳에서 관리하며 JWT는 노출하지 않는다."""
-    environment = "local" if request.url.hostname in {"localhost", "127.0.0.1", "::1"} else "deployed"
-    auth_origin = AUTH_ORIGINS[environment]
-    return_to = VOICE_ORIGINS[environment] + return_path
+def auth_config(request: Request) -> dict[str, str]:
+    """배포는 같은 origin의 인증 API와 Vue 로그인을 사용한다."""
+    local = request.url.hostname in {"localhost", "127.0.0.1", "::1"}
     return {
-        "auth_base_url": auth_origin,
-        "login_url": auth_origin + "/login?" + urlencode({"return_to": return_to}),
+        "auth_base_url": "http://localhost:8080" if local else "",
+        "login_url": "http://localhost:5174/#/login" if local else "/#/login",
     }
 
 
@@ -59,5 +45,5 @@ def get_current_user(
         raise HTTPException(status_code=401, detail="Invalid token payload")
     role = payload.get("role", "worker")
     if not isinstance(role, str) or role not in {"worker", "foreman", "admin"}:
-        raise HTTPException(status_code=403, detail="Invalid role")
+        role = "worker"
     return {"id": user_id, "username": username, "role": role}

@@ -1,7 +1,4 @@
-<!--
-When the backend is started in FastAPI, informational static files such as HTML web pages are served from the directory specified by app.mount
-When a relative path (/stt-tts/) is used inside an HTML file, the browser calls the corresponding API based on the port and domain of the server (base URL) that served the current document
--->
+<!-- 화면·API 상대 경로는 서버가 삽입한 base를 기준으로 /voice/ 안에서 해석합니다. -->
 
 
 <!DOCTYPE html>
@@ -10,7 +7,7 @@ When a relative path (/stt-tts/) is used inside an HTML file, the browser calls 
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Voice Demo Hub</title>
-  <script src="/auth-config.js"></script>
+  <script src="auth-config.js"></script>
   <script>
   window.addEventListener("DOMContentLoaded", async () => {
     const status = document.getElementById("auth-status");
