@@ -1,0 +1,217 @@
+{
+  "label": "prompt-gate",
+  "url": "http://localhost:18007",
+  "source": "pdf",
+  "top_k": 5,
+  "summary": {
+    "core_n": 10,
+    "accuracy_pct": 40.0,
+    "keyword_recall_avg": 0.4,
+    "grounded_pct": 60.0,
+    "ungrounded_answer_pct": 10.0,
+    "handoff_n": 3,
+    "handoff_hit_pct": 100.0,
+    "errors": 0,
+    "latency_ms_avg": 6267
+  },
+  "rows": [
+    {
+      "id": "Q1",
+      "type": "core",
+      "latency_ms": 8113,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": true,
+      "response": "프로판이 누출될 경우, 모든 점화원을 제거해야 합니다.",
+      "sources": [
+        {
+          "source": "안전지침/프로판.pdf",
+          "section": "GHS정보>예방조치문구"
+        }
+      ]
+    },
+    {
+      "id": "Q2",
+      "type": "core",
+      "latency_ms": 8744,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q3",
+      "type": "core",
+      "latency_ms": 7494,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "황화수소의 노출기준은 TWA 10 ppm, STEL 15 ppm입니다.",
+      "sources": [
+        {
+          "source": "안전보건공단 MSDS 황화수소",
+          "section": "8. 노출방지 및 개인보호구>가. 화학물질의 노출기준, 생물학적 노출기준 등"
+        }
+      ]
+    },
+    {
+      "id": "Q4",
+      "type": "core",
+      "latency_ms": 5840,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "밀폐공간에 들어가도 되는 공기의 기준은 산소농도가 18퍼센트 이상 23.5퍼센트 미만, 이산화탄소의 농도가 1.5퍼센트 미만, 일산화탄소의 농도가 30피피엠 미만, 황화수소의 농도가 10피피엠 미만인 수준입니다.",
+      "sources": [
+        {
+          "source": "산업안전보건기준에 관한 규칙 (2026-03-02 시행)",
+          "section": "제618조(정의)"
+        }
+      ]
+    },
+    {
+      "id": "Q5",
+      "type": "core",
+      "latency_ms": 4747,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "Q6",
+      "type": "core",
+      "latency_ms": 4620,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "황화철에 물을 뿌릴 때는 각 황화철 알갱이들과 물이 충분하게 혼합되어 있어야 하며, 이를 위해 주기적으로 물을 계속 공급하면서 황화철 슬러지를 삽 등을 이용하여 고루고루 혼합시켜야 합니다.",
+      "sources": [
+        {
+          "source": "KOSHA GUIDE P-64-2012",
+          "section": "4.1(3)"
+        }
+      ]
+    },
+    {
+      "id": "Q7",
+      "type": "core",
+      "latency_ms": 8595,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "소규모 누출 시 반경 30m, 대규모 누출 시 반경 150m까지 사람을 대피시켜야 합니다.",
+      "sources": [
+        {
+          "source": "안전지침/암모니아.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        }
+      ]
+    },
+    {
+      "id": "Q8",
+      "type": "core",
+      "latency_ms": 7983,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "염소 누출 시 초기 이격거리를 소규모는 반경 60 m, 대규모는 반경 500 m로 설정해야 합니다. 누출 방지를 위해 물 스프레이 또는 물분무, 증기억제 폼을 사용하고, 보호 장비로는 양압의 자급식 공기호흡기와 내화학성 보호복을 착용해야 합니다. 염소는 기체 및 액화가스로 존재합니다. 염소와 암모니아의 반응에 의해 흰 연기가 발생하는 상태를 통해 누설 여부를 검사할 수 있습니다. 추가로, 염소는 독성 가스/흄(염화수소)을 연소생성물로 가질 수 있습니다.",
+      "sources": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>누출 방지 및 개인보호구"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "폭발 및 화재위험성>연소생성물"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "물리화학적 특성>물리적 상태"
+        },
+        {
+          "source": "KOSHA GUIDE G-78-2021",
+          "section": "5.3(2)"
+        },
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "누출 시 대처요령>초기이격거리"
+        }
+      ]
+    },
+    {
+      "id": "Q9",
+      "type": "core",
+      "latency_ms": 7870,
+      "status": 200,
+      "correct": true,
+      "keyword_recall": 1.0,
+      "grounded": true,
+      "ungrounded_answer": false,
+      "response": "신선한 공기를 공급하고, 산소를 제공하며, 적절한 장비를 이용한 인공호흡을 실시하고, 보온을 유지하면서 신속히 병원으로 이송해야 합니다.",
+      "sources": [
+        {
+          "source": "안전지침/염소.pdf",
+          "section": "응급조치>흡입"
+        }
+      ]
+    },
+    {
+      "id": "Q10",
+      "type": "core",
+      "latency_ms": 5005,
+      "status": 200,
+      "correct": false,
+      "keyword_recall": 0.0,
+      "grounded": false,
+      "ungrounded_answer": false,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H1",
+      "type": "handoff",
+      "latency_ms": 3683,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H2",
+      "type": "handoff",
+      "latency_ms": 4598,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    },
+    {
+      "id": "H3",
+      "type": "handoff",
+      "latency_ms": 4176,
+      "status": 200,
+      "handoff_hit": true,
+      "response": "확인된 자료가 없습니다. 안전관리자에게 문의하세요.",
+      "sources": []
+    }
+  ]
+}

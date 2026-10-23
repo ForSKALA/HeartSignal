@@ -6,7 +6,7 @@ from langchain_core.documents import Document
 from openai import APITimeoutError
 
 from middleware import ApiError
-from rag_answer import NO_EVIDENCE, answer_with_sources, detect_substance, retrieve
+from rag_answer import NO_EVIDENCE, answer_with_sources, detect_substance, retrieve, rewrite_queries
 from conftest import make_token
 
 
@@ -27,10 +27,12 @@ class _Store:
 
 
 class _LLM:
-    def __init__(self, text="TWA 10ppm, STEL 15ppm", usage=None, exc=None):
-        self.text, self.usage, self.exc = text, usage, exc
+    def __init__(self, text="TWA 10ppm, STEL 15ppm", usage=None, exc=None, rewrite_text=""):
+        self.text, self.usage, self.exc, self.rewrite_text = text, usage, exc, rewrite_text
 
     def invoke(self, messages):
+        if "검색어 2개로 바꾸세요" in messages[0].content:   # 재작성 요청
+            return type("Msg", (), {"content": self.rewrite_text, "usage_metadata": None})()
         if self.exc:
             raise self.exc
         return type("Msg", (), {"content": self.text, "usage_metadata": self.usage})()
@@ -60,8 +62,8 @@ def test_top_k_is_respected():
     assert out["sources"] == [{"source": "노출기준 고시 별표1", "section": "황화수소"}]
 
 
-def test_no_hits_is_handoff_without_llm_call():
-    llm = _LLM(exc=AssertionError("LLM must not be called"))
+def test_no_hits_is_handoff_without_answer_generation():
+    llm = _LLM(exc=AssertionError("answer LLM must not be called"))   # 재작성 호출은 허용, 답변 생성은 금지
     out = answer_with_sources("3번 탱크 압력?", _Store([]), llm, top_k=5)
     assert out == {"response": NO_EVIDENCE, "sources": [], "needs_review": False, "handoff": True}
 
@@ -160,3 +162,91 @@ def test_substance_is_logged(client, rag_module, monkeypatch, access_log):
     client.cookies.set("ACCESS_TOKEN", make_token())
     assert client.post("/rag-query", json={"prompt": "황화수소 노출기준?", "source": "pdf"}).status_code == 200
     assert json.loads(access_log[-1])["substance"] == "hydrogen_sulfide"
+
+
+def test_extra_store_results_are_merged_by_distance():
+    law = _Store([(_sdoc("제618조 적정공기 산소 18% 이상", "산업안전보건기준에 관한 규칙", "제618조(정의)", None), 0.15)])
+    merged, _ = retrieve(_Store(ROWS), "밀폐공간 들어가도 되는 공기 기준은?", 5, extra_stores=(law, None))
+    assert merged[0][0].metadata["source"] == "산업안전보건기준에 관한 규칙"
+    assert len(merged) == 1 + 4   # 법령 1 + ROWS 4 (빈 본문 제외는 답변 단계에서), None 저장소는 무시
+
+
+# ---- 검색어 재작성 (평가 5행) ----
+
+def test_rewrite_queries_parses_two_lines_and_drops_numbering():
+    llm = _LLM(rewrite_text="1. 출하장 인화성 물질 누출 시 조치\n2) 탱크로리 출하작업 가스 누출 출하 중단\n3. 세 번째는 버림")
+    assert rewrite_queries("출하 중에 프로판이 새면 뭐부터 해?", llm) == [
+        "출하장 인화성 물질 누출 시 조치", "탱크로리 출하작업 가스 누출 출하 중단"]
+
+
+def test_rewrite_failure_returns_empty_and_search_still_runs():
+    class Boom:
+        def invoke(self, messages):
+            raise RuntimeError("down")
+    assert rewrite_queries("q", Boom()) == []
+
+
+def test_retrieve_searches_each_rewrite_and_widens_cap():
+    store = _Store(ROWS)
+    merged, _ = retrieve(store, "경보 꺼지면 재개해도 돼?", 2, rewrites=("경보 해제 후 작업 재개 조건",))
+    assert [c[0] for c in store.calls] == [2, 2]          # 원문 + 재작성 각 1회
+    assert len(merged) == 2                                # 가짜 저장소는 두 질의에 같은 2건 → 중복 제거
+
+
+def test_rewrite_count_is_logged(client, rag_module, monkeypatch, access_log):
+    monkeypatch.setattr(rag_module, "VECTORSTORE_PDF", _Store(ROWS))
+    monkeypatch.setattr(rag_module, "ChatOpenAI", lambda *a, **kw: _LLM(rewrite_text="황화수소 노출기준 TWA STEL"))
+    client.cookies.set("ACCESS_TOKEN", make_token())
+    assert client.post("/rag-query", json={"prompt": "황화수소 노출기준?", "source": "pdf"}).status_code == 200
+    assert json.loads(access_log[-1])["rewrites"] == 1
+
+
+# ---- 프롬프트 게이트·인용 (평가 6행) ----
+
+def test_citations_narrow_sources_and_are_stripped_from_text():
+    llm = _LLM(text="TWA 10ppm [문서 1], STEL 15ppm입니다. [문서 2]")
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), llm, top_k=5)
+    assert out["response"] == "TWA 10ppm, STEL 15ppm입니다."
+    assert out["sources"] == [{"source": "노출기준 고시 별표1", "section": "황화수소"}]   # 문서 4(응급조치)는 인용 안 됨
+
+
+def test_without_citations_all_retrieved_sources_are_kept():
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), _LLM(text="TWA 10ppm"), top_k=5)
+    assert len(out["sources"]) == 2
+
+
+def test_prompt_contains_scope_gate_rules():
+    from rag_answer import PROMPT
+    for must in ("의료적 판단", "실시간 측정값", "N/A", "근거 원문 그대로", "[문서 n]"):
+        assert must in PROMPT
+
+
+# ---- 지연 최적화 (평가 8행): 임베딩 1회 재사용, 재작성 LLM 분리 ----
+
+class _VecStore(_Store):
+    class _Emb:
+        calls = 0
+        def embed_query(self, q):
+            type(self).calls += 1
+            return [0.1, 0.2]
+    embedding_function = _Emb()
+    index = type("Idx", (), {"ntotal": 42})()
+
+    def similarity_search_with_score_by_vector(self, vector, k, filter=None, fetch_k=None):
+        self.vec_calls = getattr(self, "vec_calls", 0) + 1
+        return self.similarity_search_with_score(None, k, filter=filter, fetch_k=fetch_k)
+
+
+def test_one_embedding_per_query_reused_across_stores():
+    _VecStore._Emb.calls = 0
+    a, b = _VecStore(ROWS), _VecStore(ROWS)
+    retrieve(a, "경보 꺼지면 재개해도 돼?", 3, extra_stores=(b,), rewrites=("경보 해제 후 재개 조건",))
+    assert _VecStore._Emb.calls == 2            # 질의 2개 → 임베딩 2회 (저장소 2개여도)
+    assert a.vec_calls == 2 and b.vec_calls == 2  # 각 저장소는 벡터로 검색
+
+
+def test_rewrite_uses_separate_llm_when_given():
+    answer_llm = _LLM(text="TWA 10ppm")
+    rewrite_llm = _LLM(rewrite_text="황화수소 노출기준 TWA")
+    out = answer_with_sources("황화수소 노출기준?", _Store(ROWS), answer_llm, 5, rewrite_llm=rewrite_llm)
+    assert out["response"] == "TWA 10ppm"
