@@ -264,7 +264,7 @@ P3 라우터는 `POST /alarm`에서 경보 객체를 만든 뒤 `run_agent(alarm
 | --- | --- | --- | --- |
 | P0 | ① **안전 질의 화면**: 질문 → 답변 + 출처, `handoff`면 "안전관리자 문의" 안내, `needs_review` 표시 | `external_index.html` 수정 (Vue 3 CDN 유지) | 핵심 질문 1개 답변·출처 표시 |
 | P0 | 공통: API base URL 설정값 1개, 401 → 로그인 화면 이동, 쿠키 `credentials: "include"` | 〃 | 로그아웃 상태에서 접근하면 로그인으로 이동 |
-| P1 | ② **상태/비상 화면**(홈, 로그인 후): `/board/current` 3초 폴링, 경보 발령 시 "비상상황 · N단계" + 대피 문구 3~4줄 + 출처 1줄 + **대피 음성 출력**(브라우저 TTS), 해제 시 해제 문구. 모든 화면 상단 비상 배너 | `HomeView.vue`, `useBoard.js` | 발령 후 5초 안에 화면·음성 전환 |
+| P1 | ② **상태/비상 화면**(홈, 로그인 후): `/board/current` 3초 폴링, 경보 발령 시 "비상상황 · N단계" + 대피 문구 3~4줄 + 출처 1줄 + **대피 음성 출력**(Voice-AI OpenAI TTS `/tts/`, 장애 시 브라우저 TTS 대체), 해제 시 해제 문구. 모든 화면 상단 비상 배너 | `HomeView.vue`, `useBoard.js` | 발령 후 5초 안에 화면·음성 전환 |
 | — | ~~관리자 지침 화면~~, ~~작업반장 화면~~ — **팀 결정(10/23): 만들지 않음.** 발령·보류·해제·인원 점검은 Swagger `/docs`에서 `admin1`·`foreman1`로 시연. 경보 API·에이전트는 구현·배포됨 | — | — |
 | P1 | 비상 배너: 진행 중인 경보가 있으면 모든 화면 상단에 표시 | 공통 JS | — |
 | P1 | Ingress에 `/alarm`, `/board` 경로 추가, 루트 `docker-compose.yml`(db·auth·rag·voice·web) | `web/k8s/ingress.yaml`, `docker-compose.yml` | `docker compose up` 한 번에 전체 기동 |

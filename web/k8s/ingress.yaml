@@ -105,6 +105,21 @@ spec:
                 name: heartsignal-rag
                 port:
                   number: 8001
+          # 대피 음성: 비상 화면이 같은 origin으로 Voice-AI TTS를 부른다 (쿠키·CORS 문제 없음)
+          - path: /tts
+            pathType: Prefix
+            backend:
+              service:
+                name: heartsignal-voice
+                port:
+                  number: 8008
+          - path: /uploads
+            pathType: Prefix
+            backend:
+              service:
+                name: heartsignal-voice
+                port:
+                  number: 8008
           - path: /openapi.json
             pathType: Exact
             backend:

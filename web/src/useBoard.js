@@ -31,16 +31,39 @@ function speechText(b) {
   return `${head} ${b.lines.join(". ")}`;
 }
 
-// 브라우저 음성 합성(Web Speech API)으로 읽는다. 지원하지 않는 브라우저면 조용히 넘어간다.
-// shortcut: 유진님 voice 서비스(/tts) 연동은 확장 — Ingress 별도 호스트·JWT 전달이 필요해 지금은 브라우저 TTS
-function speak(text) {
-  if (!text || typeof window === "undefined" || !("speechSynthesis" in window)) return false;
+// 대피 음성: Voice-AI의 OpenAI TTS(/tts/)로 mp3를 만들어 재생한다. 같은 origin으로 프록시되므로 로그인 쿠키가 그대로 간다.
+// Voice-AI 장애·미인증이면 브라우저 TTS(Web Speech)로 대체한다 — 음성 안내는 끊기면 안 된다 (AGENTS.md 2장 4번).
+const VOICE_TTS_URL = import.meta.env.VITE_VOICE_TTS_URL || "/tts/";
+let player = null;
+
+function speakBrowser(text) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return false;
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = "ko-KR";
   utter.rate = 0.95;
   window.speechSynthesis.speak(utter);
   return true;
+}
+
+async function speak(text) {
+  if (!text) return false;
+  try {
+    const body = new FormData();
+    body.append("text", text);
+    const res = await fetch(VOICE_TTS_URL, { method: "POST", body, credentials: "include" });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const { file_path } = await res.json();
+    // shortcut: Voice-AI가 파일명을 고정(openai_tts_output.mp3)으로 돌려주므로 캐시를 피하려 시각을 붙인다, 파일명이 요청별로 바뀌면 제거
+    const src = new URL(`${file_path}?t=${Date.now()}`, new URL(VOICE_TTS_URL, window.location.origin));
+    player?.pause();
+    player = new Audio(src.href);
+    await player.play();
+    return true;
+  } catch (error) {
+    console.warn("Voice-AI TTS 실패, 브라우저 TTS로 대체:", error.message);
+    return speakBrowser(text);
+  }
 }
 
 function autoSpeak() {
