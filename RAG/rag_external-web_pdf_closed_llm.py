@@ -332,7 +332,7 @@ async def rag_query(rag_request: RAGRequest = Body(...)):
         if VECTORSTORE_WEB is None:
             raise ApiError(503, "NOT_READY", "외부 WEB 인덱스가 아직 준비되지 않았습니다. 먼저 외부 정보를 수집해서 벡터화해 주세요.")
         vectorstore = VECTORSTORE_WEB
-        llm = ChatOpenAI(model=LLM_MODEL, temperature=0.3, timeout=LLM_TIMEOUT_S)
+        llm = ChatOpenAI(model=LLM_MODEL, temperature=0, timeout=LLM_TIMEOUT_S)  # [P2] 0.3→0: 거절(N/A) 판정 편차 제거, 평가 재현성
         llm_type = "openai" # huggingface
 
     elif rag_request.source == "pdf":
@@ -342,7 +342,7 @@ async def rag_query(rag_request: RAGRequest = Body(...)):
         # [설계 판단] 사용자가 source="pdf"를 선택하면 웹 저장소가 아니라 PDF 저장소를 검색하도록 연결하세요.
         # [TODO Q03] 아래 ... 부분을 적절한 코드로 교체하세요.
         vectorstore = VECTORSTORE_PDF
-        llm = ChatOpenAI(model=LLM_MODEL, temperature=0.3, timeout=LLM_TIMEOUT_S)
+        llm = ChatOpenAI(model=LLM_MODEL, temperature=0, timeout=LLM_TIMEOUT_S)  # [P2] 0.3→0: 거절(N/A) 판정 편차 제거, 평가 재현성
         llm_type = "openai"
 
     else:
