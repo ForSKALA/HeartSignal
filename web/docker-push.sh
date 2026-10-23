@@ -1,10 +1,10 @@
 #!/bin/bash
 # HeartSignal heartsignal-web 이미지를 Harbor에 push
-# 사용: ./docker-push.sh [VERSION]   (기본 1.0.0, docker-build.sh와 같은 값)
+# 사용: ./docker-push.sh [VERSION]   (기본 1.0.1, docker-build.sh와 같은 값)
 # 필요 환경변수: DOCKER_REGISTRY, DOCKER_REGISTRY_USER, DOCKER_REGISTRY_PASSWORD, CLASS_NAME
 
 IMAGE_NAME="heartsignal-web"
-VERSION=${1:-1.0.0}
+VERSION=${1:-1.0.1}
 PROJECT_NAME=${CLASS_NAME:-class-4}
 
 DOCKER_REGISTRY=${DOCKER_REGISTRY:?DOCKER_REGISTRY 환경변수가 필요합니다}

@@ -133,6 +133,51 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .emergency-button:hover { background: #b42318; }
 .emergency-button svg { width: 32px; height: 32px; }
 .is-exposure-risk .emergency-button { background: #9a3412; }
+.report-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(23, 32, 51, .55);
+}
+.report-dialog {
+  width: min(400px, 100%);
+  padding: 32px 28px 24px;
+  border-radius: 24px;
+  background: #fff;
+  box-shadow: 0 24px 64px rgba(23, 32, 51, .28);
+  text-align: center;
+}
+.report-dialog-icon {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 16px;
+  place-items: center;
+  border-radius: 20px;
+  background: #fff0e8;
+  color: #c2410c;
+}
+.report-dialog-icon svg { width: 38px; height: 38px; }
+.report-dialog h2 { margin: 0; color: #b42318; font-size: 24px; letter-spacing: -.04em; }
+.report-dialog p { margin: 8px 0 0; color: #58657a; font-size: 15px; }
+.report-dialog-actions { display: flex; gap: 10px; margin-top: 24px; }
+.report-dialog-actions button {
+  flex: 1;
+  min-height: 52px;
+  border: 1px solid #cbd8ea;
+  border-radius: 14px;
+  background: #fff;
+  color: #46546a;
+  font-size: 17px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.report-dialog-actions .report-yes { border-color: #d92d20; background: #d92d20; color: #fff; }
+.report-dialog-actions .report-yes:hover { background: #b42318; }
+.report-dialog-actions .report-no:hover { background: #f1f5f9; }
 .emergency-notice {
   position: fixed;
   right: 24px;

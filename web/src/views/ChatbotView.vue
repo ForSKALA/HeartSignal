@@ -60,6 +60,9 @@ async function ask() {
 }
 
 function onInputKeydown(event) {
+  // 한글 IME 조합 중 Enter는 무시 — 조합 중인 마지막 글자가 v-model에 반영되기 전에 전송되는 문제 방지
+  // (Safari는 조합 확정 Enter에서 isComposing=false, keyCode=229)
+  if (event.isComposing || event.keyCode === 229) return;
   if (event.key === "Enter" && !event.shiftKey) {
     event.preventDefault();
     ask();
