@@ -26,17 +26,19 @@ spec:
       imagePullSecrets:
         - name: harbor-registry-secret
       # PVC가 비어 있으면(최초 기동) 이미지에 포함된 기본 인덱스를 복사한다.
+      # 이미지에는 P1 정식 인덱스(faiss_db/p1-complete)만 들어 있다 (.dockerignore).
       initContainers:
         - name: seed-faiss
-          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.0.0
+          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.1.0
           imagePullPolicy: Always
-          command: ["sh", "-c", "[ -f /data/pdf/index.faiss ] || cp -r /app/faiss_db_seed/. /data/"]
+          # 서버 기본 인덱스는 faiss_db/p1-complete (RAG_INDEX_DIR). 이 파일이 있으면 이미 시드된 것 → 덮어쓰지 않는다
+          command: ["sh", "-c", "[ -f /data/p1-complete/pdf/index.faiss ] || cp -r /app/faiss_db_seed/. /data/"]
           volumeMounts:
             - name: faiss
               mountPath: /data
       containers:
         - name: rag
-          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.0.0
+          image: skala-registry.skala-us.com/class-4/heartsignal-rag:1.1.0
           imagePullPolicy: Always
           ports:
             - containerPort: 8001

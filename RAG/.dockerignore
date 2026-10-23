@@ -5,3 +5,11 @@ __pycache__/
 k8s/
 docker-build.sh
 docker-push.sh
+# [P2] 이미지에 불필요한 것: 평가 결과·테스트·이전 인덱스(p1-build)·베이스 실습 인덱스
+eval/results/
+tests/
+.pytest_cache/
+faiss_db/p1-build/
+faiss_db/pdf/
+faiss_db/web/
+requirements-test.txt

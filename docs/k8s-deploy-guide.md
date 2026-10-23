@@ -288,12 +288,39 @@ kubectl exec -n class-4 heartsignal-db-0 -c mariadb -- \
 
 아직 확인하지 않은 것: rag·voice·web 배포, Ingress 접속(TLS), 시연 계정 시드(6.1), 로그인 → 질의 → S1 화면 흐름.
 
+### 8.2 클러스터 실제 배포: rag (2026-10-23 15:20, P2)
+
+기준 커밋 `main` `5249268` + 이 PR(`.dockerignore`·initContainer 시드 기준). 이미지 `class-4/heartsignal-rag:1.1.0`.
+
+| 단계 | 명령 | 결과 |
+| --- | --- | --- |
+| 이미지 빌드 | `RAG/docker-build.sh 1.1.0` | linux/amd64, **201MB** (이전 788MB — 평가 결과·테스트·이전 인덱스·베이스 실습 인덱스를 `.dockerignore`로 제외) |
+| 로컬 확인 (amd64 에뮬레이션) | `docker run --env-file RAG/.env -p 18020:8001` | 기동 2초, `VECTORSTORE_PDF/WEB 로드`·`에이전트 근거 조회 준비`, `/rag-query` 암모니아 30m/150m + 출처, S1 발령 도구 7개 `ok`, 메모리 177MB |
+| Harbor push | `docker tag` + `docker push` | `class-4/heartsignal-rag:1.1.0`, digest `sha256:3a5dfb2e…` |
+| 서버 dry-run | `kubectl apply --dry-run=server -f RAG/k8s/` | 통과 |
+| 배포 | `kubectl apply -f RAG/k8s/` | `heartsignal-rag` **Running 1/1 (30초)**, PVC `heartsignal-rag-faiss` Bound(gp3 1Gi), initContainer가 `p1-complete`를 PVC에 시드 |
+| 파드 로그 | `kubectl logs deploy/heartsignal-rag -c rag` | `VECTORSTORE_WEB/PDF 로드 완료`, `에이전트 근거 조회 준비`, `rank_bm25` 로드 |
+
+**동작 확인** (`kubectl port-forward svc/heartsignal-rag 18082:8001`, `JWT_SECRET`으로 만든 worker·admin 토큰)
+
+| 요청 | 결과 |
+| --- | --- |
+| `/rag-query` 암모니아 이격거리 / 황화수소 노출기준 | 200, 30m·150m / TWA 10·STEL 15 + 출처(절 단위), `handoff:false`, 3.2~3.3초 |
+| `/rag-query` 염소 흡입 응급조치 ×4 | 2회 정답(`응급조치>흡입` 출처), 2회 `handoff:true` — 재작성 결과에 따라 검색 집합이 달라질 때 답변 LLM의 N/A 판정이 흔들리는 **알려진 편차**(`docs/eval_results.md` 9·10·16행). 클러스터 환경 문제 아님 |
+| `POST /alarm` S1(출하장 프로판 3단계, admin) | 201, 에이전트 7개 도구 `ok`, 신고문에 CAS 74-98-6·UN 1978, 지침 카드 G-78 10.2(13) |
+| `GET /board/current` (토큰 없음) | 200, 전광판 3줄 |
+| `POST /alarm/{id}/clear` | 200 (시험 경보는 해제함) |
+| **Ingress** `https://heartsignal.class-4.skala-us.com/openapi.json` / `/` | **200 / 200** (TLS 정상, P4가 Ingress 적용) |
+
+아직 확인하지 않은 것: Ingress 경유 `/rag-query`(쿠키 포함) → web 화면 E2E, 시연 계정 시드(6.1)를 클러스터 DB에 적용, 확장 화면용 Ingress 경로 `/alarm`·`/board`(아직 없음), voice 배포.
+
 ## 9. 남은 문제
 
 - [x] **P3**: 로그인 성공 시 `http://localhost:8008/index.html`로 이동 → `LOGIN_REDIRECT_URL`(기본 `/#/home`)로 변경 ([#14](https://github.com/ForSKALA/HeartSignal/pull/14))
 - [x] **음성**: `Voice-AI/app/main.py`의 `SECRET_KEY = "RANDOM_SECRET_KEY"` 하드코딩 → `JWT_SECRET` 환경변수로 변경 ([#8](https://github.com/ForSKALA/HeartSignal/pull/8))
 - [ ] **음성**: torch CUDA 버전 설치로 이미지 3.49GB → CPU 전용 torch 권장
 - [ ] **P4**: `Voice-AI/app/static/index.html`이 `http://localhost:8080/api/auth/check` 호출
-- [ ] **P4**: AGENTS.md 5·6장에 k8s용 Service 이름·환경변수 값 추가
+- [ ] **P4**: AGENTS.md 5·6장에 k8s용 Service 이름·환경변수 값 추가 (6장 RAG 변수는 #23에서 반영)
+- [ ] **P4**: 확장 화면(관리자·전광판·반장)용 Ingress 경로 `/alarm`, `/board` 추가 (rag 서비스)
 - [ ] **전원**: Ingress 호스트 이름(안: `heartsignal.class-4.skala-us.com`), 이미지 태그 규칙, ArgoCD 사용 여부 확정
 - [ ] **P4·P3**: Ingress 배포 후 시연 계정 시드 실행 (6.1). 2026-10-23 DB·auth 배포 완료(8.1), rag·web·Ingress 배포 대기

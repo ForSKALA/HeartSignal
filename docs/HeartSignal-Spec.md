@@ -18,19 +18,19 @@
 
 ---
 
-# 2. 현재 진행 현황 (2026-10-23 오전)
+# 2. 현재 진행 현황 (2026-10-23 15:20, `main` `5249268`)
 
-> 근거는 `git log`와 저장소 파일입니다. 각 담당자 로컬에서 진행 중인 작업은 반영되지 않았으니, 다르면 이 표를 고쳐 주세요.
+> 근거는 `git log`·열린 PR·클러스터 상태(`kubectl get pods -n class-4`)입니다. 로컬 미푸시 작업은 반영되지 않았으니 다르면 고쳐 주세요.
 
-| 파트 | 완료 | 남은 핵심 | 막힌 점·주의 |
+| 파트 | 완료 | 남은 핵심 | 주의 |
 | --- | --- | --- | --- |
-| P1 정순욱 | `안전지침/` PDF 22종 저장소 반영 (허지원·한유진 업로드) | 적재 스크립트, 정제·청킹, 메타데이터, KOSHA·법령 자료 확보, 데이터 출처표 | `faiss_db/`는 베이스 인덱스 그대로입니다. **`/upload-paper`는 업로드할 때마다 PDF 인덱스를 통째로 바꿔서** 여러 파일 적재에 쓸 수 없습니다 → 스크립트로 일괄 적재해야 합니다. S1의 근거인 `프로판.pdf`는 "자료없음"이라 **KOSHA G-78이 꼭 필요**합니다 |
-| P2 심혁 | RAG 오타 2건 수정(PR #1), 기획서 개정(PR #4) | `/rag-query` 응답 확장, 프롬프트, handoff, 에이전트 도구 7개, 템플릿 폴백, 평가 | 교재 TODO Q01~Q05는 채워진 상태 |
-| P3 김근홍 | Java TODO ①~⑤-B, `users.role` + JWT `role`, 기존 DB 마이그레이션, `JWT_SECRET` 미설정 시 기동 중단, 소스 파일 분리(PR #3), auth·db k8s(PR #2), `device` 역할 제거·role 없는 토큰 401 버그 수정(PR #5) | RAG JWT 검증, 오류 형식·로그 미들웨어, 경보 API 7개 | 로그인 후 `localhost:8008`로 이동함(`SimpleAuthServer.java`, `login.html`), CORS origin도 `localhost:8008` 고정(`HttpUtil.java`). 파일 분리는 AGENTS.md 8장(내부 static class 유지)과 달라 **팀 합의 필요** |
-| P4 허지원 | `안전지침/` PDF 추가, web 이미지·Ingress·공통 Secret·ConfigMap(PR #2, 김근홍 작성) | 화면 4종, 루트 `docker-compose.yml`, README, 배포 URL | 루트 HTML 3종은 아직 범용 RAG 화면. Ingress에 `/alarm`·`/board` 경로가 없음 |
-| 음성 한유진 | 베이스 업로드, voice k8s(PR #2, 김근홍 작성) | 에이전트용 방송 API, `JWT_SECRET` 연동, 평가셋 질문, 발표 자료 | `Voice-AI/app/main.py`의 `SECRET_KEY = "RANDOM_SECRET_KEY"` 하드코딩 → 토큰 검증 실패. CUDA torch로 이미지 3.49GB |
+| P1 정순욱 | 보완 원문 18종(G-78·P-64·E-G-18·법령·노출기준·MSDS) + 안전지침 22종 → **정식 인덱스 40문서·2,836청크**(항목 단위, `source`·`section`·`substance`·`cas`, #13), 적재 스크립트, 출처표 | `test_ingest` 1건 pdftotext 없는 환경 skip 처리, 안전지침 22개 원문 URL·공표일 | P-135는 미보유 → 평가셋 Q2 기대 출처를 프로판 MSDS로 변경(팀 확인) |
+| P2 심혁 | 평가 체계(핵심 10·변형 10·handoff 3, `eval_results.md` 0~16행, 3회 평균) · `/rag-query` 출처·handoff·게이트·인용·needs_review · 정식 인덱스 연결 · 물질 필터·법령 인덱스·검색어 재작성·BM25 하이브리드 · 경보 에이전트(도구 7개·고정 순서·메타데이터 근거) · LLM 키 없이 기동 · 챗봇 화면 출처 표시(#20) — **정확성 20→80%, 근거성 0→90%, 무근거 50→0%, handoff 3/3, 변형 57%** | rag 이미지 1.1.0 빌드·push·클러스터 배포(진행 중), 평가 최종 요약 | 남은 오답 Q8(도구 영역)·Q10(검색 의미). 어휘표는 평가셋 표현 기준이라 변형에서 57% |
+| P3 김근홍 | Java TODO·`role`·시드 계정·환경변수화 · RAG JWT 검증·표준 오류·요청 로그 미들웨어(#7) · 경보 API 7개·119 보류 타이머·에이전트 브리지(#10) · **클러스터 배포: db·auth Running**(가이드 8.1) | 시드 계정 실제 로그인→쿠키→챗봇 확인(② 완전판), PR #3 소스 분리 유지 여부(AGENTS.md 8장) | — |
+| P4 허지원 | Vue+Vite 화면 3종(로그인·홈·챗봇, #11) · web 이미지·Ingress·공통 Secret·ConfigMap 적용(#27) · **클러스터 배포: web Running** · Vite 포트 5174(#24) | 관리자·전광판·작업반장 화면(확장), README(현재 2줄), Ingress `/alarm`·`/board` 경로, 배포 URL 접속·TLS 확인 | 화면 3종은 P2가 명세서대로 초안을 만들어 P4 리뷰로 올리는 안 제안 중 |
+| 음성 한유진 | `JWT_SECRET` 환경변수(#8), 평가셋 변형 질문 10개 | 발표 자료, voice 배포(선택), `/broadcast`(확장) | CUDA torch 이미지 3.49GB |
 
-**체크포인트 ②(로그인 → `/rag-query` 1회 성공)는 아직 확인 기록이 없습니다.** 가장 먼저 맞춰야 할 부분입니다.
+**체크포인트:** ① ✅ · ② ✅(Java 토큰으로 `/rag-query` 성공, 시드 계정 실제 로그인 경로는 P3 확인 중) · ③ ✅(무토큰 401, #7) · ④ ✅(화면에서 질문→답변+출처, `docs/screenshots/`) · ⑤ 진행 중(클러스터 db·auth·web Running, rag 배포 중, README·배포 URL 미완)
 
 ---
 
