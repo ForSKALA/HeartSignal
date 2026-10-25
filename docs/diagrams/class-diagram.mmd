@@ -1,0 +1,190 @@
+classDiagram
+    direction LR
+
+    namespace Web_Vue {
+        class HomeView {
+            +loadStatus() /alarm/status, /board/current
+            +issueAlarm() POST /alarm
+            +checkAuth() /api/auth/check
+        }
+        class ChatbotView {
+            +ask() POST /rag-query
+        }
+        class ApiClient {
+            +apiFetch(path, method, body)
+        }
+    }
+
+    namespace Auth_Java {
+        class SimpleAuthServer {
+            +main() /api/login, /api/signup, /api/auth/check, /api/logout
+        }
+        class AuthService {
+            +signUp(username, rawPassword)
+            +login(username, rawPassword) User
+        }
+        class UserRepository {
+            <<interface>>
+            +save(User)
+            +findByUsername(String) User
+        }
+        class JdbcUserRepository
+        class JwtUtil {
+            +createToken(User)$ String
+            +verifyToken(String)$ DecodedJWT
+            +roleOf(DecodedJWT)$ String
+        }
+        class User {
+            -Long id
+            -String username
+            -String password
+            -String role  worker|foreman|admin
+        }
+    }
+
+    namespace RAG_FastAPI {
+        class RagApp {
+            <<rag_external-web_pdf_closed_llm>>
+            +rag_query(RAGRequest) AnswerResponse
+            +upload_paper() admin
+            +upload_topic() admin
+        }
+        class RagAnswer {
+            <<rag_answer>>
+            +retrieve(vectorstore, prompt, top_k)
+            +rewrite_queries(prompt, llm)
+            +answer_with_sources(...) dict
+            +needs_review_flag(...) bool
+        }
+        class AuthPy {
+            <<auth.py>>
+            +decode_token(token) CurrentUser
+            +get_current_user() CurrentUser
+            +require_role(*roles)
+        }
+        class CurrentUser {
+            +sub
+            +username
+            +role
+        }
+        class Middleware {
+            <<middleware.py>>
+            +install(app)
+            +log_extra(**fields)
+        }
+        class ApiError {
+            +status
+            +code
+            +message
+        }
+        class AlarmRouter {
+            <<alarm.router>>
+            +issue_alarm(AlarmCreate) admin
+            +alarm_status()
+            +headcount(HeadcountIn) foreman
+            +hold_report() admin
+            +clear_alarm(ClearIn) admin
+            +board_current(zone)
+        }
+        class AlarmStore {
+            <<alarm.store>>
+            -dict _alarms
+            +create(zone, substance, stage, note, actor)
+            +set_headcount() / hold_report() / clear()
+            +apply_agent_output(alarm_id, phase, outputs, actions)
+            +board_for(zone)
+            +audit_log(...)
+        }
+        class AgentBridge {
+            <<alarm.agent_bridge>>
+            +run_for(alarm_id, phase)
+        }
+        class Fallback {
+            <<alarm.fallback>>
+            +board_lines() / checklist()
+            +guide_card() / report_text()
+        }
+        class AlarmCreate {
+            +Zone zone
+            +str substance
+            +int stage 1~3
+            +str note
+        }
+    }
+
+    namespace Agent {
+        class Runner {
+            <<agent.runner>>
+            +ORDER 단계별 도구 순서
+            +run_agent(alarm) list~action~
+        }
+        class Tools {
+            <<agent.tools · 7개 도구>>
+            +rag_search()
+            +display_board()
+            +notify_manager()
+            +notify_foreman()
+            +report_119()
+            +broadcast_tts()
+            +build_briefing()
+        }
+        class Evidence {
+            <<agent.evidence>>
+            +find(substance, purpose)
+            +find_guides(zone, phase)
+            +isolation_distances(text)
+        }
+        class Sections {
+            <<agent.sections>>
+            +build_sections(substance, zone)
+        }
+    }
+
+    class FAISS {
+        <<VectorStore>>
+        faiss_db/p1-complete/web|pdf
+    }
+    class OpenAI {
+        <<LLM>>
+        gpt-4o / gpt-4o-mini
+    }
+    class MariaDB {
+        <<DB>>
+        users
+    }
+
+    HomeView --> ApiClient
+    ChatbotView --> ApiClient
+    ApiClient ..> SimpleAuthServer : 쿠키 ACCESS_TOKEN
+    ApiClient ..> RagApp
+    ApiClient ..> AlarmRouter
+
+    SimpleAuthServer --> AuthService
+    SimpleAuthServer --> JwtUtil
+    AuthService --> UserRepository
+    JdbcUserRepository ..|> UserRepository
+    JdbcUserRepository --> MariaDB
+    UserRepository --> User
+
+    RagApp --> AuthPy
+    RagApp --> Middleware
+    RagApp --> RagAnswer
+    RagApp --> AlarmRouter : include_router
+    RagAnswer --> FAISS
+    RagAnswer --> OpenAI
+    AuthPy --> CurrentUser
+    AuthPy ..> ApiError
+    Middleware --> ApiError
+
+    AlarmRouter --> AuthPy
+    AlarmRouter --> AlarmStore
+    AlarmRouter --> AgentBridge
+    AlarmRouter --> AlarmCreate
+    AlarmStore --> Fallback
+    AgentBridge --> Runner
+    AgentBridge --> AlarmStore : apply_agent_output
+    Runner --> Tools
+    Runner --> Sections
+    Tools --> Evidence
+    Evidence --> FAISS
+    Sections --> RagAnswer

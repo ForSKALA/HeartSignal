@@ -1,0 +1,52 @@
+sequenceDiagram
+    autonumber
+    actor Admin as 안전관리자(admin)
+    participant Web as Vue 화면(web)
+    participant Router as alarm.router
+    participant Auth as auth.py
+    participant Store as alarm.store
+    participant Bridge as agent_bridge
+    participant Runner as agent.runner
+    participant Tools as agent.tools(7개)
+    participant FAISS as FAISS 인덱스
+    participant LLM as OpenAI LLM
+    actor Foreman as 작업반장(foreman)
+    participant Board as 전광판(/board/current)
+
+    Admin->>Web: 구역·물질·단계 선택 후 경보 발령
+    Web->>Router: POST /alarm {zone, substance, stage} (쿠키 JWT)
+    Router->>Auth: require_role("admin")
+    Auth-->>Router: CurrentUser (아니면 401/403)
+    Router->>Store: create(zone, substance, stage, actor=sub)
+    Note over Store: 고정 템플릿(fallback)으로 전광판·체크리스트·신고문 즉시 작성<br/>119 신고 30초 타이머 시작
+    Router->>Bridge: spawn(run_for(alarm_id, "issue"))
+    Router-->>Web: 201 경보 스냅샷
+
+    par 백그라운드 에이전트
+        Bridge->>Runner: run_agent(alarm) (타임아웃 적용)
+        loop ORDER[stage] 순서대로 도구 실행
+            Runner->>Tools: rag_search / report_119 / display_board / notify_manager / broadcast_tts / build_briefing / notify_foreman
+            Tools->>FAISS: evidence.find(substance, purpose)
+            FAISS-->>Tools: 근거 청크 + 출처(source, section)
+            Tools-->>Runner: action 기록 (근거 없으면 fallback)
+        end
+        Runner->>LLM: sections.build_sections() 지침 카드 상세 (LLM 있을 때만)
+        LLM-->>Runner: 섹션 (근거 0건이면 handoff)
+        Runner-->>Bridge: actions
+        Bridge->>Store: apply_agent_output() — stage·status는 변경 불가
+        Note over Store: 감사 로그 (alarm_id, tool, tool_result, actor=agent)
+    and 사람의 대응
+        Admin->>Router: POST /alarm/{id}/hold-report (30초 내 보류 가능)
+        Foreman->>Router: POST /alarm/{id}/headcount {checked, total}
+    end
+
+    loop 폴링
+        Web->>Router: GET /alarm/status, /board/current
+        Router-->>Web: 진행 경보 · 지침 카드 · 체크리스트 · 119 모의 신고 상태
+        Board->>Router: GET /board/current?zone= (로그인 불필요)
+        Router-->>Board: 대피 안내 문구
+    end
+
+    Admin->>Router: POST /alarm/{id}/clear
+    Router->>Store: clear() → status=cleared
+    Router->>Bridge: spawn(run_for(alarm_id, "clear"))

@@ -1,0 +1,35 @@
+sequenceDiagram
+    autonumber
+    actor User as 사용자
+    participant Web as Vue 화면(web)
+    participant Java as Java 인증 서버(auth)
+    participant DB as MariaDB
+    participant RAG as RAG FastAPI(/rag-query)
+    participant Auth as auth.py
+    participant Ans as rag_answer
+    participant FAISS as FAISS 인덱스
+    participant LLM as OpenAI LLM
+
+    User->>Web: 아이디·비밀번호 입력
+    Web->>Java: POST /api/login
+    Java->>DB: findByUsername()
+    DB-->>Java: User(role)
+    Java-->>Web: Set-Cookie ACCESS_TOKEN (JWT HS256, role, exp 1h)
+
+    User->>Web: 챗봇 질문
+    Web->>RAG: POST /rag-query {prompt} (쿠키 JWT)
+    RAG->>Auth: get_current_user() — 서명·만료·발급자 독립 검증
+    Auth-->>RAG: CurrentUser (실패 시 401)
+    RAG->>Ans: answer_with_sources(prompt)
+    Ans->>LLM: rewrite_queries() (REWRITE_MODEL)
+    Ans->>FAISS: retrieve() 벡터 + BM25 하이브리드 검색
+    FAISS-->>Ans: 근거 청크(source, section, doc_type)
+    alt 근거 0건
+        Ans-->>RAG: handoff=true (LLM 호출 안 함)
+    else 근거 있음
+        Ans->>LLM: 근거 블록 + 질문 (LLM_MODEL)
+        LLM-->>Ans: 답변
+        Ans-->>RAG: response, sources, needs_review
+    end
+    RAG-->>Web: {prompt, response, sources, needs_review, handoff, request_id, latency_ms}
+    Note over RAG: 로그엔 prompt_len·hits·top_score만 (질문 원문 저장 안 함)
