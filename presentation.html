@@ -1,0 +1,1952 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="data:," />
+    <meta name="color-scheme" content="light" />
+    <meta
+      name="description"
+      content="HeartSignal 정유·석유화학 현장 비상상황 대응 에이전트 프로젝트 발표"
+    />
+    <title>HeartSignal 프로젝트 발표</title>
+    <style>
+      :root {
+        --blue: #0066cc;
+        --blue-dark: #2997ff;
+        --ink: #1d1d1f;
+        --muted: #6e6e73;
+        --paper: #f5f5f7;
+        --dark: #272729;
+        --line: #e0e0e0;
+        --white: #fff;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family:
+          "SF Pro Text",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Apple SD Gothic Neo",
+          "Malgun Gothic",
+          sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      a {
+        -webkit-tap-highlight-color: transparent;
+      }
+      button {
+        font: inherit;
+        cursor: pointer;
+      }
+      button:active,
+      .button:active {
+        transform: scale(0.95);
+      }
+      button:focus-visible,
+      a:focus-visible {
+        outline: 3px solid var(--blue);
+        outline-offset: 4px;
+      }
+      button:disabled {
+        opacity: 0.3;
+        cursor: default;
+      }
+      .topbar {
+        height: 52px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 32px;
+        border-bottom: 1px solid var(--line);
+        background: var(--white);
+      }
+      .brand {
+        font-weight: 600;
+        font-size: 18px;
+        letter-spacing: -0.5px;
+      }
+      .topbar span {
+        font-size: 13px;
+        color: var(--muted);
+      }
+      .stage {
+        height: calc(100dvh - 60px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .deck {
+        width: 1280px;
+        height: 720px;
+        flex: none;
+        position: relative;
+        transform-origin: center;
+      }
+      .slide {
+        display: none;
+        width: 1280px;
+        height: 720px;
+        padding: 62px 80px 52px;
+        position: absolute;
+        inset: 0;
+        background: var(--white);
+        overflow: hidden;
+      }
+      .slide.active {
+        display: block;
+      }
+      .slide.parchment {
+        background: var(--paper);
+      }
+      .slide.dark {
+        background: var(--dark);
+        color: var(--white);
+        --muted: #ccc;
+        --line: #515154;
+        --blue: var(--blue-dark);
+      }
+      h1,
+      h2,
+      h3,
+      p,
+      figure {
+        margin: 0;
+      }
+      h1,
+      h2,
+      h3 {
+        font-family:
+          "SF Pro Display",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Apple SD Gothic Neo",
+          sans-serif;
+        font-weight: 600;
+      }
+      h2 {
+        font-size: 48px;
+        line-height: 1.18;
+        letter-spacing: -1.9px;
+      }
+      h3 {
+        font-size: 25px;
+        line-height: 1.3;
+        letter-spacing: -0.7px;
+      }
+      p {
+        font-size: 21px;
+        line-height: 1.55;
+        letter-spacing: -0.4px;
+      }
+      .lead {
+        font-size: 25px;
+        color: var(--muted);
+        margin-top: 18px;
+        line-height: 1.47;
+      }
+      .eyebrow {
+        font-size: 17px;
+        font-weight: 600;
+        color: var(--blue);
+        letter-spacing: -0.2px;
+      }
+      .dot-blue {
+        color: var(--blue-dark);
+      }
+      .caption {
+        font-size: 15px;
+        line-height: 1.5;
+        color: var(--muted);
+        margin-top: 24px;
+      }
+      .source {
+        position: absolute;
+        bottom: 22px;
+        left: 80px;
+        right: 80px;
+        font-size: 11px;
+        line-height: 1.35;
+        letter-spacing: 0;
+        color: var(--muted);
+      }
+      .columns {
+        display: grid;
+        gap: 56px;
+      }
+      .two {
+        grid-template-columns: 1fr 1fr;
+      }
+      .three {
+        grid-template-columns: repeat(3, 1fr);
+      }
+      .problem {
+        margin-top: 62px;
+      }
+      .ordinal {
+        color: var(--blue);
+        font-size: 18px;
+      }
+      .problem h3 {
+        margin: 16px 0;
+      }
+      .problem p,
+      .detail p {
+        color: var(--muted);
+      }
+      .takeaway {
+        margin-top: 40px;
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.7px;
+      }
+      .role {
+        margin-top: 52px;
+      }
+      .role h3 {
+        font-size: 34px;
+        margin: 14px 0 24px;
+      }
+      .role p:last-child {
+        color: var(--muted);
+        font-size: 20px;
+      }
+      .role > div + div {
+        border-left: 1px solid var(--line);
+        padding-left: 56px;
+      }
+      .cover {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+      .cover h1 {
+        font-size: 118px;
+        line-height: 1.12;
+        letter-spacing: -7px;
+        margin: 24px 0;
+      }
+      .cover h1 span {
+        color: var(--blue);
+      }
+      .cover-sub {
+        font-size: 33px;
+        font-weight: 600;
+        line-height: 1.35;
+        letter-spacing: -1px;
+      }
+      .cover-line {
+        font-size: 21px;
+        color: var(--muted);
+        margin-top: 25px;
+      }
+      .cover-bottom {
+        margin-top: 65px;
+        display: flex;
+        gap: 25px;
+        justify-content: center;
+        color: var(--muted);
+        font-size: 15px;
+      }
+      .architecture {
+        margin-top: 30px;
+      }
+      .arch-entry {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 24px;
+        border-bottom: 1px solid var(--line);
+        padding: 15px 0 23px;
+      }
+      .arch-entry strong {
+        font-size: 27px;
+        font-weight: 600;
+      }
+      .architecture span {
+        font-size: 17px;
+        color: var(--muted);
+      }
+      .arch-services {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        padding: 29px 0;
+      }
+      .arch-services > div {
+        border-top: 3px solid var(--blue);
+        padding-top: 17px;
+      }
+      .arch-services strong {
+        display: block;
+        font-size: 24px;
+        font-weight: 600;
+        margin-bottom: 5px;
+      }
+      .arch-services p {
+        font-size: 20px;
+        margin-top: 14px;
+      }
+      .arch-data {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: var(--paper);
+        padding: 22px 24px;
+      }
+      .arch-data span {
+        font-size: 19px;
+        color: var(--ink);
+      }
+      .arch-data b {
+        color: var(--blue);
+        font-size: 24px;
+      }
+      .metrics {
+        display: flex;
+        gap: 90px;
+        margin: 42px 0;
+      }
+      .metrics strong {
+        font-size: 94px;
+        line-height: 1.1;
+        font-weight: 600;
+        letter-spacing: -5px;
+      }
+      .metrics strong span {
+        font-size: 24px;
+        letter-spacing: -0.7px;
+        margin-left: 10px;
+      }
+      .metrics p {
+        color: var(--muted);
+        margin-top: 10px;
+      }
+      .detail {
+        margin-top: 35px;
+      }
+      .detail h3 {
+        margin-bottom: 12px;
+      }
+      .query {
+        font-size: 28px;
+        text-align: center;
+        background: var(--paper);
+        padding: 22px;
+        margin-top: 35px;
+        letter-spacing: -0.8px;
+      }
+      .process {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 30px;
+        margin-top: 35px;
+      }
+      .process b {
+        font-size: 20px;
+        color: var(--blue);
+        font-weight: 600;
+      }
+      .process h3 {
+        margin: 12px 0;
+      }
+      .process p {
+        font-size: 20px;
+        color: var(--muted);
+      }
+      .screenshot-layout {
+        display: grid;
+        grid-template-columns: 0.85fr 1.4fr;
+        gap: 42px;
+        align-items: center;
+        height: 100%;
+      }
+      .screenshot-layout h2 {
+        margin-top: 15px;
+      }
+      .screenshot-layout figure img {
+        width: 100%;
+        display: block;
+        height: auto;
+        max-height: 490px;
+        object-fit: contain;
+      }
+      .screenshot-layout figure {
+        filter: drop-shadow(3px 5px 30px rgba(0, 0, 0, 0.12));
+      }
+      .screenshot-layout figcaption {
+        font-size: 14px;
+        color: var(--muted);
+        margin-top: 14px;
+        text-align: center;
+      }
+      .tool-list {
+        margin-top: 34px;
+      }
+      .tool-list > div {
+        display: flex;
+        align-items: center;
+        gap: 30px;
+        border-bottom: 1px solid var(--line);
+        padding: 17px 0;
+      }
+      .tool-list > div > span {
+        width: 140px;
+        flex: none;
+        color: var(--muted);
+        font-size: 19px;
+      }
+      .tool-list p {
+        display: flex;
+        gap: 30px;
+      }
+      code {
+        font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+        font-size: 19px;
+        letter-spacing: -0.6px;
+      }
+      .demo-steps {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 28px;
+        margin-top: 55px;
+      }
+      .demo-steps b {
+        color: var(--blue);
+        font-size: 19px;
+      }
+      .demo-steps h3 {
+        margin: 16px 0;
+      }
+      .demo-steps p {
+        font-size: 19px;
+        color: var(--muted);
+      }
+      .demo-bottom {
+        display: flex;
+        align-items: center;
+        gap: 32px;
+        margin-top: 55px;
+      }
+      .demo-bottom p {
+        font-size: 17px;
+        color: var(--muted);
+      }
+      .button {
+        display: inline-block;
+        padding: 13px 23px;
+        color: var(--white);
+        background: var(--blue);
+        border-radius: 999px;
+        font-size: 18px;
+        text-decoration: none;
+      }
+      .chart {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        align-items: end;
+        gap: 55px;
+        margin-top: 35px;
+      }
+      .chart > div {
+        text-align: center;
+      }
+      .chart strong {
+        font-size: 56px;
+        font-weight: 600;
+        letter-spacing: -2px;
+      }
+      .chart strong span {
+        font-size: 25px;
+      }
+      .bar {
+        width: 135px;
+        background: var(--blue);
+        margin: 15px auto 15px;
+      }
+      .chart h3 {
+        font-size: 22px;
+      }
+      .chart p {
+        font-size: 17px;
+        margin-top: 8px;
+        color: var(--muted);
+      }
+      .final-metrics {
+        gap: 65px;
+        margin: 42px 0 35px;
+      }
+      .final-metrics strong {
+        font-size: 82px;
+      }
+      .final-metrics strong span {
+        font-size: 25px;
+      }
+      .final-metrics p {
+        font-size: 20px;
+      }
+      .evaluation-note {
+        border-top: 1px solid var(--line);
+        padding-top: 27px;
+      }
+      .evaluation-note h3 {
+        font-size: 23px;
+      }
+      .evaluation-note p {
+        font-size: 20px;
+        color: var(--muted);
+        margin-top: 12px;
+      }
+      .compact-lines {
+        margin-top: 24px;
+      }
+      .compact-lines p {
+        font-size: 18px;
+        margin-top: 15px;
+        color: var(--muted);
+      }
+      .compact-lines strong {
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .roadmap {
+        margin-top: 45px;
+      }
+      .roadmap h3 {
+        font-size: 31px;
+        margin: 16px 0 22px;
+      }
+      .roadmap p:last-child {
+        font-size: 20px;
+        color: var(--muted);
+      }
+      .roadmap + .takeaway {
+        margin-top: 40px;
+        font-size: 21px;
+      }
+      .closing {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        text-align: center;
+      }
+      .closing h2 {
+        font-size: 62px;
+        line-height: 1.2;
+        margin-top: 30px;
+      }
+      .closing-question {
+        color: var(--blue);
+        font-size: 23px;
+        margin-top: 32px;
+      }
+      .team {
+        display: flex;
+        justify-content: center;
+        gap: 44px;
+        margin-top: 65px;
+      }
+      .team strong {
+        font-size: 19px;
+        font-weight: 600;
+      }
+      .team span {
+        font-size: 15px;
+        color: var(--muted);
+        display: block;
+        margin-top: 8px;
+      }
+      .appendix {
+        margin-top: 35px;
+      }
+      .appendix h3 {
+        margin-bottom: 20px;
+      }
+      .appendix p {
+        font-size: 18px;
+        margin-bottom: 16px;
+      }
+      .appendix code {
+        font-size: 16px;
+      }
+      .appendix .caption {
+        font-size: 15px;
+      }
+      .controls {
+        height: 60px;
+        background: var(--white);
+        border-top: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 26px;
+        gap: 15px;
+      }
+      .controls button,
+      .topbar button {
+        border: 0;
+        background: transparent;
+        color: var(--ink);
+        padding: 8px 12px;
+        min-height: 44px;
+        min-width: 44px;
+        font-size: 14px;
+      }
+      .controls .arrows {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .controls .arrows button {
+        font-size: 24px;
+      }
+      .counter {
+        font-size: 14px;
+        font-variant-numeric: tabular-nums;
+        min-width: 58px;
+        text-align: center;
+      }
+      .progress {
+        position: fixed;
+        bottom: 60px;
+        left: 0;
+        height: 2px;
+        background: var(--blue);
+        width: 0;
+        transition: width 0.2s;
+      }
+      .current-label {
+        font-size: 14px;
+        color: var(--muted);
+      }
+      .tools {
+        display: flex;
+        gap: 4px;
+      }
+      .overlay {
+        position: fixed;
+        z-index: 5;
+        inset: 0 0 60px;
+        background: var(--paper);
+        padding: 35px max(32px, calc((100vw - 1100px) / 2));
+        overflow: auto;
+      }
+      .overlay[hidden] {
+        display: none;
+      }
+      .overlay header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+      }
+      .overlay header h2 {
+        font-size: 28px;
+        letter-spacing: -1px;
+      }
+      .overlay button {
+        border: 0;
+        background: transparent;
+        min-height: 44px;
+        padding: 10px;
+        color: var(--blue);
+      }
+      .contents-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 40px;
+      }
+      .contents-list button {
+        font-size: 17px;
+        text-align: left;
+        border-bottom: 1px solid var(--line);
+        padding: 15px 0;
+        color: var(--ink);
+      }
+      .contents-list span {
+        color: var(--blue);
+        margin-right: 15px;
+      }
+      .notes-text {
+        max-width: 900px;
+        font-size: 25px;
+        line-height: 1.8;
+      }
+      .notes-source {
+        margin-top: 30px;
+        color: var(--muted);
+        font-size: 15px;
+        overflow-wrap: anywhere;
+      }
+      body:fullscreen .topbar {
+        display: none;
+      }
+      body:fullscreen .stage {
+        height: calc(100dvh - 60px);
+      }
+      body:fullscreen .overlay {
+        top: 0;
+      }
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          transition: none !important;
+        }
+      }
+      @media (max-width: 700px) {
+        .topbar {
+          padding: 0 16px;
+        }
+        .topbar > span {
+          display: none;
+        }
+        .controls {
+          padding: 0 8px;
+        }
+        .current-label {
+          display: none;
+        }
+        .tools button {
+          font-size: 12px;
+          padding: 7px;
+        }
+        .contents-list {
+          grid-template-columns: 1fr;
+        }
+        .notes-text {
+          font-size: 20px;
+        }
+      }
+      @media print {
+        @page {
+          size: 1280px 720px;
+          margin: 0;
+        }
+        body {
+          background: white;
+        }
+        .topbar,
+        .controls,
+        .progress,
+        .overlay {
+          display: none !important;
+        }
+        .stage {
+          display: block;
+          height: auto;
+          overflow: visible;
+        }
+        .deck {
+          width: 100%;
+          height: auto;
+          transform: none !important;
+        }
+        .slide,
+        .slide.active {
+          display: block;
+          position: relative;
+          width: 1280px;
+          height: 720px;
+          padding: 62px 80px 52px;
+          break-after: page;
+          page-break-after: always;
+          print-color-adjust: exact;
+          -webkit-print-color-adjust: exact;
+        }
+        .source {
+          left: 80px;
+          right: 80px;
+        }
+        .slide:last-child {
+          break-after: auto;
+          page-break-after: auto;
+        }
+      }
+      .comparison {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        margin-top: 28px;
+        text-align: left;
+      }
+      .comparison thead th {
+        font-size: 18px;
+        font-weight: 600;
+        padding: 0 14px 15px;
+        border-bottom: 1px solid var(--line);
+        color: var(--muted);
+      }
+      .comparison thead th:first-child {
+        width: 15%;
+        padding-left: 0;
+      }
+      .comparison thead th:last-child {
+        color: var(--blue);
+      }
+      .comparison tbody th,
+      .comparison tbody td {
+        padding: 18px 14px;
+        border-bottom: 1px solid var(--line);
+        font-size: 19px;
+        line-height: 1.47;
+        letter-spacing: -0.5px;
+        vertical-align: middle;
+      }
+      .comparison tbody th {
+        padding-left: 0;
+        font-weight: 600;
+      }
+      .comparison tbody td:first-of-type {
+        color: var(--muted);
+      }
+      .comparison tbody td:last-child {
+        font-weight: 600;
+      }
+      .system-map {
+        display: grid;
+        grid-template-columns: 190px 68px 500px 68px 294px;
+        grid-template-rows: 104px 230px;
+        row-gap: 18px;
+        margin-top: 27px;
+      }
+      .system-node {
+        background: var(--paper);
+        padding: 19px 22px;
+        min-width: 0;
+      }
+      .system-node h3 {
+        font-size: 23px;
+      }
+      .system-node p {
+        font-size: 17px;
+        line-height: 1.47;
+        margin-top: 7px;
+        color: var(--muted);
+      }
+      .system-node .node-kicker {
+        margin: 0 0 6px;
+        color: var(--blue);
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .system-web {
+        grid-column: 1;
+        grid-row: 1/3;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        padding: 20px;
+      }
+      .system-web h3 {
+        font-size: 24px;
+      }
+      .system-web p {
+        font-size: 16px;
+      }
+      .node-separator {
+        height: 1px;
+        background: var(--line);
+        margin: 23px 0 12px;
+      }
+      .node-meta {
+        font-size: 12px;
+        color: var(--muted);
+        margin-top: 20px;
+      }
+      .system-auth {
+        grid-column: 3;
+        grid-row: 1;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        border-top: 3px solid var(--blue);
+        padding-top: 15px;
+      }
+      .system-auth > p {
+        font-size: 16px;
+      }
+      .system-db {
+        grid-column: 5;
+        grid-row: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+      }
+      .system-api {
+        grid-column: 3;
+        grid-row: 2;
+        border-top: 3px solid var(--blue);
+        padding-top: 15px;
+      }
+      .api-heading {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+      }
+      .api-heading p {
+        margin: 0;
+        font-size: 14px;
+      }
+      .api-branches {
+        display: grid;
+        grid-template-columns: 1fr 1.2fr;
+        gap: 23px;
+        margin-top: 17px;
+      }
+      .api-branches > div + div {
+        border-left: 1px solid var(--line);
+        padding-left: 23px;
+      }
+      .api-branches strong {
+        font-family: ui-monospace, SFMono-Regular, monospace;
+        font-size: 18px;
+        font-weight: 600;
+      }
+      .api-branches p {
+        font-size: 16px;
+      }
+      .system-resources {
+        grid-column: 5;
+        grid-row: 2;
+        display: grid;
+        grid-template-rows: 1fr 1fr;
+        gap: 12px;
+      }
+      .system-resources .system-node {
+        padding: 13px 19px;
+      }
+      .system-resources h3 {
+        font-size: 21px;
+      }
+      .system-resources p {
+        font-size: 15px;
+        margin-top: 5px;
+      }
+      .system-arrow {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        color: var(--blue);
+        gap: 5px;
+      }
+      .system-arrow span {
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .system-arrow b {
+        font-size: 30px;
+        font-weight: 400;
+        line-height: 1;
+      }
+      .arrow-auth {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .arrow-api {
+        grid-column: 2;
+        grid-row: 2;
+      }
+      .arrow-db {
+        grid-column: 4;
+        grid-row: 1;
+      }
+      .arrow-search {
+        grid-column: 4;
+        grid-row: 2;
+      }
+      .architecture-flows {
+        margin-top: 22px;
+      }
+      .architecture-flows p {
+        font-size: 17px;
+        line-height: 1.65;
+      }
+      .architecture-flows strong {
+        display: inline-block;
+        width: 94px;
+        color: var(--blue);
+        font-weight: 600;
+      }
+      .result-page h2 {
+        font-size: 44px;
+        line-height: 1.2;
+      }
+      .result-numbers {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 40px;
+        margin: 24px 0 26px;
+      }
+      .result-numbers strong {
+        font-size: 53px;
+        font-weight: 600;
+        letter-spacing: -2px;
+        line-height: 1.1;
+      }
+      .result-numbers strong span {
+        font-size: 21px;
+        letter-spacing: -0.5px;
+      }
+      .result-numbers p {
+        font-size: 17px;
+        color: var(--muted);
+        margin-top: 7px;
+      }
+      .result-cases {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 40px;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 20px 0;
+      }
+      .result-cases > div + div {
+        border-left: 1px solid var(--line);
+        padding-left: 30px;
+      }
+      .result-cases .case-label {
+        font-size: 14px;
+        color: var(--blue);
+        font-weight: 600;
+      }
+      .result-cases h3 {
+        font-size: 23px;
+        margin-top: 7px;
+      }
+      .result-cases .case-question {
+        font-size: 18px;
+        line-height: 1.47;
+        margin-top: 12px;
+        min-height: 54px;
+      }
+      .result-cases .case-answer {
+        font-size: 18px;
+        color: var(--muted);
+        margin-top: 9px;
+        line-height: 1.47;
+      }
+      .case-answer strong {
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .result-next {
+        font-size: 18px;
+        line-height: 1.47;
+        margin-top: 21px;
+      }
+      .result-next strong {
+        font-weight: 600;
+        color: var(--blue);
+        margin-right: 12px;
+      }
+      .result-page .result-footnote {
+        font-size: 13px;
+        line-height: 1.5;
+        margin-top: 15px;
+      }
+      .result-summary .result-numbers {
+        grid-template-columns: 1fr 1fr;
+        margin: 35px 0 35px;
+        gap: 65px;
+      }
+      .result-summary .result-numbers strong {
+        font-size: 66px;
+      }
+      .result-proof {
+        display: grid;
+        grid-template-columns: 1fr 1.25fr;
+        gap: 46px;
+        padding: 28px 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+      .result-proof .case-label {
+        font-size: 15px;
+        color: var(--blue);
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .result-proof h3 {
+        font-size: 27px;
+        line-height: 1.47;
+      }
+      .proof-answer {
+        font-size: 23px;
+        line-height: 1.55;
+        color: var(--muted);
+      }
+      .proof-answer strong {
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .result-summary .result-next {
+        margin-top: 30px;
+        font-size: 20px;
+      }
+      .result-summary .result-footnote {
+        margin-top: 19px;
+      }
+      .team-ending > .eyebrow {
+        font-size: 72px;
+        line-height: 1.1;
+        letter-spacing: -3px;
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .team-ending .team {
+        margin-top: 60px;
+      }
+      .ceo-benefits {
+        margin-top: 39px;
+        gap: 40px;
+      }
+      .ceo-benefits > div {
+        border-top: 2px solid var(--blue);
+        padding-top: 17px;
+      }
+      .ceo-benefits .ordinal {
+        font-size: 17px;
+      }
+      .ceo-benefits h3 {
+        font-size: 26px;
+        margin: 16px 0 19px;
+        letter-spacing: -0.8px;
+      }
+      .ceo-benefits p {
+        font-size: 20px;
+        line-height: 1.6;
+        color: var(--muted);
+      }
+      .ceo-benefits p strong {
+        font-weight: 600;
+        color: var(--ink);
+      }
+      .ceo-benefits .benefit-detail {
+        font-size: 15px;
+        margin-top: 13px;
+        line-height: 1.47;
+      }
+      .ceo-bottom {
+        position: absolute;
+        left: 80px;
+        right: 80px;
+        bottom: 48px;
+      }
+      .ceo-bottom .takeaway {
+        font-size: 19px;
+        margin: 0;
+        line-height: 1.47;
+      }
+      .ceo-bottom .caption {
+        font-size: 13px;
+        margin-top: 14px;
+        line-height: 1.6;
+      }
+
+      /* 발표 중 커서로 짚는 항목을 은은하게 강조합니다. */
+      @media (hover: hover) and (pointer: fine) {
+        .presentation-focus {
+          outline: 1px solid transparent;
+          outline-offset: 9px;
+          transition:
+            background-color 180ms ease,
+            outline-color 180ms ease,
+            transform 180ms ease;
+        }
+        .presentation-focus:hover {
+          outline-color: var(--blue);
+          background-color: var(--paper);
+          transform: translateY(-3px);
+        }
+        .presentation-focus h3,
+        .presentation-focus strong {
+          transition: color 180ms ease;
+        }
+        .presentation-focus:hover > h3,
+        .presentation-focus:hover > strong,
+        .presentation-focus:hover > .proof-answer strong,
+        .presentation-focus:hover .api-heading h3 {
+          color: var(--blue);
+        }
+        .comparison tbody > tr.presentation-focus {
+          outline-offset: -1px;
+        }
+        .comparison tbody > tr.presentation-focus:hover {
+          transform: none;
+        }
+        .comparison tbody > tr.presentation-focus:hover > th {
+          color: var(--blue);
+        }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .presentation-focus:hover {
+          transform: none;
+        }
+      }
+      @media print {
+        .presentation-focus {
+          outline: none !important;
+          transform: none !important;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="stage" aria-label="발표 슬라이드">
+      <div class="deck">
+        <section class="slide" aria-label="1. HeartSignal" data-label="소개">
+          <div class="cover">
+            <p class="eyebrow">AI 서비스 개발 Mini-project</p>
+            <h1>HeartSignal<span>.</span></h1>
+            <p class="cover-sub">
+              정유·석유화학 현장<br />비상상황 대응 에이전트
+            </p>
+            <p class="cover-line">
+              문서 근거로 안내하고, 사람의 현장 판단을 돕습니다.
+            </p>
+            <div class="cover-bottom">
+              <span>정순욱 · 심혁 · 김근홍 · 허지원 · 한유진</span
+              ><span>2026.10</span>
+            </div>
+          </div>
+        </section>
+        <section
+          class="slide ceo-page"
+          aria-label="2. CEO의 구매 이유: 안전보건 체계의 현장 실행"
+          data-label="CEO 구매 동기"
+        >
+          <h2>CEO의 구매 이유:<br />안전보건 체계의 현장 실행.</h2>
+          <p class="lead">
+            중대재해처벌법은 경영책임자에게 안전보건관리체계의 구축·이행을
+            요구합니다.
+          </p>
+          <div class="columns three ceo-benefits">
+            <div>
+              <span class="ordinal">01</span>
+              <h3>비상대응 절차 실행</h3>
+              <p>
+                문서 속 대응 절차를<br /><strong>전광판·지침·체크리스트</strong
+                >로<br />현장에 전달합니다.
+              </p>
+            </div>
+            <div>
+              <span class="ordinal">02</span>
+              <h3>담당자 의존도 완화</h3>
+              <p>
+                문서 검색과 안내 준비를 지원해<br />담당자가 바뀌어도<br /><strong
+                  >공통 근거로 대응</strong
+                >하도록 돕습니다.
+              </p>
+            </div>
+            <div>
+              <span class="ordinal">03</span>
+              <h3>이행 점검의 기반</h3>
+              <p>
+                <strong>도구별 실행 로그</strong>를<br />대응 과정 점검에
+                활용합니다.
+              </p>
+              <p class="benefit-detail">영구 보관·보고서는 후속 구축</p>
+            </div>
+          </div>
+          <div class="ceo-bottom">
+            <p class="takeaway">
+              구매 가치: 대응 누락을 줄이고, 비상대응 체계의 실행을 지원합니다.
+            </p>
+            <p class="caption">
+              시행령 제4조 제8호는 비상조치 매뉴얼 마련과 그에 따른 조치 여부의
+              반기 1회 이상 점검을 규정합니다.<br />HeartSignal은 이행을 돕는
+              보조 도구이며, 도입만으로 법적 의무 충족이나 면책을 보장하지
+              않습니다.
+            </p>
+          </div>
+        </section>
+        <section
+          class="slide"
+          aria-label="3. HeartSignal 도입 전·후 비교"
+          data-label="도입 전·후"
+        >
+          <h2>같은 비상상황,<br />달라지는 대응 준비.</h2>
+          <p class="lead">
+            출하장 누출 상황에서 수작업 대응과 HeartSignal의 지원을
+            비교했습니다.
+          </p>
+          <table class="comparison">
+            <thead>
+              <tr>
+                <th scope="col">대응 업무</th>
+                <th scope="col">도입 전 · 수작업 대응</th>
+                <th scope="col">도입 후 · HeartSignal 지원</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">근거 확인</th>
+                <td>여러 문서를 오가며 물질·상황별 지침 확인</td>
+                <td>관련 문서를 검색하고 문서명·절 출처 제시</td>
+              </tr>
+              <tr>
+                <th scope="row">안내 준비</th>
+                <td>방송·전광판·반장 전달 내용을 각각 정리</td>
+                <td>발령 후 안내 문구·지침·체크리스트 함께 준비</td>
+              </tr>
+              <tr>
+                <th scope="row">현황 공유</th>
+                <td>구두·전화로 인원 현황을 모아 다시 전달</td>
+                <td>반장이 입력한 인원 점검 결과를 화면에서 공유</td>
+              </tr>
+              <tr>
+                <th scope="row">신고 준비</th>
+                <td>물질 정보와 현장 상황을 모아 신고문 작성</td>
+                <td>모의 신고문을 준비하고 관리자가 보류 여부 통제</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="takeaway" style="margin-top: 24px">
+            기대 이점: 정보 준비의 부담을 줄이고, 현장 지휘에 집중.
+          </p>
+          <p class="caption" style="margin-top: 12px">
+            수작업 대응의 업무 부담과 현재 구현 기능을 비교한 예시입니다. 시간
+            단축·사고 감소 효과는 아직 정량 측정하지 않았습니다.
+          </p>
+        </section>
+        <section
+          class="slide"
+          aria-label="4. 현장 사용자가 얻는 이점"
+          data-label="사용자 가치"
+        >
+          <h2>현장 사용자가 얻는 이점</h2>
+          <p class="lead">
+            찾고 전달하는 부담을 줄여, 현장 대응에 집중하도록 돕습니다.
+          </p>
+          <div class="columns two role">
+            <div>
+              <p class="eyebrow">작업반장</p>
+              <h3>대피 지휘와<br />인원 확인에 집중.</h3>
+              <p>
+                상황별 체크리스트로 수행할 일 확인<br />인원 점검 결과를
+                화면에서 공유<br />문서를 찾고 연락 내용을 정리하는 부담 감소
+              </p>
+            </div>
+            <div>
+              <p class="eyebrow">안전관리자</p>
+              <h3>발령 한 번으로<br />안내 자료를 함께 준비.</h3>
+              <p>
+                전광판·방송 문구·대응 지침을 함께 확인<br />문서·절 출처로 안내
+                근거 확인<br />모의 신고문 준비, 보류·해제로 통제 유지
+              </p>
+            </div>
+          </div>
+          <p class="takeaway">
+            작업반장은 현장 실행을, 안전관리자는 대응 지휘와 통제를 맡습니다.
+          </p>
+        </section>
+        <section
+          class="slide"
+          aria-label="5. 서비스 아키텍처"
+          data-label="아키텍처"
+        >
+          <h2>서비스 아키텍처</h2>
+          <p class="lead">
+            인증은 Java, 문서 질의와 경보 대응은 FastAPI가 맡습니다.
+          </p>
+          <div
+            class="system-map"
+            role="group"
+            aria-label="Vue 화면이 Java 인증 서버와 FastAPI를 각각 호출하고, 인증 서버는 MariaDB, FastAPI는 FAISS와 OpenAI를 사용하는 구조"
+          >
+            <div class="system-node system-web">
+              <p class="node-kicker">사용자 화면</p>
+              <h3>Vue 3 + Vite</h3>
+              <p>안전관리자<br />작업반장 · 작업자</p>
+              <div class="node-separator"></div>
+              <p>경보 · 전광판 · 인원 점검<br />문서 근거 챗봇</p>
+              <span class="node-meta">HomeView · ChatbotView</span>
+            </div>
+            <div class="system-arrow arrow-auth">
+              <span>로그인</span><b>↔</b><span>JWT 발급</span>
+            </div>
+            <div class="system-node system-auth">
+              <div>
+                <p class="node-kicker">Java 인증 서버</p>
+                <h3>인증 · JWT 발급</h3>
+              </div>
+              <p>로그인 · 회원가입<br />ACCESS_TOKEN 쿠키</p>
+            </div>
+            <div class="system-arrow arrow-db">
+              <span>회원 조회</span><b>↔</b>
+            </div>
+            <div class="system-node system-db">
+              <h3>MariaDB</h3>
+              <p>회원 정보 · 역할</p>
+            </div>
+            <div class="system-arrow arrow-api">
+              <span>JWT 쿠키</span><b>↔</b><span>요청·응답</span>
+            </div>
+            <div class="system-node system-api">
+              <div class="api-heading">
+                <h3>FastAPI</h3>
+                <p>JWT 독립 검증 · 역할별 권한 검사</p>
+              </div>
+              <div class="api-branches">
+                <div>
+                  <p class="node-kicker">문서 질의</p>
+                  <strong>/rag-query</strong>
+                  <p>
+                    검색어 재작성<br />FAISS + BM25 검색<br />근거 기반 답변 ·
+                    출처
+                  </p>
+                </div>
+                <div>
+                  <p class="node-kicker">경보 대응</p>
+                  <strong>/alarm</strong>
+                  <p>
+                    상태 저장 · 고정 템플릿<br />Agent Bridge · Runner<br />7개
+                    도구를 정해진 순서로 실행
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="system-arrow arrow-search">
+              <span>검색·생성</span><b>↔</b>
+            </div>
+            <div class="system-resources">
+              <div class="system-node">
+                <h3>FAISS 인덱스</h3>
+                <p>공개 PDF·법령의 근거 청크<br />문서명 · 절 번호</p>
+              </div>
+              <div class="system-node">
+                <h3>OpenAI LLM</h3>
+                <p>검색어 재작성 · 답변 생성<br />관리자 지침 상세 작성</p>
+              </div>
+            </div>
+          </div>
+          <div class="architecture-flows">
+            <p>
+              <strong>질의 응답</strong> 검색 근거가 있으면 답변과 출처 반환 ·
+              근거가 없으면 handoff
+            </p>
+            <p>
+              <strong>경보 대응</strong> 관리자 발령 → 템플릿 즉시 생성 → Agent
+              결과 반영 → 화면이 상태 재조회
+            </p>
+          </div>
+          <p class="caption" style="margin-top: 13px">
+            경보 단계·해제는 사람이 통제합니다. 119는 모의 발송이며, 음성은 별도
+            Voice-AI·브라우저 음성 안내로 지원합니다.
+          </p>
+        </section>
+        <section
+          class="slide"
+          aria-label="6. 라이브 데모: 출하장 프로판 누출"
+          data-label="라이브 데모"
+        >
+          <h2>라이브 데모</h2>
+          <p class="lead">S1 · 출하장 프로판 누출, 관리자 3단계 발령</p>
+          <div class="demo-steps">
+            <div>
+              <b>01</b>
+              <h3>관리자 발령</h3>
+              <p>admin1 로그인<br />출하장 · 프로판 · 3단계</p>
+            </div>
+            <div>
+              <b>02</b>
+              <h3>대응 화면 확인</h3>
+              <p>전광판 · 대응 지침 · 출처<br />119 모의 신고 보류창</p>
+            </div>
+            <div>
+              <b>03</b>
+              <h3>작업반장 확인</h3>
+              <p>foreman1 로그인<br />체크리스트 · 인원 점검</p>
+            </div>
+            <div>
+              <b>04</b>
+              <h3>예외 질문·해제</h3>
+              <p>실시간 탱크 압력 질문<br />handoff 확인 · 관리자 해제</p>
+            </div>
+          </div>
+          <div class="demo-bottom">
+            <a
+              class="button"
+              href="https://heartsignal.class-4.skala-us.com/"
+              target="_blank"
+              rel="noopener"
+            >
+              서비스 열기 ↗</a
+            >
+            <p>
+              관리자는 30초 내 모의 신고를 보류할 수 있습니다.<br />서비스가
+              실행된 발표 PC에서 링크를 사용하세요.
+            </p>
+          </div>
+        </section>
+        <section
+          class="slide result-page result-summary"
+          aria-label="7. 문서 근거와 함께 대응 정보를 제공"
+          data-label="최종 결과"
+        >
+          <h2>문서 근거와 함께,<br />필요한 대응 정보를 제공합니다.</h2>
+          <div class="result-numbers">
+            <div>
+              <strong>10<span> / 10문항</span></strong>
+              <p>평가한 핵심 질문의 정답 기준 충족</p>
+            </div>
+            <div>
+              <strong>3<span>초</span></strong>
+              <p>평균 응답 시간</p>
+            </div>
+          </div>
+          <div class="result-proof">
+            <div>
+              <p class="case-label">실제 평가 사례 · Q1</p>
+              <h3>“출하 중에 프로판이 새면<br />뭐부터 해?”</h3>
+            </div>
+            <div>
+              <p class="case-label">답변과 근거</p>
+              <p class="proof-answer">
+                출하 중단·시동 끄기·점화원 제거를 답변하고,<br /><strong
+                  >KOSHA GUIDE G-78 10.2(13)</strong
+                >을<br />출처로 제시했습니다.
+              </p>
+            </div>
+          </div>
+          <p class="result-next">
+            <strong>확인한 결과</strong> 답변과 함께 문서명·절 번호를 제시해,
+            안내 근거를 확인할 수 있습니다.
+          </p>
+          <p class="caption result-footnote">
+            2026.10.23 저장 평가. 핵심 10문항은 각 3회 반복했으며, 정답 기준은
+            기대 키워드의 포함 여부입니다.<br />Q8·Q10 질문·정답 기준 수정 후
+            결과입니다. 평균 응답 시간은 전체 평가 요청의 측정값 3.307초를
+            반올림한 값입니다.
+          </p>
+        </section>
+        <section
+          class="slide"
+          aria-label="8. 수동 경보에서, 센서 기반 자동 경보로"
+          data-label="한계·확장"
+        >
+          <h2>수동 경보에서,<br />센서 기반 자동 경보로.</h2>
+          <div class="columns two roadmap">
+            <div>
+              <p class="eyebrow">현재 · 사람이 직접 발령</p>
+              <h3>관리자가 확인하고,<br />버튼을 눌러 경보 발령.</h3>
+              <p>
+                센서 연동 없이 관리자가 상황 확인<br />구역·물질·경보 단계를
+                직접 선택<br />발령 후 대응 지침·안내 문구 준비
+              </p>
+            </div>
+            <div>
+              <p class="eyebrow">향후 · 센서 기반 자동 발령</p>
+              <h3>센서가 가스를 감지하면,<br />시스템이 자동으로 경보.</h3>
+              <p>
+                가스 센서의 측정 데이터 연동<br />설정한 감지 기준에 따라 이상
+                감지<br />자동 경보와 문서 근거 대응 안내 연결
+              </p>
+            </div>
+          </div>
+          <p class="takeaway">
+            확장 목표: 가스 감지부터 경보 발령까지 자동으로 연결하는 상시
+            모니터링.
+          </p>
+          <p class="caption">
+            센서 연동·자동 경보는 향후 개발 계획입니다. 감지 기준과 오경보
+            대응을 검증한 후 적용할 예정입니다.
+          </p>
+        </section>
+        <section
+          class="slide"
+          aria-label="9. HeartSignal 팀 소개"
+          data-label="마무리"
+        >
+          <div class="closing team-ending">
+            <p class="eyebrow">HeartSignal<span class="dot-blue">.</span></p>
+            <div class="team">
+              <div><strong>정순욱</strong><span>데이터 · 기획</span></div>
+              <div><strong>심혁</strong><span>RAG · Agent</span></div>
+              <div><strong>김근홍</strong><span>인증 · API</span></div>
+              <div><strong>허지원</strong><span>화면 · 배포</span></div>
+              <div><strong>한유진</strong><span>음성AI · 평가</span></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div class="progress" id="progress"></div>
+    <footer class="controls">
+      <div class="arrows">
+        <button id="prev" aria-label="이전 슬라이드">‹</button
+        ><span class="counter" id="counter" aria-live="polite"></span
+        ><button id="next" aria-label="다음 슬라이드">›</button>
+      </div>
+      <span id="current-label" class="current-label"></span>
+      <nav class="tools" aria-label="발표 도구">
+        <button
+          id="index-toggle"
+          aria-expanded="false"
+          aria-controls="contents"
+        >
+          목차 O</button
+        ><button id="notes-toggle" aria-expanded="false" aria-controls="notes">
+          메모 N</button
+        ><button id="fullscreen">전체화면 F</button
+        ><button id="print">인쇄 / PDF</button>
+      </nav>
+    </footer>
+    <aside id="contents" class="overlay" hidden aria-label="슬라이드 목차">
+      <header>
+        <h2>목차</h2>
+        <button data-close="index-toggle">닫기 Esc</button>
+      </header>
+      <div class="contents-list">
+        <button type="button" data-jump="0"><span>01</span>HeartSignal</button
+        ><button type="button" data-jump="1">
+          <span>02</span>CEO의 구매 이유: 안전보건 체계의 현장 실행</button
+        ><button type="button" data-jump="2">
+          <span>03</span>HeartSignal 도입 전·후 비교</button
+        ><button type="button" data-jump="3">
+          <span>04</span>현장 사용자가 얻는 이점</button
+        ><button type="button" data-jump="4">
+          <span>05</span>서비스 아키텍처</button
+        ><button type="button" data-jump="5">
+          <span>06</span>라이브 데모: 출하장 프로판 누출</button
+        ><button type="button" data-jump="6">
+          <span>07</span>최종 결과: 문서 근거 기반 답변</button
+        ><button type="button" data-jump="7">
+          <span>08</span>한계·확장: 센서 기반 자동 경보</button
+        ><button type="button" data-jump="8">
+          <span>09</span>HeartSignal 팀 소개
+        </button>
+      </div>
+    </aside>
+    <aside id="notes" class="overlay" hidden aria-label="발표자 메모">
+      <header>
+        <h2 id="notes-title"></h2>
+        <button data-close="notes-toggle">닫기 Esc</button>
+      </header>
+      <p class="notes-text" id="notes-text"></p>
+      <p class="notes-source" id="notes-source"></p>
+    </aside>
+    <script id="speaker-data" type="application/json">
+      [
+        {
+          "title": "HeartSignal",
+          "note": "오늘 소개할 HeartSignal은 정유·석유화학 현장의 비상상황 대응을 돕는 서비스입니다. 관리자가 경보를 발령하면 문서 검색과 안내, 연락 자료 준비를 에이전트가 맡습니다. 약 10분 동안 문제, 구조, 시연, 평가와 한계를 설명하겠습니다. [20초]",
+          "source": "docs/HeartSignal-Plan.md, 팀 역할표"
+        },
+        {
+          "title": "CEO의 구매 이유: 안전보건 체계의 현장 실행",
+          "note": "CEO 입장에서는 비상대응 절차가 현장에서 실제로 작동하도록 돕는 투자가 구매 동기입니다. 중대재해처벌법 제4조는 경영책임자의 안전보건관리체계 구축과 이행 조치를 규정하고, 시행령 제4조 제8호는 급박한 위험 등에 대비한 매뉴얼과 그에 따른 조치 여부를 반기 1회 이상 점검하도록 규정합니다. HeartSignal은 문서 근거를 지침과 체크리스트로 전달하고 준비 업무를 지원합니다. 대응 누락과 특정 담당자 의존도를 줄이는 것이 도입의 기대 가치입니다. 현재 로그는 영구 저장 체계가 아니므로 점검 증빙의 보관과 보고서는 후속 구축이 필요합니다. 법정 점검 자동 수행이나 의무 충족·면책을 보장하는 제품은 아닙니다. [45초]",
+          "source": "중대재해처벌법 제4조 · 시행령 제4조 제8호 · docs/business_model.md · 국가법령정보센터: https://law.go.kr/lsLawLinkInfo.do?chrClsCd=010202&lsJoLnkSeq=1014159219 · https://www.law.go.kr/LSW/lsInfoP.do?lsiSeq=277417 · 확인일 2026-10-26"
+        },
+        {
+          "title": "HeartSignal 도입 전·후 비교",
+          "note": "앞 페이지에서 설명한 경영 관점의 도입 가치를 실제 대응 업무로 비교하겠습니다. 출하장 누출 상황에서 수작업으로 대응하면 담당자가 여러 문서를 찾고, 방송과 전광판, 반장 전달 내용을 각각 정리하며 인원 현황도 모아야 합니다. HeartSignal은 관리자가 발령한 뒤 근거 검색과 안내 문구, 체크리스트, 모의 신고문을 함께 준비합니다. 반장의 인원 점검 입력도 화면으로 공유합니다. 정보 준비를 지원해 현장 지휘에 집중할 수 있다는 것이 기대 이점입니다. 수작업 대응은 업무 맥락을 설명한 예시이고 특정 사업장의 실측 사례는 아닙니다. 시간 단축이나 사고 감소 수치는 아직 측정하지 않았습니다. 실제 신고는 모의 발송 범위이며, 경보 발령·해제와 현장 판단은 사람이 맡습니다. [30초]",
+          "source": "docs/HeartSignal-Plan.md §2·3 · README.md · web/src/views/HomeView.vue · RAG/agent/tools.py"
+        },
+        {
+          "title": "현장 사용자가 얻는 이점",
+          "note": "실제 사용자의 이점은 역할별로 다릅니다. 작업반장은 여러 문서를 찾는 대신 상황별 체크리스트를 확인하고, 대피를 유도하면서 인원 점검 결과를 공유할 수 있습니다. 안전관리자는 경보 발령 후 전광판과 방송 문구, 대응 지침과 모의 신고문을 함께 준비할 수 있고, 문서명과 절 번호로 안내 근거를 확인할 수 있습니다. 신고 보류와 경보 해제 권한도 유지합니다. 이로써 반복적인 정보 준비의 부담을 줄이고 현장 지휘에 집중하도록 지원합니다. 시간 단축이나 사고 감소 효과는 아직 정량 검증하지 않은 기대 효과입니다. [35초]",
+          "source": "docs/HeartSignal-Plan.md §2·3 · README.md · web/src/views/HomeView.vue"
+        },
+        {
+          "title": "서비스 아키텍처",
+          "note": "원본 클래스 다이어그램과 두 시퀀스 다이어그램을 서비스 경계에 맞게 단순화했습니다. 왼쪽 Vue 화면은 Java 인증 서버에서 로그인한 뒤 ACCESS_TOKEN 쿠키를 받습니다. Java는 MariaDB의 회원 정보를 조회합니다. 화면의 이후 요청은 FastAPI로 직접 전달되며, FastAPI가 JWT의 서명·만료·발급자와 역할을 독립적으로 검사합니다. 문서 질의는 rag_answer를 통해 검색어를 재작성하고 FAISS와 BM25로 근거를 찾은 뒤 답변과 출처를 반환합니다. 근거가 없으면 답변 생성 대신 handoff로 연결합니다. 경보는 관리자가 발령하면 alarm.store에서 고정 템플릿으로 초기 결과를 만들고, agent_bridge가 Runner를 백그라운드로 실행해 7개 도구의 결과를 반영합니다. 화면은 상태를 재조회합니다. Agent가 경보 단계나 상태를 변경하지 못하는 것이 핵심입니다. 다음 페이지에서 이 흐름을 라이브로 보여드리겠습니다. [60초]",
+          "source": "docs/diagrams/class-diagram.mmd · docs/diagrams/sequence-rag.mmd · docs/diagrams/sequence-alarm.mmd · web/src/voice.js"
+        },
+        {
+          "title": "라이브 데모: 출하장 프로판 누출",
+          "note": "여기서 라이브 데모로 전환합니다. 1분 내 경보 발령과 전광판·대응 지침, 30초 신고 보류 동작을 보여줍니다. 다음 30초에 반장 화면과 인원 점검 입력을 확인하고, 마지막 30초에 실시간 탱크 압력 질문이 사람 확인으로 연결되는지 보여준 뒤 관리자 계정으로 해제합니다. 실제 문자나 119 신고는 전송하지 않습니다. 라이브 시연이 어려우면 실행 환경을 복구한 후 재시도합니다. [라이브 2분]",
+          "source": "README.md Quick Start · RAG/alarm/store.py"
+        },
+        {
+          "title": "문서 근거와 함께 대응 정보를 제공",
+          "note": "저장된 평가에서 핵심 질문 10개는 각 3회 반복 측정 모두 기대 키워드 기준을 충족했습니다. 이는 평가한 핵심 질문의 결과이며 모든 질문의 정확도를 뜻하지 않습니다. 평균 응답 시간은 전체 평가 요청의 평균 3.307초를 반올림해 3초로 표시했습니다. 실제 사례로 프로판 출하 중 누출 질문에 필요한 대응 내용과 G-78 10.2(13)을 함께 제시했습니다. 확인한 성과는 답변과 문서명·절 번호를 함께 제공해 사용자가 안내 근거를 확인할 수 있다는 점입니다. Q8·Q10 질문과 정답 기준을 수정한 후의 평가 결과이며, 기준 수정에 따른 수치 변화를 코드 개선만의 성과로 주장하지 않습니다. 전체 평가와 해석 범위는 원본 평가 기록을 참고합니다. [35초]",
+          "source": "RAG/eval/results/20261023-1649-q8q10-fix.json · docs/eval_results.md #18"
+        },
+        {
+          "title": "수동 경보에서, 센서 기반 자동 경보로",
+          "note": "현재 HeartSignal은 센서와 연결되어 있지 않습니다. 안전관리자가 상황을 확인하고 화면에서 구역, 물질, 경보 단계를 선택한 뒤 버튼을 눌러 경보를 발령하는 방식입니다. 경보 발령 이후에는 대응 지침과 안내 문구 준비를 지원합니다. 향후에는 가스 센서의 측정 데이터를 연동해 설정한 기준에 따라 가스를 감지하고 시스템이 자동으로 경보를 울리는 구조로 확장하려고 합니다. 이를 기존의 문서 근거 대응 안내와 연결하는 것이 목표입니다. 센서 연동과 자동 경보는 아직 구현한 기능이 아니며 향후 개발 계획입니다. 감지 기준과 오경보 대응 등을 검증한 후 적용할 예정입니다. [35초]",
+          "source": "README.md · web/src/views/HomeView.vue · 사용자 제시 센서 기반 자동 경보 확장 방향"
+        },
+        {
+          "title": "HeartSignal 팀 소개",
+          "note": "HeartSignal 팀원과 담당 역할을 소개하며 발표를 마무리합니다.",
+          "source": "docs/HeartSignal-Plan.md §7.5"
+        }
+      ]
+    </script>
+    <script>
+      const slides = [...document.querySelectorAll(".slide")];
+      const notes = JSON.parse(
+        document.getElementById("speaker-data").textContent,
+      );
+      const deck = document.querySelector(".deck");
+      const indexPanel = document.getElementById("contents");
+      const notesPanel = document.getElementById("notes");
+      let current = 0;
+      // 발표 내용의 읽는 순서에 맞춰 짧게 등장시킵니다. 레이아웃과 수치는 바꾸지 않습니다.
+      const reducedMotion = window.matchMedia(
+        "(prefers-reduced-motion: reduce)",
+      );
+      let motionHandles = [];
+      // 커서가 올라간 주요 설명 영역만 강조하며 클릭 동작은 추가하지 않습니다.
+      document
+        .querySelectorAll(
+          ".ceo-benefits > div, .comparison tbody > tr, .role > div, " +
+            ".system-node, .demo-steps > div, .result-numbers > div, " +
+            ".result-proof > div, .roadmap > div, .team > div",
+        )
+        .forEach((element) => element.classList.add("presentation-focus"));
+
+      function finishMotion() {
+        motionHandles.forEach((animation) => animation.cancel());
+        motionHandles = [];
+      }
+
+      function playEntrance(slide, pageIndex) {
+        finishMotion();
+        if (reducedMotion.matches || !slide.animate) return;
+        const cues = [];
+        function cue(selector, start, gap = 110, distance = 14) {
+          slide.querySelectorAll(selector).forEach((element, i) => {
+            cues.push({ element, delay: start + i * gap, distance });
+          });
+        }
+        // 제목을 먼저 읽고, 핵심 근거와 보조 설명이 뒤따르도록 구성합니다.
+        cue(":scope > h2", 0, 0, 10);
+        cue(":scope > .lead", 100, 0, 10);
+        switch (pageIndex) {
+          case 0:
+            cue(".cover > .eyebrow", 0);
+            cue(".cover > h1", 100, 0, 18);
+            cue(".cover-sub", 260);
+            cue(".cover-line", 420);
+            cue(".cover-bottom", 560, 0, 8);
+            break;
+          case 1:
+            cue(".ceo-benefits > div", 230, 145);
+            cue(".ceo-bottom", 780, 0, 8);
+            break;
+          case 2:
+            cue(".comparison thead", 200, 0, 6);
+            cue(".comparison tbody > tr", 300, 115, 8);
+            cue(":scope > .takeaway", 850);
+            cue(":scope > .caption", 950, 0, 6);
+            break;
+          case 3:
+            cue(".role > div", 240, 180);
+            cue(":scope > .takeaway", 720);
+            break;
+          case 4:
+            cue(".system-web", 190, 0, 8);
+            cue(".arrow-auth", 290, 0, 0);
+            cue(".system-auth", 370, 0, 8);
+            cue(".arrow-db, .system-db", 450, 80, 6);
+            cue(".arrow-api", 540, 0, 0);
+            cue(".system-api", 620, 0, 8);
+            cue(".arrow-search", 760, 0, 0);
+            cue(".system-resources > div", 820, 120, 8);
+            cue(".architecture-flows", 1080, 0, 8);
+            cue(":scope > .caption", 1190, 0, 6);
+            break;
+          case 5:
+            cue(".demo-steps > div", 250, 140);
+            cue(".demo-bottom", 850, 0, 8);
+            break;
+          case 6:
+            cue(".result-numbers > div", 200, 170);
+            cue(".result-proof > div", 470, 170);
+            cue(".result-next", 900, 0, 8);
+            cue(".result-footnote", 1020, 0, 6);
+            break;
+          case 7:
+            cue(".roadmap > div", 240, 240);
+            cue(":scope > .takeaway", 790);
+            cue(":scope > .caption", 930, 0, 6);
+            break;
+          case 8:
+            cue(".team-ending > .eyebrow", 0, 0, 12);
+            cue(".team > div", 300, 100, 10);
+            break;
+        }
+        cues.forEach(({ element, delay, distance }) => {
+          const animation = element.animate(
+            [
+              { opacity: 0, transform: `translate3d(0, ${distance}px, 0)` },
+              { opacity: 1, transform: "translate3d(0, 0, 0)" },
+            ],
+            {
+              duration: 1210,
+              delay,
+              easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+              fill: "backwards",
+            },
+          );
+          motionHandles.push(animation);
+        });
+      }
+      // 인쇄·동작 줄이기 설정에서는 모든 내용을 즉시 표시합니다.
+      window.addEventListener("beforeprint", finishMotion);
+      reducedMotion.addEventListener("change", finishMotion);
+
+      function fit() {
+        const stage = document.querySelector(".stage");
+        deck.style.transform = `scale(${Math.min(stage.clientWidth / 1280, stage.clientHeight / 720)})`;
+      }
+      function closePanels() {
+        indexPanel.hidden = true;
+        notesPanel.hidden = true;
+        document
+          .getElementById("index-toggle")
+          .setAttribute("aria-expanded", "false");
+        document
+          .getElementById("notes-toggle")
+          .setAttribute("aria-expanded", "false");
+      }
+      function show(index) {
+        const previous = current;
+        finishMotion();
+        current = Math.max(0, Math.min(slides.length - 1, index));
+        slides.forEach((slide, i) => {
+          slide.classList.toggle("active", i === current);
+          slide.setAttribute("aria-hidden", String(i !== current));
+          slide.inert = i !== current;
+        });
+        document.getElementById("counter").textContent =
+          `${String(current + 1).padStart(2, "0")} / ${slides.length}`;
+        document.getElementById("current-label").textContent =
+          slides[current].dataset.label;
+        document.getElementById("progress").style.width =
+          `${((current + 1) / slides.length) * 100}%`;
+        document.getElementById("prev").disabled = current === 0;
+        document.getElementById("next").disabled =
+          current === slides.length - 1;
+        document.getElementById("notes-title").textContent =
+          `${current + 1}. ${notes[current].title}`;
+        document.getElementById("notes-text").textContent = notes[current].note;
+        document.getElementById("notes-source").textContent =
+          `근거: ${notes[current].source}`;
+        history.replaceState(null, "", `#slide-${current + 1}`);
+        document.title = `${current + 1}. ${notes[current].title} · HeartSignal`;
+        // 이전 장으로 돌아갈 때는 지체 없이 전체 내용을 보여줍니다.
+        if (current >= previous) playEntrance(slides[current], current);
+      }
+      function togglePanel(panel, button) {
+        const open = panel.hidden;
+        closePanels();
+        panel.hidden = !open;
+        button.setAttribute("aria-expanded", String(open));
+        if (open) panel.querySelector("button").focus();
+      }
+      async function fullscreen() {
+        try {
+          if (document.fullscreenElement) await document.exitFullscreen();
+          else await document.body.requestFullscreen();
+        } catch {
+          document.getElementById("current-label").textContent =
+            "브라우저 메뉴에서 전체화면을 실행하세요.";
+        }
+      }
+      document
+        .getElementById("prev")
+        .addEventListener("click", () => show(current - 1));
+      document
+        .getElementById("next")
+        .addEventListener("click", () => show(current + 1));
+      document
+        .getElementById("index-toggle")
+        .addEventListener("click", (e) =>
+          togglePanel(indexPanel, e.currentTarget),
+        );
+      document
+        .getElementById("notes-toggle")
+        .addEventListener("click", (e) =>
+          togglePanel(notesPanel, e.currentTarget),
+        );
+      document
+        .getElementById("fullscreen")
+        .addEventListener("click", fullscreen);
+      document
+        .getElementById("print")
+        .addEventListener("click", () => window.print());
+      document.querySelectorAll("[data-close]").forEach((button) =>
+        button.addEventListener("click", () => {
+          closePanels();
+          document.getElementById(button.dataset.close).focus();
+        }),
+      );
+      document.querySelectorAll("[data-jump]").forEach((button) =>
+        button.addEventListener("click", () => {
+          show(Number(button.dataset.jump));
+          closePanels();
+          document.getElementById("index-toggle").focus();
+        }),
+      );
+      document.addEventListener("keydown", (event) => {
+        if (
+          event.altKey ||
+          event.ctrlKey ||
+          event.metaKey ||
+          event.target.matches("input,textarea,select")
+        )
+          return;
+        const key = event.key.toLowerCase();
+        if (key === "escape") {
+          finishMotion();
+          closePanels();
+          document.getElementById("index-toggle").focus();
+          return;
+        }
+        if (key === "n") {
+          event.preventDefault();
+          togglePanel(notesPanel, document.getElementById("notes-toggle"));
+          return;
+        }
+        if (key === "o") {
+          event.preventDefault();
+          togglePanel(indexPanel, document.getElementById("index-toggle"));
+          return;
+        }
+        if (!indexPanel.hidden || !notesPanel.hidden) return;
+        if (key === "r") {
+          event.preventDefault();
+          playEntrance(slides[current], current);
+          return;
+        }
+        if (key === "f") {
+          event.preventDefault();
+          fullscreen();
+          return;
+        }
+        if (
+          event.target.closest("button,a") &&
+          (key === " " || key === "enter")
+        )
+          return;
+        let next = current;
+        if (["arrowright", "arrowdown", "pagedown", " "].includes(key)) next++;
+        else if (["arrowleft", "arrowup", "pageup"].includes(key)) next--;
+        else if (key === "home") next = 0;
+        else if (key === "end") next = slides.length - 1;
+        else return;
+        event.preventDefault();
+        show(next);
+      });
+      window.addEventListener("resize", fit);
+      document.addEventListener("fullscreenchange", fit);
+      const match = location.hash.match(/^#slide-(\d+)$/);
+      show(match ? Number(match[1]) - 1 : 0);
+      fit();
+    </script>
+  </body>
+</html>
