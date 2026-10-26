@@ -350,6 +350,17 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
 .chat-composer textarea::placeholder { color: #99a4b5; }
 .chat-composer button { display: grid; width: 46px; height: 46px; flex: none; place-items: center; border: 0; border-radius: 13px; background: #2457a7; color: #fff; font-size: 26px; cursor: pointer; }
 .chat-composer button:disabled { cursor: not-allowed; opacity: .55; }
+.chat-composer .mic-button { background: #eef3fb; color: #2457a7; transition: background .15s; }
+.chat-composer .mic-button:not(:disabled):hover { background: #dfe9f8; }
+.mic-dots { display: flex; gap: 3px; }
+.mic-dots i { width: 5px; height: 5px; border-radius: 50%; background: currentColor; animation: mic-dot 1s ease-in-out infinite; }
+.mic-dots i:nth-child(2) { animation-delay: .15s; }
+.mic-dots i:nth-child(3) { animation-delay: .3s; }
+@keyframes mic-dot { 50% { opacity: .25; transform: translateY(-2px); } }
+.chat-composer .mic-button.is-recording { background: #d92d20; color: #fff; animation: mic-pulse 1.2s ease-in-out infinite; }
+@keyframes mic-pulse { 50% { box-shadow: 0 0 0 6px rgba(217, 45, 32, .2); } }
+.mic-status { margin: 8px 4px 0; color: #2457a7; font-size: 13px; text-align: center; }
+.mic-status.is-error { color: #b42318; }
 .chat-footnote { margin: 9px 4px 0; color: #8995a7; font-size: 11px; text-align: center; }
 
 @media (max-width: 560px) {

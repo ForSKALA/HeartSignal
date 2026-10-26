@@ -393,8 +393,12 @@ onBeforeUnmount(() => {
                 {{ section.title }}
                 <span v-if="section.needs_review" class="guide-review">검토 필요</span>
               </h3>
-              <!-- handoff 이면 answer 에 "확인된 자료가 없습니다" 문구가 이미 들어 있음 -->
-              <p class="guide-answer">{{ section.answer }}</p>
+              <!-- handoff 이면 answer 에 "확인된 자료가 없습니다" 문구가 이미 들어 있음.
+                   answer 가 비어 있으면 섹션 생성 실패(LLM 장애 등, 서버 error 필드) → 원문 확인 안내 -->
+              <p v-if="section.answer" class="guide-answer">{{ section.answer }}</p>
+              <p v-else class="guide-answer">
+                상세 답변을 만들지 못했습니다. 안전지침 원문과 작업반장 체크리스트를 확인하세요.
+              </p>
               <ul v-if="section.sources?.length" class="guide-sources" aria-label="출처">
                 <li v-for="(src, i) in section.sources" :key="i">📄 {{ src.source }} {{ src.section }}</li>
               </ul>
