@@ -1,0 +1,124 @@
+# HeartSignal 통합 실행 (로컬·시연용)
+#
+# 실행: cp .env-example .env  → 값 채우기 → docker compose up -d --build
+# 접속: http://localhost:5174  (gateway 가 k8s Ingress 처럼 경로별로 각 서비스에 나눠 준다)
+# 음성(Voice-AI)까지: docker compose --profile voice up -d --build   (이미지가 커서 기본은 제외)
+# 시연 계정: ENV_FILE=.env db/seed-demo-users.sh   (auth 가 뜬 뒤 1회)
+#
+# - 비밀값은 루트 .env(커밋 금지)에서만 읽는다. 서비스마다 필요한 변수만 넘긴다.
+# - 컨테이너 사이는 서비스 이름으로 호출한다 (localhost 하드코딩 금지, AGENTS.md 5장).
+# - k8s 배포용 이미지 빌드·push 는 지금처럼 각 폴더의 docker-build.sh·docker-push.sh 를 쓴다.
+
+services:
+  # 단일 진입점. 브라우저는 이 주소 하나만 쓰므로 ACCESS_TOKEN 쿠키가 모든 서비스에 전달된다
+  gateway:
+    image: nginx:1.27-alpine
+    container_name: heartsignal-gateway
+    restart: unless-stopped
+    ports:
+      - "5174:80"
+    volumes:
+      - ./web/compose/gateway.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - web
+      - auth
+      - rag
+
+  web:
+    build:
+      context: .
+      dockerfile: web/Dockerfile
+    image: heartsignal-web:local
+    container_name: heartsignal-web
+    restart: unless-stopped
+
+  auth:
+    build:
+      context: ./backend
+    image: heartsignal-auth:local
+    container_name: heartsignal-auth
+    restart: unless-stopped
+    ports:
+      - "8080:8080"   # seed 스크립트(AUTH_URL 기본 http://localhost:8080)용
+    environment:
+      DB_URL: jdbc:mariadb://db:3306/sql_db
+      DB_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 를 .env 에 설정하세요}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 .env 에 설정하세요}
+      JWT_ISSUER: ${JWT_ISSUER:-simple-auth-server}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5174}
+      LOGIN_REDIRECT_URL: ${LOGIN_REDIRECT_URL:-/#/home}
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  rag:
+    build:
+      context: ./RAG
+    image: heartsignal-rag:local
+    container_name: heartsignal-rag
+    restart: unless-stopped
+    ports:
+      - "8001:8001"   # Swagger http://localhost:8001/docs
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}   # 없어도 기동 (챗봇 503, 경보는 템플릿으로 동작)
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 .env 에 설정하세요}
+      JWT_ISSUER: ${JWT_ISSUER:-simple-auth-server}
+      CORS_ORIGINS: ${CORS_ORIGINS:-http://localhost:5174}
+      NAVER_CLIENT_ID: ${NAVER_CLIENT_ID:-}
+      NAVER_CLIENT_SECRET: ${NAVER_CLIENT_SECRET:-}
+      ASYNC_DB_URL: mysql+aiomysql://root:${DB_PASSWORD}@db:3306/sql_db?charset=utf8mb4
+      LLM_MODEL: ${LLM_MODEL:-gpt-4o}
+      LLM_TIMEOUT_S: ${LLM_TIMEOUT_S:-20}
+      REWRITE_MODEL: ${REWRITE_MODEL:-gpt-4o-mini}
+      RAG_INDEX_DIR: ${RAG_INDEX_DIR:-faiss_db/p1-complete}
+      RAG_MAX_CONTEXT_CHARS: ${RAG_MAX_CONTEXT_CHARS:-12000}
+    depends_on:
+      db:
+        condition: service_healthy
+
+  voice:
+    profiles: ["voice"]
+    build:
+      context: ./Voice-AI
+    image: heartsignal-voice:local
+    container_name: heartsignal-voice
+    restart: unless-stopped
+    # Dockerfile 의 --reload 대신 k8s 와 같은 명령. gateway 가 앞의 /voice 를 떼고 넘긴다
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8008", "--root-path", "/voice"]
+    ports:
+      - "8008:8008"
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET 을 .env 에 설정하세요}
+      JWT_ISSUER: ${JWT_ISSUER:-simple-auth-server}
+      # WHISPER_MODEL 은 넘기지 않는다: 이미지에 포함된 모델 경로(/opt/whisper-model)를 그대로 쓴다
+
+  db:
+    image: mariadb:11.4
+    container_name: heartsignal-mariadb   # seed 스크립트의 DB_CONTAINER 기본값과 같은 이름
+    restart: unless-stopped
+    ports:
+      - "53301:3306"
+    environment:
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD 를 .env 에 설정하세요}
+      MARIADB_DATABASE: sql_db
+      TZ: Asia/Seoul
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --lower_case_table_names=1
+    volumes:
+      - heartsignal_mariadb_data:/var/lib/mysql
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  # db/docker-compose.yml 과 같은 볼륨을 쓴다 → 어느 쪽으로 띄워도 회원·시연 계정 데이터가 그대로 남는다
+  # (두 compose 를 동시에 띄우지 않는다: 컨테이너 이름·포트가 같다)
+  heartsignal_mariadb_data:
+    name: db_heartsignal_mariadb_data
