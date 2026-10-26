@@ -34,7 +34,7 @@
 | **운전원** (DCS 조작)                | 서비스 사용자 아님 | 차단밸브·비상정지 등 설비 조작                                                                              | 에이전트가 설비를 건드리지 않아 **조작 권한과 책임이 사람에게 그대로** 남음                                        |
 | **회사·안전 조직**                   | —                  | 비상 대응 기록이 흩어지고, AI가 판단을 대신한다는 우려                                                      | 도구 실행마다 **감사 로그**(누가·무엇을·결과) 기록, 사람-에이전트 역할 분리로 **책임 소재가 분명**                 |
 
-자세한 기획은 [`docs/HeartSignal-Plan.md`](docs/HeartSignal-Plan.md), 명세는 [`docs/HeartSignal-Spec.md`](docs/HeartSignal-Spec.md)를 참고하세요.
+자세한 기획은 [`docs/HeartSignal-Plan.md`](docs/HeartSignal-Plan.md), 명세는 [`docs/HeartSignal-Spec.md`](docs/HeartSignal-Spec.md), 비즈니스 모델은 [`docs/business_model.md`](docs/business_model.md)를 참고하세요.
 
 ## 🏗️ Architecture
 
