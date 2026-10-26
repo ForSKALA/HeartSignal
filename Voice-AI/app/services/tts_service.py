@@ -19,9 +19,10 @@ def text_to_speech(text: str, output_path: str = "output.mp3"):
     }
 
     data = {
-        "model": "tts-1",
+        "model": "gpt-4o-mini-tts",
         "input": text,
-        "voice": "nova"
+        "voice": "nova",
+        "response_format": "mp3"
     }
 
     response = requests.post(url, headers=headers, json=data)
