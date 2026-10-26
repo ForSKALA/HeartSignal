@@ -1,32 +1,121 @@
-// 브라우저 내장 음성(Web Speech API)으로 경보 문구를 읽어 준다.
-// 서버·LLM 없이 동작하므로 장애 시에도 방송이 나간다 (AGENTS.md 2장 4번).
-// 브라우저는 사용자가 화면을 한 번도 누르지 않았으면 음성을 막는다 → onBlocked 로 알려 주고, 다음 클릭 때 다시 읽는다.
+// 음성 안내: Voice-AI TTS API(/voice/tts/, OpenAI 음성 합성)로 MP3 를 만들어 재생한다.
+// API 가 실패하면(OpenAI·Voice-AI 장애, 시간 초과) 브라우저 내장 음성(Web Speech API)으로 읽는다
+// → 장애 시에도 경보 방송이 나간다 (AGENTS.md 2장 4번).
+// 브라우저는 사용자가 화면을 한 번도 누르지 않았으면 소리를 막는다 → onBlocked 로 알려 주고, 다음 클릭 때 다시 읽는다.
+// 여러 문장은 차례대로(큐) 읽는다. 겹쳐 읽지 않는다.
+
+const VOICE_BASE = `${import.meta.env.VITE_API_BASE_URL || ""}/voice`;
+const TTS_TIMEOUT_MS = 15000; // 이보다 늦으면 브라우저 음성으로 바로 읽는다 (경보 지연 방지)
 
 const synth = typeof window !== "undefined" ? window.speechSynthesis : undefined;
 
-export const isVoiceSupported = Boolean(synth);
+export const isVoiceSupported = typeof Audio !== "undefined" || Boolean(synth);
 
-let blockedTexts = [];
+let queue = [];         // 읽을 문장 {text, repeat, onBlocked}
+let blockedTexts = [];  // 소리가 막혀 못 읽은 문장 (다음 클릭 때 다시)
+let playing = false;
+let generation = 0;     // stopSpeaking() 때 증가 → 진행 중이던 재생·합성 결과를 버린다
+let currentAudio = null;
+let currentDone = null; // 재생 중인 소리를 멈출 때 기다리던 Promise 를 끝내는 함수
 
 function koreanVoice() {
   return synth.getVoices().find((voice) => voice.lang?.toLowerCase().startsWith("ko"));
 }
 
-export function speak(text, { repeat = 1, onBlocked } = {}) {
-  if (!synth || !text) return;
-  for (let i = 0; i < repeat; i += 1) {
+function blockedError() {
+  const error = new Error("audio blocked");
+  error.name = "NotAllowedError";
+  return error;
+}
+
+// Voice-AI TTS → 재생할 MP3 의 object URL. 실패하면 null (브라우저 음성으로 대체)
+async function synthesize(text) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), TTS_TIMEOUT_MS);
+  try {
+    const form = new FormData();
+    form.append("text", text);
+    const response = await fetch(`${VOICE_BASE}/tts/`, {
+      method: "POST", credentials: "include", body: form, signal: controller.signal,
+    });
+    const data = await response.json().catch(() => null);
+    if (!response.ok || typeof data?.file_path !== "string") return null;
+    // Voice-AI 는 같은 파일 이름(/uploads/openai_tts_output.mp3)을 덮어쓴다 → 바로 받아서 메모리에 둔다
+    const audio = await fetch(`${VOICE_BASE}${data.file_path}`, { cache: "no-store", signal: controller.signal });
+    if (!audio.ok) return null;
+    return URL.createObjectURL(await audio.blob());
+  } catch {
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function playUrl(url) {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio(url);
+    currentAudio = audio;
+    currentDone = resolve;
+    audio.onended = () => resolve();
+    audio.onerror = () => reject(new Error("audio error"));
+    audio.play().catch(reject); // 자동재생 차단이면 NotAllowedError
+  });
+}
+
+function speakLocal(text) {
+  return new Promise((resolve, reject) => {
+    if (!synth) return resolve();
     const utterance = new SpeechSynthesisUtterance(text);
     utterance.lang = "ko-KR";
     utterance.voice = koreanVoice() || null;
     utterance.rate = 1;
-    utterance.onerror = (event) => {
-      if (event.error === "not-allowed" && i === 0) {
-        blockedTexts.push({ text, repeat });
-        onBlocked?.();
-      }
-    };
+    currentDone = resolve;
+    utterance.onend = () => resolve();
+    utterance.onerror = (event) => (event.error === "not-allowed" ? reject(blockedError()) : resolve());
     synth.speak(utterance);
+  });
+}
+
+async function pump() {
+  if (playing) return;
+  playing = true;
+  try {
+    while (queue.length) {
+      const item = queue.shift();
+      const gen = generation;
+      const url = await synthesize(item.text);
+      if (gen !== generation) {
+        if (url) URL.revokeObjectURL(url);
+        continue;
+      }
+      try {
+        for (let i = 0; i < item.repeat && gen === generation; i += 1) {
+          try {
+            await (url ? playUrl(url) : speakLocal(item.text));
+          } catch (error) {
+            if (error.name === "NotAllowedError") throw error;
+            await speakLocal(item.text); // MP3 재생 오류 → 브라우저 음성
+          }
+        }
+      } catch (error) {
+        if (error.name !== "NotAllowedError") throw error;
+        blockedTexts.push({ text: item.text, repeat: item.repeat });
+        item.onBlocked?.();
+      } finally {
+        if (url) URL.revokeObjectURL(url);
+        currentAudio = null;
+        currentDone = null;
+      }
+    }
+  } finally {
+    playing = false;
   }
+}
+
+export function speak(text, { repeat = 1, onBlocked } = {}) {
+  if (!text || !isVoiceSupported) return;
+  queue.push({ text, repeat, onBlocked });
+  pump();
 }
 
 // 사용자가 화면을 누른 뒤 막혔던 안내를 다시 읽는다
@@ -38,8 +127,12 @@ export function replayBlocked() {
 }
 
 export function stopSpeaking() {
+  generation += 1;
+  queue = [];
   blockedTexts = [];
+  currentAudio?.pause();
   synth?.cancel();
+  currentDone?.(); // 멈춘 재생을 기다리던 pump 를 끝낸다
 }
 
 // ---- 음성 질문: 마이크 녹음 → Voice-AI /voice/stt/ (서버 내 faster-whisper, OpenAI 키 불필요) ----
