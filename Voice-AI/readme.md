@@ -22,8 +22,8 @@ python -m pip install -r requirements.txt
 ## 이미지 빌드 및 배포
 
 ```bash
-./docker-build.sh 1.0.3
-./docker-push.sh 1.0.3
+./docker-build.sh 1.0.4
+./docker-push.sh 1.0.4
 kubectl --context skala-admin-sa@class-4 -n class-4 apply -f k8s/
 kubectl --context skala-admin-sa@class-4 -n class-4 rollout status deployment/heartsignal-voice --timeout=180s
 ```
