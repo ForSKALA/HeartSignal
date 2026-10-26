@@ -1,6 +1,7 @@
 <script setup>
-import { nextTick, ref } from "vue";
+import { nextTick, onBeforeUnmount, ref } from "vue";
 import { RouterLink, useRouter } from "vue-router";
+import { isRecordingSupported, isVoiceSupported, speak, startRecording, stopSpeaking, transcribe } from "../voice";
 
 const router = useRouter();
 
@@ -10,11 +11,52 @@ const source = ref("pdf");
 const isLoading = ref(false);
 const messages = ref([]);
 
-async function ask() {
+// 음성 질문: idle → recording → transcribing → idle. 음성으로 물은 질문만 답변을 읽어 준다
+const micState = ref("idle");
+const micError = ref("");
+let stopRecording = null;
+
+async function toggleMic() {
+  micError.value = "";
+  if (micState.value === "recording") {
+    micState.value = "transcribing";
+    try {
+      const text = await transcribe(await stopRecording());
+      if (!text) throw new Error("음성을 인식하지 못했습니다. 다시 말씀해 주세요.");
+      prompt.value = text;
+      await ask({ fromVoice: true });
+    } catch (error) {
+      if (error.status === 401) {
+        await router.push("/login");
+        return;
+      }
+      micError.value = error.message;
+    } finally {
+      stopRecording = null;
+      micState.value = "idle";
+    }
+    return;
+  }
+  if (micState.value !== "idle" || isLoading.value) return;
+  try {
+    stopSpeaking(); // 이전 답변 읽기 중이면 멈추고 듣기
+    stopRecording = await startRecording();
+    micState.value = "recording";
+  } catch {
+    micError.value = "마이크를 사용할 수 없습니다. 브라우저의 마이크 권한을 확인해 주세요.";
+  }
+}
+
+onBeforeUnmount(() => {
+  stopRecording?.();
+  stopSpeaking();
+});
+
+async function ask({ fromVoice = false } = {}) {
   const question = prompt.value.trim();
   if (!question || isLoading.value) return;
 
-  messages.value.push({ role: "user", text: question });
+  messages.value.push({ role: "user", text: question, fromVoice });
   prompt.value = "";
   isLoading.value = true;
   const answer = { role: "assistant", text: "선택한 자료를 검색하고 있습니다...", loading: true };
@@ -47,6 +89,9 @@ async function ask() {
     answer.handoff = result.handoff === true;       // 근거 없음 → 안전관리자 문의 안내
     answer.needsReview = result.needs_review === true;
     answer.sources = Array.isArray(result.sources) ? result.sources : [];
+    if (fromVoice) {
+      speak(answer.handoff ? `${answer.text} 안전관리자에게 직접 문의해 주세요.` : answer.text);
+    }
   } catch (error) {
     console.error(error);
     answer.role = "error";
@@ -125,7 +170,28 @@ function onInputKeydown(event) {
       </section>
 
       <div class="composer-area">
-        <form class="chat-composer" @submit.prevent="ask">
+        <form class="chat-composer" @submit.prevent="ask()">
+          <!-- 음성 질문: 누르면 녹음, 다시 누르면 인식 후 바로 질문. 답변은 브라우저 음성으로 읽음 -->
+          <button
+            v-if="isRecordingSupported"
+            type="button"
+            class="mic-button"
+            :class="`is-${micState}`"
+            :aria-label="micState === 'recording' ? '녹음 끝내고 질문하기' : '음성으로 질문하기'"
+            :aria-pressed="micState === 'recording'"
+            :disabled="micState === 'transcribing' || (isLoading && micState === 'idle')"
+            @click="toggleMic"
+          >
+            <!-- 대기: 파란 스피커 / 녹음 중: 정지 사각형 / 인식 중: 점 3개 -->
+            <svg v-if="micState === 'idle'" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+              <path d="M4 9.5h3.2L12 5.5v13l-4.8-4H4z" fill="currentColor" />
+              <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            <svg v-else-if="micState === 'recording'" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+              <rect x="6" y="6" width="12" height="12" rx="2.5" fill="currentColor" />
+            </svg>
+            <span v-else class="mic-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+          </button>
           <textarea
             v-model="prompt"
             rows="1"
@@ -137,6 +203,10 @@ function onInputKeydown(event) {
           ></textarea>
           <button type="submit" aria-label="질문 보내기" :disabled="isLoading || !prompt.trim()">↑</button>
         </form>
+        <p v-if="micState === 'recording'" class="mic-status" role="status">듣고 있습니다… 말씀을 마치면 ■ 버튼을 누르세요.</p>
+        <p v-else-if="micState === 'transcribing'" class="mic-status" role="status">음성을 글자로 바꾸는 중입니다…</p>
+        <p v-else-if="micError" class="mic-status is-error" role="alert">{{ micError }}</p>
+        <p v-if="!isVoiceSupported && isRecordingSupported" class="mic-status">이 브라우저는 답변 음성 읽기를 지원하지 않아 글로만 표시됩니다.</p>
         <p class="chat-footnote">답변은 검색된 자료를 바탕으로 생성됩니다. 위급한 상황에서는 현장 안전 절차와 긴급 신고를 우선하세요.</p>
       </div>
     </main>
