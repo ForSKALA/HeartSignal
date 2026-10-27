@@ -350,29 +350,50 @@ sequenceDiagram
 
 ## ⚡Quick Start
 
-필요한 도구와 `.env` 준비는 아래 [How to Install](#-how-to-install)을 먼저 마친 뒤 진행하세요. 통합 `docker-compose.yml`은 아직 없으므로 서비스를 각각 실행합니다.
+Docker만 있으면 루트 `docker-compose.yml` 하나로 전체 서비스를 띄울 수 있습니다.
 
 ```bash
-# 1) DB (MariaDB :53301)
-docker compose -f db/docker-compose.yml up -d
+# 1) 환경변수 파일 (DB_PASSWORD · JWT_SECRET 필수, OPENAI_API_KEY 권장)
+cp .env-example .env
 
-# 2) 인증 서버 (:8080)
-(set -a && source backend/.env && set +a && cd backend && ./gradlew run)
+# 2) 전체 기동: gateway(:5174) · web · auth(:8080) · rag(:8001) · db(:53301)
+docker compose up -d --build
 
-# 3) 시연 계정 생성: admin1 · foreman1 · worker1 (인증 서버가 떠 있어야 함)
-db/seed-demo-users.sh
+#    음성(Voice-AI :8008)까지 띄울 때 (이미지가 커서 기본은 제외)
+docker compose --profile voice up -d --build
 
-# 4) RAG + 경보 API (:8001, Swagger http://localhost:8001/docs)
-(cd RAG && python -m uvicorn rag_external-web_pdf_closed_llm:app --port 8001 --reload)
+# 3) 시연 계정 생성: admin1 · foreman1 · worker1 (처음 1회)
+ENV_FILE=.env db/seed-demo-users.sh
 
-# 5) 화면 (:5174)
-(cd web && npm run dev)
-
-# 6) (선택) 음성 STT·TTS (:8008)
-(cd Voice-AI && python -m uvicorn app.main:app --port 8008 --reload)
+# 종료 (DB 데이터는 볼륨에 남음)
+docker compose down
 ```
 
-각 서버는 터미널을 따로 열어 실행합니다. 그다음 http://localhost:5174 에 접속해 데모 시나리오 **S1(출하장 프로판 누출, 3단계)** 을 확인합니다.
+| 주소 | 내용 |
+| --- | --- |
+| http://localhost:5174 | 화면 (gateway가 k8s Ingress처럼 `/api`→auth, `/rag-query`·`/alarm`·`/board`→rag, `/voice`→voice로 나눔) |
+| http://localhost:8001/docs | RAG Swagger |
+
+> - 셸에 `OPENAI_API_KEY` 같은 환경변수가 이미 있으면 compose는 `.env`보다 **셸 값을 먼저** 씁니다.
+> - `db/docker-compose.yml`과 같은 DB 볼륨·컨테이너 이름을 쓰므로 둘을 동시에 띄우지 않습니다.
+
+<details>
+<summary>서비스를 하나씩 직접 실행하기 (개발용)</summary>
+
+```bash
+docker compose -f db/docker-compose.yml up -d                                     # DB (:53301)
+(set -a && source backend/.env && set +a && cd backend && ./gradlew run)         # 인증 (:8080)
+db/seed-demo-users.sh                                                              # 시연 계정
+(cd RAG && python -m uvicorn rag_external-web_pdf_closed_llm:app --port 8001 --reload)  # RAG (:8001)
+(cd web && npm run dev)                                                            # 화면 (:5174, vite proxy)
+(cd Voice-AI && python -m uvicorn app.main:app --port 8008 --reload)              # (선택) 음성 (:8008)
+```
+
+각 서버는 터미널을 따로 열어 실행합니다.
+
+</details>
+
+http://localhost:5174 에 접속해 데모 시나리오 **S1(출하장 프로판 누출, 3단계)** 을 확인합니다.
 
 1. `admin1`로 로그인 → 홈에서 **출하장 · 프로판 · 3단계** 경보 발령
 2. 전광판 대피 문구, 관리자 대응 지침 카드, 119 모의 신고(30초 안에 보류 가능)가 출처와 함께 표시되는지 확인
@@ -388,7 +409,7 @@ db/seed-demo-users.sh
 
 | 도구                  | 버전    | 용도                                   |
 | --------------------- | ------- | -------------------------------------- |
-| Docker (Compose 포함) | 최신    | MariaDB                                |
+| Docker (Compose 포함) | 최신    | 통합 실행 (compose), MariaDB           |
 | JDK                   | 17 이상 | 인증 서버 (`backend/`)                 |
 | Python                | 3.11    | RAG (`RAG/`), 음성 (`Voice-AI/`)       |
 | Node.js · npm         | LTS     | 화면 (`web/`)                          |
@@ -403,7 +424,15 @@ cd HeartSignal
 
 ### 3. 환경변수 파일 만들기
 
-각 `.env-example`을 복사해 값을 채웁니다. **`.env`는 커밋하지 않습니다.** `JWT_SECRET`은 인증 서버와 Python 서비스가 **같은 값**이어야 합니다.
+**`.env`는 커밋하지 않습니다.** `JWT_SECRET`은 인증 서버와 Python 서비스가 **같은 값**이어야 합니다.
+
+루트 compose로 실행할 때는 루트 `.env` 하나만 있으면 됩니다.
+
+```bash
+cp .env-example .env
+```
+
+서비스를 하나씩 직접 실행할 때는 서비스별 `.env-example`을 복사합니다.
 
 ```bash
 cp db/.env-example db/.env                    # DB_PASSWORD, SEED_*_PASSWORD
