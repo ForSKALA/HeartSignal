@@ -1,0 +1,34 @@
+flowchart TB
+    subgraph People["사람"]
+      ADM["안전관리자 (admin)"]
+      FM["작업반장 (foreman)"]
+      WK["작업자 (worker)"]
+    end
+    BOARD["전광판 화면"]
+    ING["Ingress (단일 호스트, TLS)"]
+    WEB["web · Vue 3 + Vite (nginx)<br/>홈 · 챗봇 · 로그인"]
+    AUTH["auth · Java HttpServer :8080<br/>회원가입 · 로그인 · JWT 발급"]
+    subgraph RAGSVC["rag · FastAPI :8001"]
+      API["/rag-query · /alarm/* · /board/current"]
+      CHAIN["RAG 체인<br/>재작성 → 하이브리드 검색 → 근거 답변"]
+      AGENT["경보 에이전트<br/>도구 7개 · 고정 템플릿 fallback"]
+    end
+    VOICE["voice · FastAPI :8008<br/>STT(Whisper) · TTS"]
+    DB[("MariaDB<br/>users")]
+    FAISS[("FAISS 인덱스<br/>40문서 · 2,836청크")]
+    LLM["OpenAI<br/>gpt-4o · gpt-4o-mini"]
+    EXT["119 · 문자<br/>(모의 발송)"]
+
+    ADM & FM & WK --> ING
+    BOARD --> ING
+    ING --> WEB
+    ING -->|"/api"| AUTH
+    ING -->|"/rag-query /alarm /board"| API
+    ING -->|"/voice"| VOICE
+    AUTH --> DB
+    API --> CHAIN --> FAISS
+    CHAIN --> LLM
+    API --> AGENT
+    AGENT -->|"evidence 검색"| FAISS
+    AGENT -->|"지침 7칸"| CHAIN
+    AGENT -.->|"report_119"| EXT
